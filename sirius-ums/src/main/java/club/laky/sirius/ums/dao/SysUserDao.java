@@ -65,8 +65,9 @@ public interface SysUserDao {
     /**
      * 查询登录用户的信息
      * @param account 登录信息
-     * @return
+     * @param type 登录类型
+     * @return 登录用户
      * */
-    SysUser queryLoginUser(@Param("account") String account);
+    SysUser queryLoginUser(@Param("account") String account,@Param("type") int type);
 
 }

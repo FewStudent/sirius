@@ -6,4 +6,4 @@ spring:
   application:
     name: mq-service
 server:
-  port: 8091
+  port: 8151

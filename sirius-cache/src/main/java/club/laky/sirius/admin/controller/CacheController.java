@@ -29,10 +29,11 @@ public class CacheController {
     @GetMapping("get")
     public Object get(@RequestParam("key") String key) {
         try {
+            logger.info("----------------获取的键为：{}", key);
             Object result = key == null ? null : redisTemplate.opsForValue().get(key);
             return ResultMap.success(result);
         } catch (Exception e) {
-            logger.info("获取失败,原因如下：{}", e.getMessage());
+            logger.error("获取失败,原因如下：{}", e.getMessage());
             return ResultMap.error(e.getMessage());
         }
     }
@@ -40,10 +41,11 @@ public class CacheController {
     @GetMapping("set")
     public Object set(@RequestParam("key") String key, @RequestParam("value") String value) {
         try {
+            logger.info("----------------添加的键为：{},值为:{}", key, value);
             redisTemplate.opsForValue().set(key, value);
             return ResultMap.success("");
         } catch (Exception e) {
-            logger.info("添加失败,原因如下：{}", e.getMessage());
+            logger.error("添加失败,原因如下：{}", e.getMessage());
             return ResultMap.error(e.getMessage());
         }
     }
@@ -51,6 +53,7 @@ public class CacheController {
     @GetMapping("setWithTime")
     public Object setWithTime(@RequestParam("key") String key, @RequestParam("value") String value, @RequestParam("time") long time) {
         try {
+            logger.info("----------------添加的键为：{},值为:{},时间为：{}", key, value, time);
             if (time > 0) {
                 redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
             } else {
@@ -58,7 +61,7 @@ public class CacheController {
             }
             return ResultMap.success("");
         } catch (Exception e) {
-            logger.info("添加失败,原因如下：{}", e.getMessage());
+            logger.error("添加失败,原因如下：{}", e.getMessage());
             return ResultMap.error(e.getMessage());
         }
     }
@@ -66,13 +69,14 @@ public class CacheController {
     @GetMapping("del")
     public Object del(@RequestParam("key") String key) {
         try {
-            if(StringUtils.isEmpty(key)){
+            logger.info("----------------删除的键为：{}", key);
+            if (StringUtils.isEmpty(key)) {
                 return ResultMap.error("键值不能为空!");
             }
             redisTemplate.delete(key);
             return ResultMap.success("");
         } catch (Exception e) {
-            logger.info("获取失败,原因如下：{}", e.getMessage());
+            logger.error("获取失败,原因如下：{}", e.getMessage());
             return ResultMap.error(e.getMessage());
         }
     }

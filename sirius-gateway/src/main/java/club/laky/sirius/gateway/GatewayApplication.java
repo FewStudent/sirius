@@ -8,7 +8,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 /**
  * @author lakyjpan
  */
-@EnableFeignClients({"club.laky.sirius.gateway.feign"})
 @EnableEurekaClient
 @SpringBootApplication
 public class GatewayApplication {

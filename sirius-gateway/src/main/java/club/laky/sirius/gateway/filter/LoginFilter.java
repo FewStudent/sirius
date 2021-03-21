@@ -1,12 +1,8 @@
 package club.laky.sirius.gateway.filter;
 
-import club.laky.sirius.gateway.constant.TokenConstant;
-import club.laky.sirius.gateway.feign.FeignCacheService;
 import club.laky.sirius.gateway.utils.WebResult;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -39,12 +35,11 @@ public class LoginFilter implements GlobalFilter, Ordered {
 
     private static final List<String> ALLOW_URI = new ArrayList<>();
 
-    @Autowired
-    private FeignCacheService cacheService;
 
     static {
         UN_AUTH_URI.add("/admin-service/api/**");
         UN_AUTH_URI.add("/client-service/api/**");
+        UN_AUTH_URI.add("/ums-service/api/**");
 
         ALLOW_URI.add("/admin-service/**");
         ALLOW_URI.add("/client-service/**");
@@ -67,43 +62,34 @@ public class LoginFilter implements GlobalFilter, Ordered {
 
         List<String> token = exchange.getRequest().getHeaders().get("token");
         logger.info("------------------------------------------------------");
-        logger.info("请求参数token:{}", token == null? null : token.get(0));
+        logger.info("请求参数token:{}", token == null ? null : token.get(0));
         logger.info("请求的URI:{}", path);
         logger.info("请求的地址IP:{}", ip);
         logger.info("------------------------------------------------------");
 
+        //清除i请求头中的isApi
+        exchange.getRequest().getHeaders().remove("isApi");
 
         PathMatcher matcher = new AntPathMatcher();
         //检测放行请求
         for (String auth_uri : UN_AUTH_URI) {
             if (matcher.matchStart(auth_uri, path)) {
-                logger.info("好家伙");
+                //允许通行
+                exchange.getRequest().getHeaders().add("isApi", "Y");
+                logger.info("检测无需鉴权的：URL-{} 匹配成功", path);
                 return chain.filter(exchange); //继续向下执行
             }
         }
 
-
         //检测鉴权请求
         for (String allow_uri : ALLOW_URI) {
-            logger.info("地址匹配结果：{}", matcher.matchStart(path, allow_uri));
-            if (matcher.matchStart(allow_uri,path)) {
-                if (null == token) {
-                    return unauthorized(exchange);
-                } else {
-                    String tokenCache = (String) cacheService.get(token.get(0));
-                    //获取token失败,token过期
-                    if (StringUtils.isEmpty(tokenCache)) {
-                        return expire(exchange);
-                    }
-                    //TODO
-
-                }
-
+            logger.info("地址匹配结果：{}", matcher.matchStart(allow_uri, path));
+            if (matcher.matchStart(allow_uri, path)) {
+                return chain.filter(exchange);
             }
         }
-
-
         return unauthorized(exchange);
+
     }
 
     private static Mono<Void> expire(ServerWebExchange exchange) {

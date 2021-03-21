@@ -1,4 +1,4 @@
-package club.laky.sirius.gateway.utils;
+package club.laky.sirius.admin.utils;
 
 /**
  * @author prl

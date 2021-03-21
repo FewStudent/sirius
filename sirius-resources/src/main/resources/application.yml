@@ -1,0 +1,25 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+spring:
+  application:
+    name: resources-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/shop_mall?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 8131
+  servlet:
+    context-path: /resources
+system:
+  realm: 127.0.0.1
+  imgUpLoadPath: D:/temp/sirius/img/
+
+mybatis-plus:
+  type-aliases-package: club.laky.sirius.resources.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

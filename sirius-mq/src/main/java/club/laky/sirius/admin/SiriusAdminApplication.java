@@ -1,0 +1,13 @@
+package club.laky.sirius.admin;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SiriusAdminApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SiriusAdminApplication.class, args);
+	}
+
+}

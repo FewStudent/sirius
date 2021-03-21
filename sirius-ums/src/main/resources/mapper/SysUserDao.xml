@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.laky.sirius.ums.dao.SysUserDao">
+
+    <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.SysUser">
+        <!--@Table sys_user-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="salt" column="salt" jdbcType="VARCHAR"/>
+        <result property="depId" column="dep_id" jdbcType="INTEGER"/>
+        <result property="jobId" column="job_id" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="birthday" column="birthday" jdbcType="OTHER"/>
+        <result property="identify" column="identify" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="OTHER"/>
+
+        <collection property="roleList" ofType="club.laky.sirius.ums.entity.SysRole">
+            <id column="role_id"/>
+            <result property="role" column="role" jdbcType="VARCHAR"/>
+        </collection>
+
+        <collection property="permissionList" ofType="club.laky.sirius.ums.entity.SysPermission">
+            <!-- 这里使用构造方法注入，String 没有属性-->
+            <id column="permission_id"/>
+            <result property="permission" column="permission" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               account,
+               nickname,
+               password,
+               salt,
+               dep_id,
+               job_id,
+               state,
+               phone,
+               email,
+               birthday,
+               identify,
+               avatar,
+               create_time
+        from shop_mall.sys_user
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id,
+               account,
+               nickname,
+               password,
+               salt,
+               dep_id,
+               job_id,
+               state,
+               phone,
+               email,
+               birthday,
+               identify,
+               avatar,
+               create_time
+        from shop_mall.sys_user limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        id, account, nickname, password, salt, dep_id, job_id, state, phone, email, birthday, identify, avatar,
+        create_time
+        from shop_mall.sys_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="account != null and account != ''">
+                and account = #{account}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname = #{nickname}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="salt != null and salt != ''">
+                and salt = #{salt}
+            </if>
+            <if test="depId != null">
+                and dep_id = #{depId}
+            </if>
+            <if test="jobId != null">
+                and job_id = #{jobId}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="birthday != null">
+                and birthday = #{birthday}
+            </if>
+            <if test="identify != null and identify != ''">
+                and identify = #{identify}
+            </if>
+            <if test="avatar != null and avatar != ''">
+                and avatar = #{avatar}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryLoginUser" resultMap="BaseResultMap">
+        select sp.id permission_id,sr.id role_id,sr.role,sp.permission, su.*
+        from sys_user su
+                 inner join sys_user_role_relation surr on su.id = surr.user_id
+                 inner join sys_role sr on sr.id = surr.role_id
+                 inner join sys_role_permission_relation srpr on srpr.role_id = sr.id
+                 inner join sys_permission sp on sp.id = srpr.permission_id
+        where su.account = #{account}
+        group by sp.permission
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_mall.sys_user(account, nickname, password, salt, dep_id, job_id, state, phone, email, birthday,
+                                       identify, avatar, create_time)
+        values (#{account}, #{nickname}, #{password}, #{salt}, #{depId}, #{jobId}, #{state}, #{phone}, #{email},
+                #{birthday}, #{identify}, #{avatar}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shop_mall.sys_user
+        <set>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="salt != null and salt != ''">
+                salt = #{salt},
+            </if>
+            <if test="depId != null">
+                dep_id = #{depId},
+            </if>
+            <if test="jobId != null">
+                job_id = #{jobId},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="identify != null and identify != ''">
+                identify = #{identify},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                avatar = #{avatar},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shop_mall.sys_user
+        where id = #{id}
+    </delete>
+
+</mapper>

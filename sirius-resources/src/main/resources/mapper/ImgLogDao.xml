@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.laky.sirius.resources.dao.ImgLogDao">
+
+    <resultMap id="BaseResultMap" type="club.laky.sirius.resources.entity.ImgLog">
+        <!--@Table img_log-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="uId" column="u_id" jdbcType="INTEGER"/>
+        <result property="createDate" column="create_date" jdbcType="VARCHAR"/>
+        <result property="userType" column="user_type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, img_url, u_id, create_date, user_type
+        from shop_mall.img_log
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, img_url, u_id, create_date, user_type
+        from shop_mall.img_log
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, img_url, u_id, create_date, user_type
+        from shop_mall.img_log
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="imgUrl != null and imgUrl != ''">
+                and img_url = #{imgUrl}
+            </if>
+            <if test="uId != null">
+                and u_id = #{uId}
+            </if>
+            <if test="createDate != null and createDate != ''">
+                and create_date = #{createDate}
+            </if>
+            <if test="userType != null">
+                and user_type = #{userType}
+            </if>
+        </where>
+    </select>
+
+    <select id="hasUser" resultType="java.lang.Integer">
+        <if test="type == 1">
+            select count(*) from sys_user where id = #{id} limit 1
+        </if>
+        <if test="type == 2">
+            select count(*) from mall_user where id = #{id} limit 1
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_mall.img_log(img_url, u_id, create_date, user_type)
+        values (#{imgUrl}, #{uId}, #{createDate}, #{userType})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shop_mall.img_log
+        <set>
+            <if test="imgUrl != null and imgUrl != ''">
+                img_url = #{imgUrl},
+            </if>
+            <if test="uId != null">
+                u_id = #{uId},
+            </if>
+            <if test="createDate != null and createDate != ''">
+                create_date = #{createDate},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from shop_mall.img_log where id = #{id}
+    </delete>
+
+</mapper>

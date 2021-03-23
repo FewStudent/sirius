@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   application:
-    name: sirius-gateway
+    name: gateway-service
   cloud:
     gateway:
       discovery:

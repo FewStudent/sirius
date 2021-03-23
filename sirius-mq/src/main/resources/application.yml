@@ -5,5 +5,10 @@ eureka:
 spring:
   application:
     name: mq-service
+  rabbitmq:
+    host: 106.52.52.92
+    port: 5672
+    username: qsyy
+    password: qsyy7614
 server:
   port: 8151

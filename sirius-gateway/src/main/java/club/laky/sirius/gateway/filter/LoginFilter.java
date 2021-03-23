@@ -67,8 +67,8 @@ public class LoginFilter implements GlobalFilter, Ordered {
         logger.info("请求的地址IP:{}", ip);
         logger.info("------------------------------------------------------");
 
+        exchange.getRequest().getHeaders().set("isApi","N");
         //清除i请求头中的isApi
-        exchange.getRequest().getHeaders().remove("isApi");
 
         PathMatcher matcher = new AntPathMatcher();
         //检测放行请求

@@ -73,7 +73,8 @@ public class PermissionController {
             //缓存
             String token = JWTUtils.getJWT(user);
             user.setToken(token);
-            cacheService.set(token, JSONObject.toJSON(user).toString());
+            //令牌缓存一天
+            cacheService.setWithTime(token, JSONObject.toJSON(user).toString(),86400);
             logger.info("--------------------用户{}登录成功！----------------", account);
             return WebResult.success(user);
         } catch (Exception e) {

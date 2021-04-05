@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录 - 天狼小商城管理系统</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/layui/css/layui.css"/>
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+</head>
+<body>
+<canvas class="cavs" width="1575" height="1337"></canvas>
+
+<div class="loginmain">
+    <div class="login-title">
+        <span>登录 - 天狼小商城管理系统</span>
+    </div>
+
+    <div class="login-con">
+        <form class="login">
+
+            <div class="login-user">
+                <div class="icon">
+                    <img src="/static/images/cd-icon-username.png" alt="">
+                </div>
+                <input type="text" name="usernem" class="account" placeholder="用户名" autocomplete="off" value="">
+            </div>
+            <div class="login-pwd">
+                <div class="icon">
+                    <img src="/static/images/cd-icon-password.png" alt="">
+                </div>
+                <input type="password" class="pwd" name="pwd" placeholder="密码" autocomplete="off" value="">
+            </div>
+            <!--<div class="login-yan">
+                <div class="icon">
+                    <img src="/static/images/yan.png" alt="">
+                </div>
+                <input type="text" name="pwd" placeholder="验证码" autocomplete="off" value="">
+            </div>-->
+            <div class="login-btn">
+                <input type="submit" value="登录">
+            </div>
+        </form>
+    </div>
+
+</div>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/ban.js"></script>
+<script>
+    layui.use(["layer", "jquery"], function () {
+        const layer = layui.layer;
+        $(".login").submit(function () {
+            let account = $(".account").val();
+            let pwd = $(".pwd").val();
+            if (account == null || account === "") {
+                layer.alert("密码不能为空!", {"icon": 2});
+                return false;
+            }
+            if (pwd == null || pwd === "") {
+                layer.alert("密码不能为空!", {"icon": 2});
+                return false;
+            }
+            var index = layer.load(0);
+
+            $.ajax({
+                url: "/admin/admin/login",
+                data: JSON.stringify({
+                    "account": account,
+                    "pwd": pwd
+                }),
+                type: 'post',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    console.log(data);
+                    if (data.succeed) {
+                        layer.close(index);
+                        layer.msg("登录成功!");
+                        localStorage.setItem("token", data.data.token);
+                        console.log(data.data.token)
+                        window.location.href = "/admin/page/index?token="+data.data.token;
+                    } else {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                    }
+                },
+                error: function () {
+                    layer.close(index);
+                    console.log("error")
+                }
+            });
+            layer.close(index);
+            return false;
+        })
+    })
+
+</script>
+</body>
+</html>
+

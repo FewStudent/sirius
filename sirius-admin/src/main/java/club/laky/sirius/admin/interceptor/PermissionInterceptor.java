@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +28,13 @@ public class PermissionInterceptor implements HandlerInterceptor {
             throws Exception {
         String uri = request.getRequestURI();
         logger.info("请求的URI：{}", uri);
-        if ("/admin/page/login".equals(uri) || "/error".equals(uri)) {
+        if ("/admin/page/login".equals(uri) || "/error".equals(uri) || "/admin/admin/login".equals(uri)) {
             logger.info("无需鉴权的放行请求：{}", uri);
+            return true;
+        }
+        PathMatcher matcher = new AntPathMatcher();
+        if (matcher.matchStart("/static/**",uri)) {
+            logger.info("静态资源放行：{}",uri);
             return true;
         }
         String isApi = request.getHeader("isApi");
@@ -35,8 +42,13 @@ public class PermissionInterceptor implements HandlerInterceptor {
             logger.info("获得网关许可直接放行：{}", uri);
             return true;
         }
-
-        String token = request.getHeader("token");
+        //页面跳转 从参数中获取token
+        String token;
+        if(matcher.matchStart("/admin/page/**",uri)){
+            token = request.getParameter("token");
+        }else{
+            token = request.getHeader("token");
+        }
         if (StringUtils.isEmpty(token)) {
             logger.error("没有token无法进行访问,请前往登录");
             response.sendRedirect(request.getContextPath() + "/admin/page/login");

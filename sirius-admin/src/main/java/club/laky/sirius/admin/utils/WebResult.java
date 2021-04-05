@@ -2,7 +2,7 @@ package club.laky.sirius.admin.utils;
 
 /**
  * @author prl
- * @Desrcription:
+ * @Desrcription: 通用返回类
  * @date 2021/3/20 16:24
  */
 public class WebResult {
@@ -10,13 +10,13 @@ public class WebResult {
     private String code;
     private String msg;
     private Object data;
-    private boolean status;
+    private boolean succeed;
 
     public static WebResult expire() {
         WebResult webResult = new WebResult();
         webResult.setCode("-1");
         webResult.setMsg("Token已过期");
-        webResult.setStatus(false);
+        webResult.setSucceed(false);
         return webResult;
     }
 
@@ -25,7 +25,7 @@ public class WebResult {
         WebResult webResult = new WebResult();
         webResult.setCode("-1");
         webResult.setMsg("没有登录");
-        webResult.setStatus(false);
+        webResult.setSucceed(false);
         return webResult;
     }
 
@@ -34,7 +34,7 @@ public class WebResult {
         WebResult webResult = new WebResult();
         webResult.setCode("1");
         webResult.setMsg("没有权限");
-        webResult.setStatus(false);
+        webResult.setSucceed(false);
         return webResult;
     }
 
@@ -43,7 +43,7 @@ public class WebResult {
         WebResult webResult = new WebResult();
         webResult.setCode("1");
         webResult.setMsg(msg);
-        webResult.setStatus(false);
+        webResult.setSucceed(false);
         return webResult;
     }
 
@@ -52,7 +52,7 @@ public class WebResult {
         WebResult webResult = new WebResult();
         webResult.setCode("0");
         webResult.setMsg("请求成功");
-        webResult.setStatus(true);
+        webResult.setSucceed(true);
         webResult.setData(data);
         return webResult;
     }
@@ -81,12 +81,12 @@ public class WebResult {
         this.data = data;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isSucceed() {
+        return succeed;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setSucceed(boolean succeed) {
+        this.succeed = succeed;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class WebResult {
                 "'code'='" + code + '\'' +
                 ", 'msg'='" + msg + '\'' +
                 ", 'data'=" + data +
-                ", 'status'=" + status +
+                ", 'succeed'=" + succeed +
                 '}';
     }
 }

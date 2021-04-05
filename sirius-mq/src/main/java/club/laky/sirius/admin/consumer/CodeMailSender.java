@@ -30,7 +30,7 @@ public class CodeMailSender {
     @RabbitHandler
     //具体对象的签收
     public void process(@Payload String msg, @Headers Map<String, Object> headers, Channel channel) throws IOException {
-        System.out.println("msg:" + msg);
+        System.out.println("信息消费msg:" + msg);
         Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
         System.out.println("DELIVERY_TAG:" + deliveryTag);
         System.out.println(headers);

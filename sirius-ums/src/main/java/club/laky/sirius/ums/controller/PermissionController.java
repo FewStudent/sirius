@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -42,7 +43,7 @@ public class PermissionController {
      */
     @ResponseBody
     @RequestMapping("/login")
-    public Object login(String account, String pwd, int type) {
+    public Object login(@RequestParam("account") String account,@RequestParam("pwd") String pwd,@RequestParam("type") int type) {
         try {
             logger.info("--------------------用户登录开始！----------------");
             SysUser user = userDao.queryLoginUser(account, type);
@@ -60,7 +61,7 @@ public class PermissionController {
                 return WebResult.error("账号冻结!");
             }
             boolean flag = true;
-            if (type == 0) {
+            if (type == 1) {
                 flag = PermissionUtils.hashRole(user, "client");
             } else {
                 flag = !PermissionUtils.hashRole(user, "client");
@@ -86,8 +87,7 @@ public class PermissionController {
 
     @ResponseBody
     @RequestMapping("logout")
-    public Object logout(@RequestBody String jsonBody) {
-        String token = JSONObject.parseObject(jsonBody).getString("token");
+    public Object logout(@RequestParam String token) {
         logger.info("注销账号token：{}", token);
         if (StringUtils.isEmpty(token)) {
             logger.info("注销失败,token不能为空");

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页 - 天狼小商城管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <style>
+        iframe {
+            border-width: 0px;
+        }
+
+        .layui-show {
+            height: 100%;
+        }
+
+        .layui-table-view {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">酒店管理系统</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="/static/imgs/003.jpg" class="layui-nav-img">
+                    ${manager.nickname}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;" id="info">修改个人信息</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a class="logout" href="#">注销</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="left">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">系统管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/manager/index" lay-id="manager">用户管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/role/index" lay-id="role">角色管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/permission/index"
+                               lay-id="permission">权限管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/department/index" lay-id="department">部门管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/job/index" lay-id="job">岗位管理</a>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/loginLog/index" lay-id="loginLog">登录日志</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/imgLog/index" lay-id="imgLog">图片上传记录</a>
+                        </dd>
+
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">客户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/client/index"
+                               lay-id="client">客户管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/cart/index" lay-id="cart">购物车</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/address/index" lay-id="address">收货地址</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/suggestion/index" lay-id="suggestion">意见反馈</a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">订单管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/order/start" lay-id="order_start">发货订单</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/order/processing"
+                               lay-id="order_process">发货中订单</a>
+                        </dd>
+                        <a href="javascript:;" lay-url="/admin/page/order/end"
+                           lay-id="order_end">完结订单</a>
+                        </dd>
+                    </dl>
+                </li>
+
+                <li class="layui-nav-item">
+                    <a href="javascript:;">商品管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/product/index"
+                               lay-id="product">商品列表</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/product/sale" lay-id="product_sale">商品上架</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/product/type" lay-id="product_type">商品类型管理</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/product/brand" lay-id="product_brand">商品品牌管理</a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">统计报表</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/client/stats" lay-id="client_stats">客户统计</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/order/stats" lay-id="order_stats">订单统计</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-url="/admin/page/product/stats" lay-id="product_stats">商品统计</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 5px 0px 5px 5px;height: 100%;">
+            <div class="layui-tab" lay-allowClose="true" lay-filter="modules" style="height: 100%;">
+                <ul class="layui-tab-title">
+                </ul>
+                <div class="layui-tab-content" style="height: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © sirius.laky.club - 天狼小商城管理系统
+    </div>
+</div>
+
+</body>
+<script>
+
+    layui.use(['element', 'jquery', 'layer'], function () {
+        let element = layui.element;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let tab_filter = "modules";
+        const token = localStorage.getItem("token");
+
+        $(".logout").click(function () {
+            layer.confirm("是否退出登录?", {"icon": 3}, function () {
+                window.location.href = "/admin/logout？token=" + token;
+            })
+        })
+        $("#info").click(function () {
+            layer.open({
+                type: 2,
+                title: "重置密码",
+                shadeClose: true,
+                shade: 0.2,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['40%', '75%'],
+                content: "/admin/page/reset",
+                end: function () {
+                    window.location.reload();
+                }
+            });
+        });
+
+        //监听左侧导航的点击事件
+        element.on('nav(left)', function (data) {
+            var url = data.attr("lay-url");
+
+            //无视
+            if (url === undefined) {
+                return;
+            }
+            url = url + "?token=" + token;
+
+            var ele = {};
+            ele.title = data.html();
+            ele.id = data.attr("lay-id");
+            ele.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+            if (array.get(ele.id) === -1) {
+                tab.add(ele);
+                tab.change(ele);
+            } else {
+                tab.change(ele)
+            }
+        });
+
+        /**
+         * 监听标签页删除：同时删除数组记录
+         * */
+        element.on('tabDelete(' + tab_filter + ')', function (data) {
+            var index = data.index;
+            array.tabs.splice(index, 1);
+        });
+
+        /**
+         * 用以保存标签记录的对象
+         * */
+        var array = {
+            tabs: [],
+            add: function (tab) {
+                this.tabs.push(tab)
+            },
+            get: function (id) {
+                for (var i = 0; i < this.tabs.length; i++) {
+                    var tab = this.tabs[i];
+                    if (tab.id === id) {
+                        return i;
+                    }
+                }
+                return -1;
+            },
+            del: function (id) {
+                var index = this.get(id);
+                this.tabs.splice(index, 1);
+            }
+        };
+
+        /**
+         * 标签事件
+         * */
+        var tab = {
+            add: function (ele) {
+                //添加并且切换
+                element.tabAdd(tab_filter, {
+                    title: ele.title,
+                    content: ele.content,
+                    id: ele.id //实际使用一般是规定好的id，这里以时间戳模拟下
+                });
+                array.add(ele)
+            },
+            del: function (ele) {
+                element.tabDelete(tab_filter, ele.id);
+                array.del(ele)
+            },
+            change: function (ele) {
+                element.tabChange(tab_filter, ele.id);
+            }
+        };
+
+        $(document).ready(function () {
+            let initTab = {};
+            let url = "/admin/page/welcome";
+            initTab.id = "welcome";
+            initTab.title = "欢迎页面";
+            initTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+            tab.add(initTab);
+            tab.change(initTab);
+        })
+
+    });
+</script>
+</html>

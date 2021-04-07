@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="club.laky.sirius.ums.dao.SysUserDao">
+<mapper namespace="club.laky.sirius.admin.dao.SysUserDao">
 
-    <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.SysUser">
+    <resultMap id="BaseResultMap" type="club.laky.sirius.admin.entity.SysUser">
         <!--@Table sys_user-->
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="account" column="account" jdbcType="VARCHAR"/>
@@ -17,20 +17,11 @@
         <result property="birthday" column="birthday" jdbcType="OTHER"/>
         <result property="identify" column="identify" jdbcType="VARCHAR"/>
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="OTHER"/>
+        <result property="createTime" column="create_time" jdbcType="VARCHAR"/>
+
         <result property="department" column="department" jdbcType="VARCHAR"/>
         <result property="job" column="job" jdbcType="VARCHAR"/>
-
-        <collection property="roleList" ofType="club.laky.sirius.ums.entity.SysRole">
-            <id column="role_id"/>
-            <result property="role" column="role" jdbcType="VARCHAR"/>
-        </collection>
-
-        <collection property="permissionList" ofType="club.laky.sirius.ums.entity.SysPermission">
-            <!-- 这里使用构造方法注入，String 没有属性-->
-            <id column="permission_id"/>
-            <result property="permission" column="permission" jdbcType="VARCHAR"/>
-        </collection>
+        <result property="role" column="role" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -69,7 +60,8 @@
                identify,
                avatar,
                create_time
-        from shop_mall.sys_user limit #{offset}, #{limit}
+        from shop_mall.sys_user
+        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -118,60 +110,8 @@
             <if test="avatar != null and avatar != ''">
                 and avatar = #{avatar}
             </if>
-            <if test="createTime != null">
+            <if test="createTime != null and createTime != ''">
                 and create_time = #{createTime}
-            </if>
-        </where>
-    </select>
-
-    <select id="queryLoginUser" resultMap="BaseResultMap">
-        select sp.id permission_id, sr.id role_id, sr.role, sp.permission, su.*
-        from sys_user su
-                 inner join sys_user_role_relation surr on su.id = surr.user_id
-                 inner join sys_role sr on sr.id = surr.role_id
-                 inner join sys_role_permission_relation srpr on srpr.role_id = sr.id
-                 inner join sys_permission sp on sp.id = srpr.permission_id
-        where su.account = #{account}
-        group by sp.permission
-    </select>
-    <select id="queryAdminList" resultMap="BaseResultMap">
-        select su.*,sd.dep_name department,sj.job_name job
-        from sys_user su
-        left join sys_department sd on sd.id = su.dep_id
-        left join sys_job sj on sj.id = su.job_id
-        <where>
-            <if test="nickname !=null and nickname != ''">
-                and su.nickname like CONCAT(#{nickname},"%")
-            </if>
-            <if test="departmentId !=null">
-                and su.dep_id = #{departmentId}
-            </if>
-            <if test="jobId !=null">
-                and su.job_id = #{jobId}
-            </if>
-            <if test="state !=null">
-                and su.state = #{state}
-            </if>
-        </where>
-        limit #{offset},#{limit}
-    </select>
-    <select id="queryAdminListCount" resultType="java.lang.Integer">
-        select count (*)
-        from sys_user su
-        left join sys_department sd on sd.id = su.dep_id
-        left join sys_job sj on sj.id = su.job_id
-        <where>
-            <if test="nickname !=null and nickname != ''">
-                and su.nickname like CONCAT(#{nickname},"%")
-            </if>
-            <if test="departmentId !=null">
-                and su.dep_id = #{departmentId}
-            </if>
-            <if test="jobId !=null">
-                and su.job_id = #{jobId}
-            </if>
-            <if test="state !=null">
-                and su.state = #{state}
             </if>
         </where>
     </select>
@@ -224,7 +164,7 @@
             <if test="avatar != null and avatar != ''">
                 avatar = #{avatar},
             </if>
-            <if test="createTime != null">
+            <if test="createTime != null and createTime != ''">
                 create_time = #{createTime},
             </if>
         </set>
@@ -237,5 +177,63 @@
         from shop_mall.sys_user
         where id = #{id}
     </delete>
+
+    <select id="queryAdminList" resultMap="BaseResultMap">
+        select su.*,sd.dep_name department,sj.job_name job,GROUP_CONCAT(sr.role_name) as role
+        from sys_user su
+        left join sys_department sd on sd.id = su.dep_id
+        left join sys_job sj on sj.id = su.job_id
+        left join sys_user_role_relation surr on surr.user_id = su.id
+        left join sys_role sr on sr.id = surr.role_id
+        <where>
+            su.id != 1 and sr.role != 'client'
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="departmentId !=null">
+                and su.dep_id = #{departmentId}
+            </if>
+            <if test="jobId !=null">
+                and su.job_id = #{jobId}
+            </if>
+            <if test="state !=null">
+                and su.state = #{state}
+            </if>
+        </where>
+        group by su.id
+        limit #{offset},#{limit}
+    </select>
+    <select id="queryAdminListCount" resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        (
+        SELECT
+        count(*)
+        FROM
+        sys_user su
+        LEFT JOIN sys_department sd ON sd.id = su.dep_id
+        LEFT JOIN sys_job sj ON sj.id = su.job_id
+        LEFT JOIN sys_user_role_relation surr ON surr.user_id = su.id
+        LEFT JOIN sys_role sr ON sr.id = surr.role_id
+        <where>
+            sr.role != 'client' and su.id != 1
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="departmentId !=null">
+                and su.dep_id = #{departmentId}
+            </if>
+            <if test="jobId !=null">
+                and su.job_id = #{jobId}
+            </if>
+            <if test="state !=null">
+                and su.state = #{state}
+            </if>
+        </where>
+        GROUP BY
+        su.id
+        ) a
+    </select>
 
 </mapper>

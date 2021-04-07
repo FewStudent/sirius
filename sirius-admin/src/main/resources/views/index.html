@@ -161,12 +161,13 @@
 
 </body>
 <script>
+    var element;
+    let tab_filter = "modules";
 
     layui.use(['element', 'jquery', 'layer'], function () {
-        let element = layui.element;
+        element = layui.element;
         let $ = layui.jquery;
         let layer = layui.layer;
-        let tab_filter = "modules";
         const token = localStorage.getItem("token");
 
         $(".logout").click(function () {
@@ -219,51 +220,6 @@
             array.tabs.splice(index, 1);
         });
 
-        /**
-         * 用以保存标签记录的对象
-         * */
-        var array = {
-            tabs: [],
-            add: function (tab) {
-                this.tabs.push(tab)
-            },
-            get: function (id) {
-                for (var i = 0; i < this.tabs.length; i++) {
-                    var tab = this.tabs[i];
-                    if (tab.id === id) {
-                        return i;
-                    }
-                }
-                return -1;
-            },
-            del: function (id) {
-                var index = this.get(id);
-                this.tabs.splice(index, 1);
-            }
-        };
-
-        /**
-         * 标签事件
-         * */
-        var tab = {
-            add: function (ele) {
-                //添加并且切换
-                element.tabAdd(tab_filter, {
-                    title: ele.title,
-                    content: ele.content,
-                    id: ele.id //实际使用一般是规定好的id，这里以时间戳模拟下
-                });
-                array.add(ele)
-            },
-            del: function (ele) {
-                element.tabDelete(tab_filter, ele.id);
-                array.del(ele)
-            },
-            change: function (ele) {
-                element.tabChange(tab_filter, ele.id);
-            }
-        };
-
         $(document).ready(function () {
             let initTab = {};
             let url = "/admin/page/welcome";
@@ -275,5 +231,50 @@
         })
 
     });
+
+    /**
+     * 用以保存标签记录的对象
+     * */
+    var array = {
+        tabs: [],
+        add: function (tab) {
+            this.tabs.push(tab)
+        },
+        get: function (id) {
+            for (var i = 0; i < this.tabs.length; i++) {
+                var tab = this.tabs[i];
+                if (tab.id === id) {
+                    return i;
+                }
+            }
+            return -1;
+        },
+        del: function (id) {
+            var index = this.get(id);
+            this.tabs.splice(index, 1);
+        }
+    };
+
+    /**
+     * 标签事件
+     * */
+    var tab = {
+        add: function (ele) {
+            //添加并且切换
+            element.tabAdd(tab_filter, {
+                title: ele.title,
+                content: ele.content,
+                id: ele.id //实际使用一般是规定好的id，这里以时间戳模拟下
+            });
+            array.add(ele)
+        },
+        del: function (ele) {
+            element.tabDelete(tab_filter, ele.id);
+            array.del(ele)
+        },
+        change: function (ele) {
+            element.tabChange(tab_filter, ele.id);
+        }
+    };
 </script>
 </html>

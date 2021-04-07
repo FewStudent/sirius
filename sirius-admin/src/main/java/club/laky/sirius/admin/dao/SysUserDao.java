@@ -1,6 +1,6 @@
-package club.laky.sirius.ums.dao;
+package club.laky.sirius.admin.dao;
 
-import club.laky.sirius.ums.entity.SysUser;
+import club.laky.sirius.admin.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * (SysUser)表数据库访问层
  *
  * @author makejava
- * @since 2021-03-20 11:43:12
+ * @since 2021-04-06 21:20:53
  */
 public interface SysUserDao {
 
@@ -61,14 +61,6 @@ public interface SysUserDao {
      * @return 影响行数
      */
     int deleteById(Integer id);
-
-    /**
-     * 查询登录用户的信息
-     * @param account 登录信息
-     * @param type 登录类型
-     * @return 登录用户
-     * */
-    SysUser queryLoginUser(@Param("account") String account,@Param("type") int type);
 
     List<SysUser> queryAdminList(@Param("offset") Integer offset,@Param("limit") Integer limit,
                                  @Param("nickname") String nickname,@Param("departmentId") Integer departmentId,

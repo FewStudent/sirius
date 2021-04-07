@@ -11,7 +11,7 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 mybatis-plus:
-  type-aliases-package: club.laky.sirius.gateway.entity
+  type-aliases-package: club.laky.sirius.ums.entity
   mapper-locations: classpath:mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

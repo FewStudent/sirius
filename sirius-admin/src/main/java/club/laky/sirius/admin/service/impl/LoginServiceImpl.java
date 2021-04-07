@@ -1,6 +1,6 @@
 package club.laky.sirius.admin.service.impl;
 
-import club.laky.sirius.admin.feign.FeignPermissionService;
+import club.laky.sirius.admin.feign.FeignClientService;
 import club.laky.sirius.admin.service.LoginService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class LoginServiceImpl implements LoginService {
 
     @Autowired
-    private FeignPermissionService permissionService;
+    private FeignClientService permissionService;
 
     @Override
     public Object login(String jsonBody) {

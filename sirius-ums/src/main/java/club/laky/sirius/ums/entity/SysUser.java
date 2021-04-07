@@ -55,10 +55,22 @@ public class SysUser implements Serializable {
      * 部门ID
      */
     private Integer depId;
+
+    /**
+     * 部门名称
+     */
+    @TableField(exist = false)
+    private String department;
     /**
      * 职务ID
      */
     private Integer jobId;
+
+    /**
+     * 岗位名称
+     */
+    @TableField(exist = false)
+    private String job;
     /**
      * 状态
      */
@@ -224,4 +236,19 @@ public class SysUser implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
 }

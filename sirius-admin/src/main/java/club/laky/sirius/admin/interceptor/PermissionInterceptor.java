@@ -48,6 +48,9 @@ public class PermissionInterceptor implements HandlerInterceptor {
             token = request.getParameter("token");
         }else{
             token = request.getHeader("token");
+            if(StringUtils.isEmpty(token)){
+                token = request.getParameter("token");
+            }
         }
         if (StringUtils.isEmpty(token)) {
             logger.error("没有token无法进行访问,请前往登录");

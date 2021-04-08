@@ -1,7 +1,8 @@
 package club.laky.sirius.admin.controller;
 
-import club.laky.sirius.admin.service.SysUserService;
+import club.laky.sirius.admin.feign.FeignClientService;
 import club.laky.sirius.admin.utils.LayuiVO;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class AdminManagerController {
     private static final Logger logger = LoggerFactory.getLogger(AdminManagerController.class);
 
     @Autowired
-    private SysUserService service;
+    private FeignClientService clientService;
 
     /**
      * 分页查询
@@ -32,11 +33,19 @@ public class AdminManagerController {
                              Integer departmentId, Integer jobId, Integer state) {
         try {
             logger.info("-------------查询所有管理员信息-------------");
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("limit",limit);
+            jsonBody.put("page",page);
+            jsonBody.put("nickname",nickname);
+            jsonBody.put("departmentId",departmentId);
+            jsonBody.put("jobId",jobId);
+            jsonBody.put("state",state);
+
             LayuiVO layData = new LayuiVO();
             layData.setCode(0);
             layData.setMsg("");
-            layData.setCount(service.queryAdminListCount(nickname, departmentId, jobId, state));
-            layData.setData(service.queryAdminList((page - 1) * limit, limit, nickname, departmentId, jobId, state));
+            layData.setCount(clientService.queryAdminCount(jsonBody.toJSONString()));
+            layData.setData((List) clientService.queryAdminList(jsonBody.toJSONString()));
             return layData;
         } catch (Exception e) {
             logger.info("查询所有管理员信息失败:{}", e.getMessage());

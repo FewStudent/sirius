@@ -38,9 +38,7 @@ public class GoodsController {
                              Integer brandId, Integer typeId, Integer state) {
         try {
             logger.info("-------------查询所有管理员信息-------------");
-            LayuiVO layData = new LayuiVO();
-            layData.setCode(0);
-            layData.setMsg("");
+
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("limit",limit);
             jsonBody.put("page",page);
@@ -49,6 +47,9 @@ public class GoodsController {
             jsonBody.put("typeId",typeId);
             jsonBody.put("state",state);
 
+            LayuiVO layData = new LayuiVO();
+            layData.setCode(0);
+            layData.setMsg("");
             layData.setCount(goodsService.queryGoodsListCount(jsonBody.toJSONString()));
             layData.setData((List) goodsService.queryGoodsList(jsonBody.toJSONString()).getData());
             return layData;

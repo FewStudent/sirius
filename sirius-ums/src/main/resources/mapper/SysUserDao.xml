@@ -18,8 +18,10 @@
         <result property="identify" column="identify" jdbcType="VARCHAR"/>
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="OTHER"/>
+
         <result property="department" column="department" jdbcType="VARCHAR"/>
         <result property="job" column="job" jdbcType="VARCHAR"/>
+        <result property="role" column="role" jdbcType="VARCHAR"/>
 
         <collection property="roleList" ofType="club.laky.sirius.ums.entity.SysRole">
             <id column="role_id"/>
@@ -141,7 +143,7 @@
         left join sys_job sj on sj.id = su.job_id
         <where>
             <if test="nickname !=null and nickname != ''">
-                and su.nickname like CONCAT(#{nickname},"%")
+                and su.nickname like CONCAT(#{nickname},'%')
             </if>
             <if test="departmentId !=null">
                 and su.dep_id = #{departmentId}
@@ -156,13 +158,13 @@
         limit #{offset},#{limit}
     </select>
     <select id="queryAdminListCount" resultType="java.lang.Integer">
-        select count (*)
+        select count(*)
         from sys_user su
         left join sys_department sd on sd.id = su.dep_id
         left join sys_job sj on sj.id = su.job_id
         <where>
             <if test="nickname !=null and nickname != ''">
-                and su.nickname like CONCAT(#{nickname},"%")
+                and su.nickname like CONCAT(#{nickname},'%')
             </if>
             <if test="departmentId !=null">
                 and su.dep_id = #{departmentId}
@@ -237,5 +239,7 @@
         from shop_mall.sys_user
         where id = #{id}
     </delete>
+
+
 
 </mapper>

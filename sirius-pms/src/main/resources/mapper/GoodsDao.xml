@@ -12,6 +12,9 @@
         <result property="price" column="price" jdbcType="NUMERIC"/>
         <result property="state" column="state" jdbcType="INTEGER"/>
         <result property="brandId" column="brand_id" jdbcType="INTEGER"/>
+
+        <result property="brandName" column="brand_name"/>
+        <result property="typeName" column="type_name"/>
     </resultMap>
 
     <!--查询单个-->
@@ -145,7 +148,7 @@
         </where>
     </select>
 
-    <select id="queryGoodsList" resultType="java.util.List">
+    <select id="queryGoodsList" resultMap="BaseResultMap">
         select g.*, gt.type_name, gb.`name` brand_name
         from goods g
         left join goods_type gt on gt.id = g.type_id

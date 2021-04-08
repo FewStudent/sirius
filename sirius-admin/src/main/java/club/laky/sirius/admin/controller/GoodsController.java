@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * @author panrulang
  * @Desrcription:
@@ -42,16 +44,16 @@ public class GoodsController {
             LayuiVO layData = new LayuiVO();
             layData.setCode(0);
             layData.setMsg("");
-//            JSONObject jsonBody = new JSONObject();
-//            jsonBody.put("limit",limit);
-//            jsonBody.put("page",page);
-//            jsonBody.put("goodsName",goodsName);
-//            jsonBody.put("brandId",brandId);
-//            jsonBody.put("typeId",typeId);
-//            jsonBody.put("state",state);
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("limit",limit);
+            jsonBody.put("page",page);
+            jsonBody.put("goodsName",goodsName);
+            jsonBody.put("brandId",brandId);
+            jsonBody.put("typeId",typeId);
+            jsonBody.put("state",state);
 
-            layData.setCount(service.queryGoodsListCount(goodsName, brandId, typeId, state));
-            layData.setData(service.queryGoodsList((page - 1) * limit, limit, goodsName, brandId, typeId, state));
+            layData.setCount(goodsService.queryGoodsListCount(jsonBody.toJSONString()));
+            layData.setData((List) goodsService.queryGoodsList(jsonBody.toJSONString()).getData());
             return layData;
         } catch (Exception e) {
             logger.info("查询所有管理员信息失败:{}", e.getMessage());

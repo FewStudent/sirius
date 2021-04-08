@@ -51,6 +51,10 @@ public class Goods implements Serializable {
     @TableField(exist = false)
     private String typeName;
 
+    public Goods(){
+
+    }
+
     public Goods(String goodsName, String description, String imgs, Integer state, Integer brandId, Integer typeId, Integer count, BigDecimal price) {
         this.goodsName = goodsName;
         this.description = description;

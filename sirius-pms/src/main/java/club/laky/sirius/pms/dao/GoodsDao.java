@@ -66,6 +66,6 @@ public interface GoodsDao {
     Integer queryGoodsListCount(@Param("goodsName") String goodsName, @Param("brandId") Integer brandId,
                                 @Param("typeId") Integer typeId, @Param("state") Integer state);
 
-    List queryGoodsList(@Param("offset") Integer offset, @Param("limit") Integer limit,
+    List<Goods> queryGoodsList(@Param("offset") Integer offset, @Param("limit") Integer limit,
                         @Param("goodsName") String goodsName, @Param("brandId") Integer brandId, @Param("typeId") Integer typeId, @Param("state") Integer state);
 }

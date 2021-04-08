@@ -10,34 +10,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-/**
- * @author panrulang
- * @Desrcription:
- * @date 2021/4/8 20:51
- */
-@Controller
-@RequestMapping("/api/client")
-public class ClientController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
+@Controller
+@RequestMapping("/api/manager")
+public class AdminController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @Autowired
     private SysUserDao userDao;
+
 
     /**
      * 管理员列表
      */
     @ResponseBody
     @RequestMapping("/list")
-    public Object queryClientList(@RequestBody String jsonBody) {
+    public Object queryAdminList(@RequestBody String jsonBody) {
         logger.info("获取管理员列表");
         JSONObject params = JSONObject.parseObject(jsonBody);
         Integer limit = params.getInteger("limit");
         Integer page = params.getInteger("page");
         String nickname = params.getString("nickname");
-        String phone = params.getString("phone");
+        Integer departmentId = params.getInteger("departmentId");
+        Integer jobId = params.getInteger("jobId");
         Integer state = params.getInteger("state");
-        return userDao.queryClientList((page - 1) * limit, limit, nickname, phone, state);
+        return userDao.queryAdminList((page - 1) * limit, limit, nickname, departmentId, jobId, state);
     }
 
     /**
@@ -45,12 +43,13 @@ public class ClientController {
      */
     @ResponseBody
     @RequestMapping("/count")
-    public Integer queryClientCount(@RequestBody String jsonBody) {
+    public Integer queryAdminCount(@RequestBody String jsonBody) {
         logger.info("获取管理员数量");
         JSONObject params = JSONObject.parseObject(jsonBody);
         String nickname = params.getString("nickname");
-        String phone = params.getString("phone");
+        Integer departmentId = params.getInteger("departmentId");
+        Integer jobId = params.getInteger("jobId");
         Integer state = params.getInteger("state");
-        return userDao.queryClientCount(nickname, phone, state);
+        return userDao.queryAdminListCount(nickname, departmentId, jobId, state);
     }
 }

@@ -21,9 +21,9 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/admin/goods")
-public class GoodsController {
+public class AdminGoodsController {
 
-    private static final Logger logger = LoggerFactory.getLogger(GoodsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminGoodsController.class);
 
 
     @Autowired

@@ -2,6 +2,7 @@ package club.laky.sirius.ums.dao;
 
 import club.laky.sirius.ums.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public interface SysUserDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<SysUser> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -64,16 +65,23 @@ public interface SysUserDao {
 
     /**
      * 查询登录用户的信息
+     *
      * @param account 登录信息
-     * @param type 登录类型
+     * @param type    登录类型
      * @return 登录用户
-     * */
-    SysUser queryLoginUser(@Param("account") String account,@Param("type") int type);
+     */
+    SysUser queryLoginUser(@Param("account") String account, @Param("type") int type);
 
-    List<SysUser> queryAdminList(@Param("offset") Integer offset,@Param("limit") Integer limit,
-                                 @Param("nickname") String nickname,@Param("departmentId") Integer departmentId,
-                                 @Param("jobId") Integer jobId,@Param("state") Integer state);
+    List<SysUser> queryAdminList(@Param("offset") Integer offset, @Param("limit") Integer limit,
+                                 @Param("nickname") String nickname, @Param("departmentId") Integer departmentId,
+                                 @Param("jobId") Integer jobId, @Param("state") Integer state);
 
-    int queryAdminListCount(@Param("nickname") String nickname,@Param("departmentId") Integer departmentId,
-                            @Param("jobId") Integer jobId,@Param("state") Integer state);
+    int queryAdminListCount(@Param("nickname") String nickname, @Param("departmentId") Integer departmentId,
+                            @Param("jobId") Integer jobId, @Param("state") Integer state);
+
+    List<SysUser> queryClientList(@Param("offset") Integer offset, @Param("limit") Integer limit,
+                           @Param("nickname") String nickname, @Param("phone") String phone, @Param("state") Integer state);
+
+    Integer queryClientCount(@Param("nickname") String nickname, @Param("phone") String phone,
+                             @Param("state") Integer state);
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="club.laky.sirius.ums.dao.SysUserDao">
-
     <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.SysUser">
         <!--@Table sys_user-->
         <result property="id" column="id" jdbcType="INTEGER"/>
@@ -129,19 +128,22 @@
     <select id="queryLoginUser" resultMap="BaseResultMap">
         select sp.id permission_id, sr.id role_id, sr.role, sp.permission, su.*
         from sys_user su
-                 inner join sys_user_role_relation surr on su.id = surr.user_id
-                 inner join sys_role sr on sr.id = surr.role_id
-                 inner join sys_role_permission_relation srpr on srpr.role_id = sr.id
-                 inner join sys_permission sp on sp.id = srpr.permission_id
+                     inner join sys_user_role_relation surr on su.id = surr.user_id
+                     inner join sys_role sr on sr.id = surr.role_id
+                     inner join sys_role_permission_relation srpr on srpr.role_id = sr.id
+                     inner join sys_permission sp on sp.id = srpr.permission_id
         where su.account = #{account}
         group by sp.permission
     </select>
     <select id="queryAdminList" resultMap="BaseResultMap">
-        select su.*,sd.dep_name department,sj.job_name job
+        select su.*,sd.dep_name department,sj.job_name job,GROUP_CONCAT(sr.role_name) as role
         from sys_user su
         left join sys_department sd on sd.id = su.dep_id
         left join sys_job sj on sj.id = su.job_id
+        left join sys_user_role_relation surr on surr.user_id = su.id
+        left join sys_role sr on sr.id = surr.role_id
         <where>
+            su.id != 1 and sr.role != 'client'
             <if test="nickname !=null and nickname != ''">
                 and su.nickname like CONCAT(#{nickname},'%')
             </if>
@@ -155,14 +157,24 @@
                 and su.state = #{state}
             </if>
         </where>
+        group by su.id
         limit #{offset},#{limit}
     </select>
     <select id="queryAdminListCount" resultType="java.lang.Integer">
-        select count(*)
-        from sys_user su
-        left join sys_department sd on sd.id = su.dep_id
-        left join sys_job sj on sj.id = su.job_id
+        SELECT
+        count(*)
+        FROM
+        (
+        SELECT
+        count(*)
+        FROM
+        sys_user su
+        LEFT JOIN sys_department sd ON sd.id = su.dep_id
+        LEFT JOIN sys_job sj ON sj.id = su.job_id
+        LEFT JOIN sys_user_role_relation surr ON surr.user_id = su.id
+        LEFT JOIN sys_role sr ON sr.id = surr.role_id
         <where>
+            sr.role != 'client' and su.id != 1
             <if test="nickname !=null and nickname != ''">
                 and su.nickname like CONCAT(#{nickname},'%')
             </if>
@@ -176,6 +188,9 @@
                 and su.state = #{state}
             </if>
         </where>
+        GROUP BY
+        su.id
+        ) a
     </select>
 
     <!--新增所有列-->
@@ -240,6 +255,57 @@
         where id = #{id}
     </delete>
 
+    <select id="queryClientList" resultMap="BaseResultMap">
+        select su.*,sd.dep_name department,sj.job_name job,GROUP_CONCAT(sr.role_name) as role
+        from sys_user su
+        left join sys_department sd on sd.id = su.dep_id
+        left join sys_job sj on sj.id = su.job_id
+        left join sys_user_role_relation surr on surr.user_id = su.id
+        left join sys_role sr on sr.id = surr.role_id
+        <where>
+            su.id != 1 and sr.role = 'client'
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="phone !=null and phone != ''">
+                and su.phone like CONCAT(#{phone,jdbcType=VARCHAR},'%')
+            </if>
 
+            <if test="state !=null">
+                and su.state = #{state}
+            </if>
+        </where>
+        group by su.id
+        limit #{offset},#{limit}
+    </select>
 
+    <select id="queryClientCount" resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        (
+        SELECT
+        count(*)
+        FROM
+        sys_user su
+        LEFT JOIN sys_department sd ON sd.id = su.dep_id
+        LEFT JOIN sys_job sj ON sj.id = su.job_id
+        LEFT JOIN sys_user_role_relation surr ON surr.user_id = su.id
+        LEFT JOIN sys_role sr ON sr.id = surr.role_id
+        <where>
+            sr.role = 'client' and su.id != 1
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="phone != null and phone != ''">
+                and su.phone like CONCAT(#{phone,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="state !=null">
+                and su.state = #{state}
+            </if>
+        </where>
+        GROUP BY
+        su.id
+        ) a
+    </select>
 </mapper>

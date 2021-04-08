@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("admin/admin/")
-public class LoginController {
+public class AdminLoginController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminLoginController.class);
 
     @Autowired
     private LoginService service;

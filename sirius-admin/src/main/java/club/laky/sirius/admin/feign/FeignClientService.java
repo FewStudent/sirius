@@ -13,7 +13,6 @@ public interface FeignClientService {
     @RequestMapping(value = "/api/logout", method = RequestMethod.GET)
     Object logout(@RequestParam String token);
 
-
     @RequestMapping(value = "/api/login", method = RequestMethod.GET)
     Object login(@RequestParam("account") String account, @RequestParam("pwd") String pwd, @RequestParam("type") int type);
 
@@ -22,4 +21,10 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/manager/list", method = RequestMethod.GET)
     Object queryAdminList(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/client/count", method = RequestMethod.GET)
+    Integer queryClientCount(@RequestBody String toJSONString);
+
+    @RequestMapping(value = "/api/client/list", method = RequestMethod.GET)
+    Object queryClientList(@RequestBody String toJSONString);
 }

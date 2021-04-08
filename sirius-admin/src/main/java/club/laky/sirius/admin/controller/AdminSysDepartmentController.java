@@ -18,8 +18,8 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/admin/department")
-public class SysDepartmentController {
-    private static final Logger logger = LoggerFactory.getLogger(SysDepartmentController.class);
+public class AdminSysDepartmentController {
+    private static final Logger logger = LoggerFactory.getLogger(AdminSysDepartmentController.class);
 
     /**
      * 服务对象

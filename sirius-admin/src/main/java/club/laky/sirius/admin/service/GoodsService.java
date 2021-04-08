@@ -1,6 +1,8 @@
 package club.laky.sirius.admin.service;
 
 import club.laky.sirius.admin.entity.Goods;
+import club.laky.sirius.admin.utils.WebResult;
+
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public interface GoodsService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<Goods> queryAllByLimit(int offset, int limit);
@@ -54,16 +56,18 @@ public interface GoodsService {
 
     /**
      * 商品数量
+     *
      * @param brandId
      * @param goodsName
      * @param state
      * @param typeId
      * @return
-     * */
+     */
     Integer queryGoodsListCount(String goodsName, Integer brandId, Integer typeId, Integer state);
 
     /**
      * 商品列表
+     *
      * @param offset
      * @param brandId
      * @param goodsName
@@ -71,6 +75,22 @@ public interface GoodsService {
      * @param state
      * @param typeId
      * @return
-     * */
+     */
     List queryGoodsList(Integer offset, Integer limit, String goodsName, Integer brandId, Integer typeId, Integer state);
+
+    /**
+     * 添加商品
+     *
+     * @param jsonBody
+     * @return
+     */
+    WebResult insertGoods(String jsonBody);
+
+    /**
+     * 保存商品
+     *
+     * @param jsonBody
+     * @return
+     */
+    WebResult saveGoods(String jsonBody);
 }

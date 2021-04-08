@@ -1,7 +1,6 @@
 package club.laky.sirius.admin.controller;
 
 import club.laky.sirius.admin.feign.FeignGoodsService;
-import club.laky.sirius.admin.service.GoodsService;
 import club.laky.sirius.admin.utils.LayuiVO;
 import club.laky.sirius.admin.utils.WebResult;
 import com.alibaba.fastjson.JSONObject;
@@ -27,8 +26,6 @@ public class GoodsController {
     private static final Logger logger = LoggerFactory.getLogger(GoodsController.class);
 
 
-    @Autowired
-    private GoodsService service;
     @Autowired
     private FeignGoodsService goodsService;
 

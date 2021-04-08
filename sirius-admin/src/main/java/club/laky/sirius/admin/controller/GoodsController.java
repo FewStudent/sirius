@@ -1,8 +1,10 @@
 package club.laky.sirius.admin.controller;
 
+import club.laky.sirius.admin.feign.FeignGoodsService;
 import club.laky.sirius.admin.service.GoodsService;
 import club.laky.sirius.admin.utils.LayuiVO;
 import club.laky.sirius.admin.utils.WebResult;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class GoodsController {
 
     @Autowired
     private GoodsService service;
+    @Autowired
+    private FeignGoodsService goodsService;
 
     /**
      * 分页查询
@@ -38,6 +42,14 @@ public class GoodsController {
             LayuiVO layData = new LayuiVO();
             layData.setCode(0);
             layData.setMsg("");
+//            JSONObject jsonBody = new JSONObject();
+//            jsonBody.put("limit",limit);
+//            jsonBody.put("page",page);
+//            jsonBody.put("goodsName",goodsName);
+//            jsonBody.put("brandId",brandId);
+//            jsonBody.put("typeId",typeId);
+//            jsonBody.put("state",state);
+
             layData.setCount(service.queryGoodsListCount(goodsName, brandId, typeId, state));
             layData.setData(service.queryGoodsList((page - 1) * limit, limit, goodsName, brandId, typeId, state));
             return layData;
@@ -46,13 +58,12 @@ public class GoodsController {
             return null;
         }
     }
-
     @ResponseBody
     @RequestMapping("/add")
     public WebResult insert(@RequestBody String jsonBody) {
         try {
             logger.info("商品添加,参数为{}", jsonBody);
-            return service.insertGoods(jsonBody);
+            return goodsService.insert(jsonBody);
         } catch (Exception e) {
             logger.error("商品添加失败:{}", e.getMessage());
             return WebResult.error(e.getMessage());
@@ -64,10 +75,11 @@ public class GoodsController {
     public WebResult save(@RequestBody String jsonBody) {
         try {
             logger.info("商品保存,参数为{}", jsonBody);
-            return service.saveGoods(jsonBody);
+            return goodsService.save(jsonBody);
         } catch (Exception e) {
             logger.error("商品保存失败:{}", e.getMessage());
             return WebResult.error(e.getMessage());
         }
     }
+
 }

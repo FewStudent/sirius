@@ -1,7 +1,8 @@
-package club.laky.sirius.admin.service;
+package club.laky.sirius.pms.service;
 
-import club.laky.sirius.admin.entity.Goods;
-import club.laky.sirius.admin.utils.WebResult;
+
+import club.laky.sirius.pms.entity.Goods;
+import club.laky.sirius.pms.utils.WebResult;
 
 import java.util.List;
 
@@ -78,4 +79,19 @@ public interface GoodsService {
      */
     List queryGoodsList(Integer offset, Integer limit, String goodsName, Integer brandId, Integer typeId, Integer state);
 
+    /**
+     * 添加商品
+     *
+     * @param jsonBody
+     * @return
+     */
+    WebResult insertGoods(String jsonBody);
+
+    /**
+     * 保存商品
+     *
+     * @param jsonBody
+     * @return
+     */
+    WebResult saveGoods(String jsonBody);
 }

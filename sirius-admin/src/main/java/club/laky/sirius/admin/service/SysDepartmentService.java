@@ -56,4 +56,6 @@ public interface SysDepartmentService {
     Integer queryListCount(String departmentName);
 
     List<SysDepartment> queryList(Integer offset, Integer limit, String departmentName);
+
+    List<SysDepartment> queryAll();
 }

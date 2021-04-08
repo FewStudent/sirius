@@ -56,4 +56,6 @@ public interface SysJobService {
     Integer queryListCount(String jobName);
 
     List<SysJob> queryList(Integer offset, Integer limit, String jobName);
+
+    List<SysJob> queryAll();
 }

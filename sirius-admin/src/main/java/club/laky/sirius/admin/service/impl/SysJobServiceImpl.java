@@ -1,12 +1,16 @@
 package club.laky.sirius.admin.service.impl;
 
+import club.laky.sirius.admin.constant.CacheKey;
 import club.laky.sirius.admin.entity.SysJob;
 import club.laky.sirius.admin.dao.SysJobDao;
+import club.laky.sirius.admin.feign.FeignCacheService;
 import club.laky.sirius.admin.service.SysJobService;
+import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 岗位(SysJob)表服务实现类
@@ -18,6 +22,8 @@ import java.util.List;
 public class SysJobServiceImpl implements SysJobService {
     @Resource
     private SysJobDao sysJobDao;
+    @Resource
+    private FeignCacheService cacheService;
 
     /**
      * 通过ID查询单条数据
@@ -34,7 +40,7 @@ public class SysJobServiceImpl implements SysJobService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -75,5 +81,32 @@ public class SysJobServiceImpl implements SysJobService {
     @Override
     public boolean deleteById(Integer id) {
         return this.sysJobDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public Integer queryListCount(String jobName) {
+        return this.sysJobDao.queryListCount(jobName);
+    }
+
+    @Override
+    public List<SysJob> queryList(Integer offset, Integer limit, String jobName) {
+        return this.sysJobDao.queryList(offset, limit, jobName);
+    }
+
+    @Override
+    public List<SysJob> queryAll() {
+        Map<String, Object> cache = (Map<String, Object>) cacheService.get(CacheKey.DEPARTMENTS);
+        if ("true".equals(cache.get("status"))) {
+            //获取缓存成功
+            String json = (String) cache.get("data");
+            List<SysJob> sysJobs = JSON.parseArray(json, SysJob.class);
+            return sysJobs;
+        } else {
+            //缓存获取失败,从数据库获取并缓存
+            List<SysJob> jobList = this.sysJobDao.queryAll(null);
+            String json = JSON.toJSONString(jobList);
+            cacheService.set(CacheKey.DEPARTMENTS, json);
+            return jobList;
+        }
     }
 }

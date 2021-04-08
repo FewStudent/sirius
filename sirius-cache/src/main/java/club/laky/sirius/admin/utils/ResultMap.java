@@ -11,7 +11,7 @@ public class ResultMap {
         result.put("code", 200);
         result.put("msg", "请求成功");
         result.put("data", data);
-        result.put("status", true);
+        result.put("status", "true");
         return result;
     }
 
@@ -20,7 +20,7 @@ public class ResultMap {
         result.put("code", 500);
         result.put("msg", msg);
         result.put("data", "");
-        result.put("status", false);
+        result.put("status", "false");
         return result;
     }
 }

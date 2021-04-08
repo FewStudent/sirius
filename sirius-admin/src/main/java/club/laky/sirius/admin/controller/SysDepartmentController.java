@@ -83,4 +83,16 @@ public class SysDepartmentController {
             return WebResult.error("修改部门信息失败");
         }
     }
+
+    @ResponseBody
+    @RequestMapping("/all")
+    public Object all() {
+        try {
+            logger.info("-------------修改部门信息-------------");
+            return WebResult.success(service.queryAll());
+        } catch (Exception e) {
+            logger.info("修改部门信息失败:{}", e.getMessage());
+            return WebResult.error("修改部门信息失败");
+        }
+    }
 }

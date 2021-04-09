@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.laky.sirius.pms.dao.GoodsBrandDao">
+
+    <resultMap id="BaseResultMap" type="club.laky.sirius.pms.entity.GoodsBrand">
+        <!--@Table goods_brand-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="desc" column="desc" jdbcType="VARCHAR"/>
+        <result property="picUrl" column="pic_url" jdbcType="VARCHAR"/>
+        <result property="sortOrder" column="sort_order" jdbcType="INTEGER"/>
+        <result property="addTime" column="add_time" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               name, desc, pic_url, sort_order, add_time, update_time
+        from shop_mall.goods_brand
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id,
+               name, desc, pic_url, sort_order, add_time, update_time
+        from shop_mall.goods_brand
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        id, name, desc, pic_url, sort_order, add_time, update_time
+        from shop_mall.goods_brand
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="desc != null and desc != ''">
+                and desc = #{desc}
+            </if>
+            <if test="picUrl != null and picUrl != ''">
+                and pic_url = #{picUrl}
+            </if>
+            <if test="sortOrder != null">
+                and sort_order = #{sortOrder}
+            </if>
+            <if test="addTime != null and addTime != ''">
+                and add_time = #{addTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryBrandList" resultMap="BaseResultMap">
+        select * from goods_brand
+        <where>
+            <if test="brandName != null and brandName != ''">
+                name like CONCAT(${brandName},'%')
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="queryBrandListCount" resultType="java.lang.Integer">
+        select count(*) from goods_brand
+        <where>
+            <if test="brandName != null and brandName != ''">
+                name like CONCAT(${brandName},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_mall.goods_brand(name, desc, pic_url, sort_order, add_time, update_time)
+        values (#{name}, #{desc}, #{picUrl}, #{sortOrder}, #{addTime}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shop_mall.goods_brand
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="desc != null and desc != ''">
+                desc = #{desc},
+            </if>
+            <if test="picUrl != null and picUrl != ''">
+                pic_url = #{picUrl},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder},
+            </if>
+            <if test="addTime != null and addTime != ''">
+                add_time = #{addTime},
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shop_mall.goods_brand
+        where id = #{id}
+    </delete>
+
+</mapper>

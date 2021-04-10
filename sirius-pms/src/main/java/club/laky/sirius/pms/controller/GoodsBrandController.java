@@ -1,6 +1,5 @@
 package club.laky.sirius.pms.controller;
 
-import club.laky.sirius.pms.entity.GoodsBrand;
 import club.laky.sirius.pms.service.GoodsBrandService;
 import club.laky.sirius.pms.utils.WebResult;
 import com.alibaba.fastjson.JSONObject;
@@ -17,7 +16,7 @@ import javax.annotation.Resource;
  * @since 2021-04-08 21:45:09
  */
 @RestController
-@RequestMapping("goodsBrand")
+@RequestMapping("/api/goodsBrand")
 public class GoodsBrandController {
 
     private static final Logger logger = LoggerFactory.getLogger(GoodsBrandController.class);
@@ -54,6 +53,55 @@ public class GoodsBrandController {
             return WebResult.success(service.queryBrandList((page - 1) * limit, limit, brandName));
         } catch (Exception e) {
             logger.error("品牌保存失败:{}", e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 删除
+     */
+    @ResponseBody
+    @RequestMapping("delete")
+    public Object brandDelete(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------删除-------------");
+            boolean result = service.deleteById(JSONObject.parseObject(jsonBody).getInteger("id"));
+            if (result) {
+                return WebResult.success("删除成功");
+            }
+            return WebResult.error("删除失败");
+        } catch (Exception e) {
+            logger.error("删除失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 保存
+     */
+    @ResponseBody
+    @RequestMapping("save")
+    public Object brandSave(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------保存-------------");
+            return service.save(jsonBody);
+        } catch (Exception e) {
+            logger.error("保存失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 所有品牌
+     */
+    @ResponseBody
+    @RequestMapping("allBrand")
+    public Object allBrand() {
+        try {
+            logger.info("-------------所有品牌-------------");
+            return service.allBrand();
+        } catch (Exception e) {
+            logger.error("所有品牌失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
         }
     }

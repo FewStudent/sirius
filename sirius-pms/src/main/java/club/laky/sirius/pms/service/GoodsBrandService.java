@@ -1,6 +1,7 @@
 package club.laky.sirius.pms.service;
 
 import club.laky.sirius.pms.entity.GoodsBrand;
+import club.laky.sirius.pms.utils.WebResult;
 
 import java.util.List;
 
@@ -56,4 +57,8 @@ public interface GoodsBrandService {
     int queryBrandListCount(String brandName);
 
     List<GoodsBrand> queryBrandList(Integer offset, Integer limit, String brandName);
+
+    WebResult save(String jsonBody);
+
+    WebResult allBrand();
 }

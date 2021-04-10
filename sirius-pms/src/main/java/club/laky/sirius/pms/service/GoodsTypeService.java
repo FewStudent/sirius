@@ -1,6 +1,8 @@
 package club.laky.sirius.pms.service;
 
 import club.laky.sirius.pms.entity.GoodsType;
+import club.laky.sirius.pms.utils.WebResult;
+
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public interface GoodsTypeService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<GoodsType> queryAllByLimit(int offset, int limit);
@@ -52,4 +54,11 @@ public interface GoodsTypeService {
      */
     boolean deleteById(Integer id);
 
+    WebResult save(String jsonBody);
+
+    List<GoodsType> queryTypeList(Integer offset, Integer limit, String typeName);
+
+    int queryTypeListCount(String typeName);
+
+    WebResult allType();
 }

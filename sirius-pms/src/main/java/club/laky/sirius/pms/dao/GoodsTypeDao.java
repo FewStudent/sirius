@@ -1,6 +1,7 @@
 package club.laky.sirius.pms.dao;
 
 import club.laky.sirius.pms.entity.GoodsType;
+import club.laky.sirius.pms.utils.WebResult;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
@@ -62,4 +63,7 @@ public interface GoodsTypeDao {
      */
     int deleteById(Integer id);
 
+    List<GoodsType> queryTypeList(@Param("offset") Integer offset,@Param("limit") Integer limit,@Param("typeName") String typeName);
+
+    int queryTypeListCount(@Param("typeName") String typeName);
 }

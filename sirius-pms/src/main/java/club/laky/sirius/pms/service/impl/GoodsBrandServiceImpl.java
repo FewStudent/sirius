@@ -3,6 +3,9 @@ package club.laky.sirius.pms.service.impl;
 import club.laky.sirius.pms.entity.GoodsBrand;
 import club.laky.sirius.pms.dao.GoodsBrandDao;
 import club.laky.sirius.pms.service.GoodsBrandService;
+import club.laky.sirius.pms.utils.WebResult;
+import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,7 +37,7 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -83,7 +86,43 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
     }
 
     @Override
-    public List<GoodsBrand>  queryBrandList(Integer offset, Integer limit, String brandName) {
-        return this.goodsBrandDao.queryBrandList(offset,limit,brandName);
+    public List<GoodsBrand> queryBrandList(Integer offset, Integer limit, String brandName) {
+        return this.goodsBrandDao.queryBrandList(offset, limit, brandName);
+    }
+
+    @Override
+    public WebResult save(String jsonBody) {
+        JSONObject params = JSONObject.parseObject(jsonBody);
+        Integer id = params.getInteger("id");
+        String name = params.getString("name");
+        String desc = params.getString("desc");
+        Integer sort = params.getInteger("sort");
+        GoodsBrand goodsBrand = new GoodsBrand();
+
+        goodsBrand.setName(name);
+        goodsBrand.setDesc(desc);
+        goodsBrand.setSortOrder(sort);
+        //添加
+        if (id == null) {
+            goodsBrand.setId(id);
+            goodsBrand.setAddTime(DateUtil.now());
+            int result = this.goodsBrandDao.insert(goodsBrand);
+            if (result == 0) {
+                return WebResult.error("添加失败");
+            }
+            return WebResult.success("添加成功");
+        } else {
+            goodsBrand.setUpdateTime(DateUtil.now());
+            int result = this.goodsBrandDao.update(goodsBrand);
+            if (result == 0) {
+                return WebResult.error("修改失败");
+            }
+            return WebResult.success("修改成功");
+        }
+    }
+
+    @Override
+    public WebResult allBrand() {
+        return WebResult.success(this.goodsBrandDao.queryAll(null));
     }
 }

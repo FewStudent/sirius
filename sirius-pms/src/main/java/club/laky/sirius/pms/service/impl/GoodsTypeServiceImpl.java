@@ -3,6 +3,7 @@ package club.laky.sirius.pms.service.impl;
 import club.laky.sirius.pms.entity.GoodsType;
 import club.laky.sirius.pms.dao.GoodsTypeDao;
 import club.laky.sirius.pms.service.GoodsTypeService;
+import club.laky.sirius.pms.utils.WebResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -75,5 +76,25 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
     @Override
     public boolean deleteById(Integer id) {
         return this.goodsTypeDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public WebResult save(String jsonBody) {
+        return null;
+    }
+
+    @Override
+    public List<GoodsType> queryTypeList(Integer offset, Integer limit, String typeName) {
+        return this.goodsTypeDao.queryTypeList(offset,limit,typeName);
+    }
+
+    @Override
+    public int queryTypeListCount(String typeName) {
+        return this.goodsTypeDao.queryTypeListCount(typeName);
+    }
+
+    @Override
+    public WebResult allType() {
+        return WebResult.success(this.goodsTypeDao.queryAll(null));
     }
 }

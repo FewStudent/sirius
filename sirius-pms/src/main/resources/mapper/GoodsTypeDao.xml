@@ -11,16 +11,18 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select
-          id, type_name, type_detail
+        select id,
+               type_name,
+               type_detail
         from shop_mall.goods_type
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select
-          id, type_name, type_detail
+        select id,
+               type_name,
+               type_detail
         from shop_mall.goods_type
         limit #{offset}, #{limit}
     </select>
@@ -28,7 +30,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, type_name, type_detail
+        id, type_name, type_detail
         from shop_mall.goods_type
         <where>
             <if test="id != null">
@@ -39,6 +41,25 @@
             </if>
             <if test="typeDetail != null and typeDetail != ''">
                 and type_detail = #{typeDetail}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryTypeList" resultMap="BaseResultMap">
+        select * from goods_type
+        <where>
+            <if test="typeName !=null and typeName != ''">
+                and type_name = #{typeName}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="queryTypeListCount" resultType="java.lang.Integer">
+        select count(*) from goods_type
+        <where>
+            <if test="typeName !=null and typeName != ''">
+                and type_name = #{typeName}
             </if>
         </where>
     </select>
@@ -65,7 +86,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from shop_mall.goods_type where id = #{id}
+        delete
+        from shop_mall.goods_type
+        where id = #{id}
     </delete>
 
 </mapper>

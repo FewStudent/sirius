@@ -29,7 +29,7 @@ public class GoodsController {
 
     @ResponseBody
     @RequestMapping("/add")
-    public WebResult insert(@RequestBody String jsonBody) {
+    public WebResult goodsInsert(@RequestBody String jsonBody) {
         try {
             logger.info("商品添加,参数为{}", jsonBody);
             return service.insertGoods(jsonBody);
@@ -41,7 +41,7 @@ public class GoodsController {
 
     @ResponseBody
     @RequestMapping("/save")
-    public WebResult save(@RequestBody String jsonBody) {
+    public WebResult goodsSave(@RequestBody String jsonBody) {
         try {
             logger.info("商品保存,参数为{}", jsonBody);
             return service.saveGoods(jsonBody);

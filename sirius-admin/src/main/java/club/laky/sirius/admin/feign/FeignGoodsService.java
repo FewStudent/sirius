@@ -13,14 +13,44 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface FeignGoodsService {
 
     @RequestMapping(value = "/api/goods/save", method = RequestMethod.GET)
-    WebResult save(String jsonBody);
+    WebResult goodsSave(String jsonBody);
 
     @RequestMapping(value = "/api/goods/add", method = RequestMethod.GET)
-    WebResult insert(String jsonBody);
+    WebResult goodsInsert(String jsonBody);
 
-    @RequestMapping(value = "/api/goods/list",method = RequestMethod.GET)
+    @RequestMapping(value = "/api/goods/list", method = RequestMethod.GET)
     WebResult queryGoodsList(@RequestBody String jsonBody);
 
-    @RequestMapping(value = "/api/goods/listCount",method = RequestMethod.GET)
+    @RequestMapping(value = "/api/goods/listCount", method = RequestMethod.GET)
     int queryGoodsListCount(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsBrand/listCount", method = RequestMethod.GET)
+    int queryBrandListCount(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsBrand/list", method = RequestMethod.GET)
+    WebResult queryBrandList(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsBrand/delete", method = RequestMethod.GET)
+    WebResult brandDelete(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsBrand/save", method = RequestMethod.GET)
+    WebResult brandSave(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsBrand/allBrand", method = RequestMethod.GET)
+    WebResult allBrand();
+
+    @RequestMapping(value = "/api/type/allType", method = RequestMethod.GET)
+    WebResult allType();
+
+    @RequestMapping(value = "/api/goodsType/save", method = RequestMethod.GET)
+    Object typeSave(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsType/listCount", method = RequestMethod.GET)
+    int queryTypeListCount(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsType/list", method = RequestMethod.GET)
+    WebResult queryTypeList(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goodsType/delete", method = RequestMethod.GET)
+    Object typeDelete(@RequestBody String jsonBody);
 }

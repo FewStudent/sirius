@@ -33,8 +33,8 @@ public class PermissionInterceptor implements HandlerInterceptor {
             return true;
         }
         PathMatcher matcher = new AntPathMatcher();
-        if (matcher.matchStart("/static/**",uri)) {
-            logger.info("静态资源放行：{}",uri);
+        if (matcher.matchStart("/static/**", uri)) {
+            logger.info("静态资源放行：{}", uri);
             return true;
         }
         String isApi = request.getHeader("isApi");
@@ -44,11 +44,11 @@ public class PermissionInterceptor implements HandlerInterceptor {
         }
         //页面跳转 从参数中获取token
         String token;
-        if(matcher.matchStart("/admin/page/**",uri)){
+        if (matcher.matchStart("/admin/page/**", uri)) {
             token = request.getParameter("token");
-        }else{
+        } else {
             token = request.getHeader("token");
-            if(StringUtils.isEmpty(token)){
+            if (StringUtils.isEmpty(token)) {
                 token = request.getParameter("token");
             }
         }
@@ -59,7 +59,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
         }
         Map<String, Object> result = (Map<String, Object>) cacheService.get(token);
         logger.info("获取到token：{}的数据：{}", token, result.toString());
-        if (result.get("status").equals(true)) {
+        if (result.get("status").equals("true")) {
             SysUser user = JSON.parseObject((String) result.get("data"), SysUser.class);
             logger.info("获取到用户：{}的信息", user.getAccount());
             if (PermissionUtils.hasPermission(user, uri)) {

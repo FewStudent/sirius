@@ -8,21 +8,24 @@
         <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
         <result property="uId" column="u_id" jdbcType="INTEGER"/>
         <result property="createDate" column="create_date" jdbcType="VARCHAR"/>
-        <result property="userType" column="user_type" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select
-          id, img_url, u_id, create_date, user_type
+        select id,
+               img_url,
+               u_id,
+               create_date
         from shop_mall.img_log
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select
-          id, img_url, u_id, create_date, user_type
+        select id,
+               img_url,
+               u_id,
+               create_date
         from shop_mall.img_log
         limit #{offset}, #{limit}
     </select>
@@ -30,7 +33,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, img_url, u_id, create_date, user_type
+        id, img_url, u_id, create_date
         from shop_mall.img_log
         <where>
             <if test="id != null">
@@ -45,25 +48,20 @@
             <if test="createDate != null and createDate != ''">
                 and create_date = #{createDate}
             </if>
-            <if test="userType != null">
-                and user_type = #{userType}
-            </if>
         </where>
     </select>
 
     <select id="hasUser" resultType="java.lang.Integer">
-        <if test="type == 1">
-            select count(*) from sys_user where id = #{id} limit 1
-        </if>
-        <if test="type == 2">
-            select count(*) from mall_user where id = #{id} limit 1
-        </if>
+        select count(*)
+        from sys_user
+        where id = #{id}
+        limit 1
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into shop_mall.img_log(img_url, u_id, create_date, user_type)
-        values (#{imgUrl}, #{uId}, #{createDate}, #{userType})
+        insert into shop_mall.img_log(img_url, u_id, create_date)
+        values (#{imgUrl}, #{uId}, #{createDate})
     </insert>
 
     <!--通过主键修改数据-->
@@ -79,16 +77,15 @@
             <if test="createDate != null and createDate != ''">
                 create_date = #{createDate},
             </if>
-            <if test="userType != null">
-                user_type = #{userType},
-            </if>
         </set>
         where id = #{id}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from shop_mall.img_log where id = #{id}
+        delete
+        from shop_mall.img_log
+        where id = #{id}
     </delete>
 
 </mapper>

@@ -18,20 +18,15 @@ public class ImgLog implements Serializable {
     private Integer uId;
 
     private String createDate;
-    /**
-     * 用户类型 1 管理员 2 客户端用户
-     */
-    private Integer userType;
 
 
     public ImgLog() {
 
     }
 
-    public ImgLog(String newFileName, Integer userId, Integer type, String now) {
+    public ImgLog(String newFileName, Integer userId, String now) {
         this.createDate = now;
         this.uId = userId;
-        this.userType = type;
         this.imgUrl = newFileName;
     }
 
@@ -67,12 +62,5 @@ public class ImgLog implements Serializable {
         this.createDate = createDate;
     }
 
-    public Integer getUserType() {
-        return userType;
-    }
-
-    public void setUserType(Integer userType) {
-        this.userType = userType;
-    }
 
 }

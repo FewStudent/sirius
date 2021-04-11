@@ -16,33 +16,33 @@
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
         select id,
-               name, desc, pic_url, sort_order, add_time, update_time
-        from shop_mall.goods_brand
+               gb.name, gb.desc, pic_url, sort_order, add_time, update_time
+        from shop_mall.goods_brand gb
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
         select id,
-               name, desc, pic_url, sort_order, add_time, update_time
-        from shop_mall.goods_brand
+               gb.name, gb.desc, pic_url, sort_order, add_time, update_time
+        from shop_mall.goods_brand gb
         limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-        id, name, desc, pic_url, sort_order, add_time, update_time
-        from shop_mall.goods_brand
+        id, gb.name, gb.desc, pic_url, sort_order, add_time, update_time
+        from shop_mall.goods_brand gb
         <where>
             <if test="id != null">
                 and id = #{id}
             </if>
             <if test="name != null and name != ''">
-                and name = #{name}
+                and gb.name = #{name}
             </if>
             <if test="desc != null and desc != ''">
-                and desc = #{desc}
+                and gb.desc = #{desc}
             </if>
             <if test="picUrl != null and picUrl != ''">
                 and pic_url = #{picUrl}
@@ -63,7 +63,7 @@
         select * from goods_brand
         <where>
             <if test="brandName != null and brandName != ''">
-                name like CONCAT(${brandName},'%')
+                gb.'name' like CONCAT(${brandName},'%')
             </if>
         </where>
         limit #{offset},#{limit}
@@ -73,26 +73,26 @@
         select count(*) from goods_brand
         <where>
             <if test="brandName != null and brandName != ''">
-                name like CONCAT(${brandName},'%')
+                gb.'name' like CONCAT(${brandName},'%')
             </if>
         </where>
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into shop_mall.goods_brand(name, desc, pic_url, sort_order, add_time, update_time)
+        insert into shop_mall.goods_brand  (goods_brand.name, goods_brand.desc, pic_url, sort_order, add_time, update_time)
         values (#{name}, #{desc}, #{picUrl}, #{sortOrder}, #{addTime}, #{updateTime})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update shop_mall.goods_brand
+        update shop_mall.goods_brand gb
         <set>
             <if test="name != null and name != ''">
-                name = #{name},
+                gb.name = #{name},
             </if>
             <if test="desc != null and desc != ''">
-                desc = #{desc},
+                gb.desc = #{desc},
             </if>
             <if test="picUrl != null and picUrl != ''">
                 pic_url = #{picUrl},

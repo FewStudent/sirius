@@ -78,7 +78,7 @@ public class ImgLogServiceImpl implements ImgLogService {
     }
 
     @Override
-    public boolean hasUser(Integer userId, Integer type) {
-        return this.imgLogDao.hasUser(userId, type) != 0;
+    public boolean hasUser(Integer userId) {
+        return this.imgLogDao.hasUser(userId) != 0;
     }
 }

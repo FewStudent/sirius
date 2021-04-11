@@ -23,7 +23,7 @@
 <body>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo">酒店管理系统</div>
+        <div class="layui-logo">天狼小商城管理系统</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
@@ -163,12 +163,13 @@
 <script>
     var element;
     let tab_filter = "modules";
+    const token = localStorage.getItem("token");
+
 
     layui.use(['element', 'jquery', 'layer'], function () {
         element = layui.element;
         let $ = layui.jquery;
         let layer = layui.layer;
-        const token = localStorage.getItem("token");
 
         $(".logout").click(function () {
             layer.confirm("是否退出登录?", {"icon": 3}, function () {

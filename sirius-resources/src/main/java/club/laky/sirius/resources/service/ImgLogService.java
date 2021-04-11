@@ -57,9 +57,8 @@ public interface ImgLogService {
      * 是否存在该用户
      *
      * @param userId 用户ID
-     * @param type   用户类型
      * @return 是否存在
      */
-    boolean hasUser(Integer userId, Integer type);
+    boolean hasUser(Integer userId );
 
 }

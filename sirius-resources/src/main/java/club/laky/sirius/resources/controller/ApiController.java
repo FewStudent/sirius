@@ -1,22 +1,24 @@
 package club.laky.sirius.resources.controller;
 
 import club.laky.sirius.resources.entity.ImgLog;
+import club.laky.sirius.resources.feign.FeignCacheService;
 import club.laky.sirius.resources.service.ImgLogService;
 import club.laky.sirius.resources.utils.ResultMap;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -40,18 +42,21 @@ public class ApiController {
     @Value(value = "${system.imgUpLoadPath}")
     private String imgUpLoadPath;
 
+    @Autowired
+    private FeignCacheService cacheService;
+
     @ResponseBody
     @PostMapping("/upload")
-    public Object imgUpload(@RequestParam("uId") Integer userId, @RequestParam("type") Integer type, @RequestParam("upload") MultipartFile file) {
+    public Object imgUpload(@RequestParam("token") String token, @RequestParam("upload") MultipartFile file) {
         try {
             logger.info("-------------上传图片-------------");
             if (file.isEmpty()) {
                 return ResultMap.error("文件不能为空!");
             }
-            if (type != 1 && type != 2) {
-                return ResultMap.error("错误的用户类型");
-            }
-            if (!service.hasUser(userId, type)) {
+            Map<String, Object> result = (Map<String, Object>) cacheService.get(token);
+            logger.info("获取到token：{}的数据：{}", token, result.toString());
+            JSONObject jsonObject = JSONObject.parseObject((String) result.get("data"));
+            if (!service.hasUser(jsonObject.getInteger("id"))) {
                 return ResultMap.error("不存在该用户,无法上传图片");
             }
             String fileOriginName = file.getOriginalFilename();
@@ -62,7 +67,7 @@ public class ApiController {
             if (suffix.equals(".png") || suffix.equals(".jpg") || suffix.equals(".jpeg")) {
                 String fileName = uploadImg(file);
                 String newFileName = getShowName(fileName);
-                ImgLog fileLog = new ImgLog(newFileName, userId, type, DateUtil.now());
+                ImgLog fileLog = new ImgLog(newFileName, jsonObject.getInteger("id"), DateUtil.now());
                 if (service.insert(fileLog) == null) {
                     return ResultMap.error("上传失败");
                 }

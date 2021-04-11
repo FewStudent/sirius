@@ -7,6 +7,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,9 @@ public class LoginFilter implements GlobalFilter, Ordered {
     static {
         UN_AUTH_URI.add("/admin-service/api/**");
         UN_AUTH_URI.add("/client-service/api/**");
-        UN_AUTH_URI.add("/ums-service/api/**");
+        UN_AUTH_URI.add("/ums-service/api/common/**");
+        UN_AUTH_URI.add("/ums-service/api/login");
+        UN_AUTH_URI.add("/ums-service/api/test/**");
 
         ALLOW_URI.add("/admin-service/**");
         ALLOW_URI.add("/client-service/**");
@@ -67,7 +70,6 @@ public class LoginFilter implements GlobalFilter, Ordered {
         logger.info("请求的地址IP:{}", ip);
         logger.info("------------------------------------------------------");
 
-        exchange.getRequest().getHeaders().set("isApi","N");
         //清除i请求头中的isApi
 
         PathMatcher matcher = new AntPathMatcher();
@@ -75,7 +77,9 @@ public class LoginFilter implements GlobalFilter, Ordered {
         for (String auth_uri : UN_AUTH_URI) {
             if (matcher.matchStart(auth_uri, path)) {
                 //允许通行
+/*
                 exchange.getRequest().getHeaders().add("isApi", "Y");
+*/
                 logger.info("检测无需鉴权的：URL-{} 匹配成功", path);
                 return chain.filter(exchange); //继续向下执行
             }

@@ -39,7 +39,7 @@ public interface FeignGoodsService {
     @RequestMapping(value = "/api/goodsBrand/allBrand", method = RequestMethod.GET)
     WebResult allBrand();
 
-    @RequestMapping(value = "/api/type/allType", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/goodsType/allType", method = RequestMethod.GET)
     WebResult allType();
 
     @RequestMapping(value = "/api/goodsType/save", method = RequestMethod.GET)

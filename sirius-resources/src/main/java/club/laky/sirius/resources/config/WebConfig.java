@@ -1,5 +1,7 @@
 package club.laky.sirius.resources.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,25 +15,28 @@ import java.util.UUID;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    private static final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
+
 
     @Value(value = "${system.imgUpLoadPath}")
     private String imgUpLoadPath;
 
 
-   /* @Bean
+    @Bean
     public WebMvcConfigurer corsConfigurer() {
+        logger.info("---------------配置跨域---------------");
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                         .allowedMethods("*")
-                        .allowedOrigins("*")
+                        .allowedOriginPatterns("*")
                         .allowCredentials(true)
-                        .allowedMethods("GET", "POST", "DELETE", "PUT")
+                        .allowedMethods("GET", "POST", "DELETE", "OPTIONS","PUT")
                         .maxAge(3600);
             }
         };
-    }*/
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

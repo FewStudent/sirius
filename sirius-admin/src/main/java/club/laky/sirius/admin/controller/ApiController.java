@@ -1,15 +1,19 @@
 package club.laky.sirius.admin.controller;
 
+import club.laky.sirius.admin.feign.FeignCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/admin/api")
 public class ApiController {
     private static final Logger logger = LoggerFactory.getLogger(ApiController.class);
+
+    @Autowired
+    private FeignCacheService cacheService;
 
     /**
      * 随便整点
@@ -25,4 +29,5 @@ public class ApiController {
             return null;
         }
     }
+
 }

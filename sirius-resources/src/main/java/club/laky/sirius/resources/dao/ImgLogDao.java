@@ -62,5 +62,5 @@ public interface ImgLogDao {
      */
     int deleteById(Integer id);
 
-    int hasUser(@Param("id") Integer userId,@Param("type") Integer type);
+    int hasUser(@Param("id") Integer userId);
 }

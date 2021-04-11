@@ -4,23 +4,32 @@
     <meta charset="UTF-8">
     <title>商品列表 - 天狼小商城管理系统</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
     <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
 
 <blockquote class="layui-elem-quote  layui-quote-nm layui-form">
     <div class="layui-inline">
         <div class="layui-input-inline">
-            <input type="text" id="nickname" placeholder="请输入商品名" autocomplete="off" class="layui-input">
+            <input type="text" id="goodsName" placeholder="请输入商品名" autocomplete="off" class="layui-input">
         </div>
         <div class="layui-input-inline">
-            <input type="text" id="job" placeholder="投递岗位" autocomplete="off" class="layui-input">
+            <select id="typeId">
+                <option value="">请选择商品类型</option>
+            </select>
         </div>
         <div class="layui-input-inline">
-            <input type="text" id="address" placeholder="工作地址" autocomplete="off" class="layui-input">
+            <select id="brandId">
+                <option value="">请选择商品品牌</option>
+            </select>
         </div>
         <div class="layui-inline">
             <button class="layui-btn  layui-btn-primary" id="search">搜索</button>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn  layui-btn-normal" id="reset">重置</button>
         </div>
     </div>
 </blockquote>
@@ -28,14 +37,18 @@
 <table class="layui-hide" id="table" lay-filter="table"></table>
 
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-sm layui-btn-warm" lay-event="detail">简历详情</a>
+    <a class="layui-btn layui-btn-sm layui-btn-primary" lay-event="detail">商品详情</a>
+    <a class="layui-btn layui-btn-sm layui-btn-warm" lay-event="detail">上架</a>
+    <a class="layui-btn layui-btn-sm layui-btn-warm" lay-event="detail">下架</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="detail">删除</a>
 </script>
 </body>
 <script>
-    layui.use(['table', 'layer', 'jquery'], function () {
-        var table = layui.table;
-        var layer = layui.layer;
-        var $ = layui.jquery;
+    layui.use(['table', 'layer', 'jquery', 'form'], function () {
+        const table = layui.table;
+        const layer = layui.layer;
+        const $ = layui.jquery;
+        const form = layui.form;
         const token = localStorage.getItem("token");
         /* 表格数据载入 */
         table.render({
@@ -46,15 +59,9 @@
             height: 450,
             page: true,
             cols: [[{type: 'radio', fixed: 'left'}, {
-                field: 'id',
-                title: 'ID',
-                width: 80,
-                sort: true,
-                fixed: 'left'
-            }, {
                 field: 'goodsName',
                 title: '商品名',
-                width: 80
+                width: 160
             }, {
                 field: 'typeName',
                 title: '类型名',
@@ -66,7 +73,7 @@
             }, {
                 field: 'description',
                 title: '商品描述',
-                width: 240
+                width: 360
             }, {
                 field: 'count',
                 title: '剩余数量',
@@ -76,11 +83,51 @@
                 field: 'price',
                 title: '单价',
                 width: 120,
-                fixed: "right"
+                fixed: "right",
+                templet: function (d) {
+                    return "￥" + d.price;
+                }
             }
             ]],
             id: 'reload' //表格重载的id
         });
+
+        $(document).ready(function () {
+            ajax_common("/admin/goods/allType", token, function (data) {
+                console.log(data)
+                if (data.succeed) {
+                    let types = data.data;
+                    for (let i = 0; i < types.length; i++) {
+                        let type = types[i];
+                        $("#typeId").append(
+                            $("<option>").attr("value", type.id).html(type.typeName)
+                        )
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.msg);
+                }
+            })
+            ajax_common("/admin/goods/allBrand", token, function (data) {
+                console.log(data)
+                if (data.succeed) {
+                    let brands = data.data;
+                    for (let i = 0; i < brands.length; i++) {
+                        let brand = brands[i];
+                        $("#brandId").append(
+                            $("<option>").attr("value", brand.id).html(brand.name)
+                        )
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.msg);
+                }
+            })
+        })
+
+        $("#reset").click(function () {
+            location.reload();
+        })
 
         /* 表格重载 */
         $('#search').on('click', function () {
@@ -102,13 +149,13 @@
             var checkStatus = table.checkStatus(obj.config.id);
             var data = checkStatus.data[0];
             if (obj.event !== 'add' && checkStatus.data.length === 0) {
-                layer.alert("至少选择一条数据进行操作!", {"icon": 2});
+                layer.alert("至少选择一条数据进行操作!", {"icon": 3});
                 return;
             }
             if (obj.event === 'detail') {
                 layer.open({
                     type: 2,
-                    title: "用户简历详情",
+                    title: "用户商品详情",
                     shadeClose: true,
                     shade: 0.2,
                     maxmin: true, //开启最大化最小化按钮

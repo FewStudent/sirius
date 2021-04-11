@@ -13,19 +13,23 @@ import java.io.Serializable;
 @Data
 public class GoodsParams implements Serializable {
     private static final long serialVersionUID = 905905717834543769L;
-    
+
     private Integer id;
-    
+
     private Integer goodsId;
-    
+
     private String paramKey;
-    
+
     private String paramValue;
 
     public GoodsParams(Integer goodsId, String key, String value) {
         this.goodsId = goodsId;
         this.paramKey = key;
         this.paramValue = value;
+    }
+
+    public GoodsParams() {
+
     }
 
 

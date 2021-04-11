@@ -94,4 +94,14 @@ public interface GoodsService {
      * @return
      */
     WebResult saveGoods(String jsonBody);
+
+    WebResult onSale(Integer goodsId);
+
+    WebResult delete(Integer goodsId);
+
+    WebResult offShelf(Integer goodsId);
+
+    WebResult detail(Integer goodsId);
+
+    WebResult allOnSale(String jsonBody);
 }

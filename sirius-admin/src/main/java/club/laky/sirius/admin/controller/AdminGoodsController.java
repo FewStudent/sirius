@@ -113,4 +113,81 @@ public class AdminGoodsController {
         }
     }
 
+    /**
+     * 上架
+     */
+    @ResponseBody
+    @RequestMapping("onSale")
+    public Object onSale(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------上架-------------");
+            logger.info("请求参数:{}", jsonBody);
+            return goodsService.on(JSONObject.parseObject(jsonBody).getInteger("goodsId"));
+        } catch (Exception e) {
+            logger.error("上架失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 上架
+     */
+    @ResponseBody
+    @RequestMapping("offShelf")
+    public Object offShelf(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------下架-------------");
+            logger.info("请求参数:{}", jsonBody);
+            return goodsService.down(JSONObject.parseObject(jsonBody).getInteger("goodsId"));
+        } catch (Exception e) {
+            logger.error("下架失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 删除商品
+     */
+    @ResponseBody
+    @RequestMapping("delete")
+    public Object delete(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------删除商品-------------");
+            logger.info("请求参数:{}", jsonBody);
+            return goodsService.delete(JSONObject.parseObject(jsonBody).getInteger("goodsId"));
+        } catch (Exception e) {
+            logger.error("删除商品失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取商品所有下拉框
+     */
+    @ResponseBody
+    @RequestMapping("allSelect")
+    public Object allSelect() {
+        try {
+            logger.info("-------------获取商品所有下拉框-------------");
+            return goodsService.allSelect();
+        } catch (Exception e) {
+            logger.error("获取商品所有下拉框失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 商品详情
+     */
+    @ResponseBody
+    @RequestMapping("detail")
+    public Object detail(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------商品详情-------------");
+            return goodsService.goodsDetail(JSONObject.parseObject(jsonBody).getInteger("goodsId"));
+        } catch (Exception e) {
+            logger.error("商品详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
 }

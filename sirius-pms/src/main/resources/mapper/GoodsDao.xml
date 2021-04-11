@@ -15,6 +15,7 @@
 
         <result property="brandName" column="brand_name"/>
         <result property="typeName" column="type_name"/>
+        <result property="url" column="url"/>
     </resultMap>
 
     <!--查询单个-->
@@ -27,7 +28,8 @@
                count,
                price,
                state,
-               brand_id
+               brand_id,
+               SUBSTRING_INDEX(imgs, ',', 1) as url
         from shop_mall.goods
         where id = #{id}
     </select>
@@ -42,14 +44,17 @@
                count,
                price,
                state,
-               brand_id
-        from shop_mall.goods limit #{offset}, #{limit}
+               brand_id,
+               SUBSTRING_INDEX(imgs, ',', 1) as url
+        from shop_mall.goods
+        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-        id, goods_name, type_id, description, imgs, count, price, state, brand_id
+        id, goods_name, type_id, description, imgs, count, price, state, brand_id,
+        SUBSTRING_INDEX(imgs,',',1) as url
         from shop_mall.goods
         <where>
             <if test="id != null">
@@ -134,7 +139,7 @@
         left join goods_brand gb on gb.id = g.brand_id
         <where>
             <if test="goodsName !=null and goodsName != ''">
-                and g.goodsName like CONCAT(#{goodsName},'%')
+                and g.goods_name like CONCAT(#{goodsName},'%')
             </if>
             <if test="brandId !=null">
                 and g.brand_id = #{brandId}
@@ -149,13 +154,14 @@
     </select>
 
     <select id="queryGoodsList" resultMap="BaseResultMap">
-        select g.*, gt.type_name, gb.`name` brand_name
+        select g.*, gt.type_name, gb.`name` brand_name,
+        SUBSTRING_INDEX(imgs,',',1) as url
         from goods g
         left join goods_type gt on gt.id = g.type_id
         left join goods_brand gb on gb.id = g.brand_id
         <where>
             <if test="goodsName !=null and goodsName != ''">
-                and g.goodsName like CONCAT(#{goodsName},'%')
+                and g.goods_name like CONCAT(#{goodsName},'%')
             </if>
             <if test="brandId !=null">
                 and g.brand_id = #{brandId}
@@ -168,5 +174,53 @@
             </if>
         </where>
         limit #{offset},#{limit}
+    </select>
+    <select id="queryCountGoodsOrder" resultType="java.lang.Integer">
+        select count(*)
+        from goods_order_list
+        where goods_id = #{id}
+    </select>
+    <select id="queryOnSale" resultMap="BaseResultMap">
+        select * from goods
+        <where>
+            state = 1 and goods.count > 0
+            <if test="goodsName !=null and goodsName != ''">
+                and goods_name like CONCAT(#{goodsName},'%')
+            </if>
+            <if test="brandId !=null">
+                and brand_id = #{brandId}
+            </if>
+            <if test="typeId !=null">
+                and type_id = #{typeId}
+            </if>
+            <if test="priceStart !=null">
+                and price &lt;= #{priceStart}
+            </if>
+            <if test="priceEnd !=null">
+                and price &gt; #{priceEnd}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+    <select id="queryOnSaleCount" resultType="java.lang.Integer">
+        select count(*) from goods
+        <where>
+            state = 1 and goods.count > 0
+            <if test="goodsName !=null and goodsName != ''">
+                and goods_name like CONCAT(#{goodsName},'%')
+            </if>
+            <if test="brandId !=null">
+                and brand_id = #{brandId}
+            </if>
+            <if test="typeId !=null">
+                and type_id = #{typeId}
+            </if>
+            <if test="priceStart !=null">
+                and price &lt;= #{priceStart}
+            </if>
+            <if test="priceEnd !=null">
+                and price &gt; #{priceEnd}
+            </if>
+        </where>
     </select>
 </mapper>

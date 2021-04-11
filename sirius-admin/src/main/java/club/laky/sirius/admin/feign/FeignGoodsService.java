@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author panrulang
@@ -17,6 +18,18 @@ public interface FeignGoodsService {
 
     @RequestMapping(value = "/api/goods/add", method = RequestMethod.GET)
     WebResult goodsInsert(String jsonBody);
+
+    @RequestMapping(value = "/api/goods/offShelf", method = RequestMethod.GET)
+    Object down(@RequestParam Integer goodsId);
+
+    @RequestMapping(value = "/api/goods/delete", method = RequestMethod.GET)
+    Object delete(@RequestParam Integer goodsId);
+
+    @RequestMapping(value = "/api/goods/onSale", method = RequestMethod.GET)
+    Object on(@RequestParam Integer goodsId);
+
+    @RequestMapping(value = "/api/goods/detail", method = RequestMethod.GET)
+    Object goodsDetail(@RequestParam Integer goodsId);
 
     @RequestMapping(value = "/api/goods/list", method = RequestMethod.GET)
     WebResult queryGoodsList(@RequestBody String jsonBody);
@@ -53,4 +66,7 @@ public interface FeignGoodsService {
 
     @RequestMapping(value = "/api/goodsType/delete", method = RequestMethod.GET)
     Object typeDelete(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/goods/allSelect", method = RequestMethod.GET)
+    Object allSelect();
 }

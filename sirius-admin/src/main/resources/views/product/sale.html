@@ -114,7 +114,6 @@
                     <legend>设置商品参数</legend>
                     <div style="padding: 10px 10px">
                         <div class="paramsList">
-
                         </div>
                         <button class="layui-btn-fluid layui-btn layui-btn-primary" id="addParams">添加参数</button>
                     </div>
@@ -140,25 +139,17 @@
         const token = localStorage.getItem("token");
 
         $(document).ready(function () {
-            ajax_common("/admin/goods/allType", token, function (data) {
+            ajax_common("/admin/goods/allSelect", token, function (data) {
                 console.log(data)
                 if (data.succeed) {
-                    let types = data.data;
+                    let brands = data.data.brands.data;
+                    let types = data.data.types.data;
                     for (let i = 0; i < types.length; i++) {
                         let type = types[i];
                         $("#typeId").append(
                             $("<option>").attr("value", type.id).html(type.typeName)
                         )
                     }
-                    form.render('select');
-                } else {
-                    layer.msg(data.msg);
-                }
-            })
-            ajax_common("/admin/goods/allBrand", token, function (data) {
-                console.log(data)
-                if (data.succeed) {
-                    let brands = data.data;
                     for (let i = 0; i < brands.length; i++) {
                         let brand = brands[i];
                         $("#brandId").append(
@@ -198,13 +189,13 @@
             data.brandId = $("#brandId").val();
             data.typeId = $("#typeId").val();
             data.count = $("#count").val();
-            if (count < 0){
-                layer.alert("商品数量不能小于0",{"icon":2})
+            if (count < 0) {
+                layer.alert("商品数量不能小于0", {"icon": 2})
             }
             data.specifications = paramsList;
             data.price = $("#price").val();
-            if (price < 0){
-                layer.alert("商品数量不能小于0",{"icon":2})
+            if (price < 0) {
+                layer.alert("商品数量不能小于0", {"icon": 2})
             }
             data.state = 0;
             console.log(data)
@@ -234,6 +225,10 @@
 
         $("#addParams").click(function () {
             $(".paramsList").append(goodsParams(null));
+            $(".paramsList .paramsItem .params-del").click(function () {
+                console.log("???")
+                $(this).parents(".paramsItem").remove();
+            })
         })
 
         $(".imgAdd").click(function () {
@@ -290,7 +285,7 @@
             strVar += "                            <a href=\"#\" class=\"imgBtn\">";
             strVar += "                                <img src=\"" + url + "\">";
             strVar += "                            <\/a>";
-            strVar += "                        <a class=\"layui-btn layui-btn-sm layui-btn-primary layui-btn-fluid\" style=\"margin-top: 10px;border:none\">删除" + "</a>\n";
+            strVar += "                        <a class=\"layui-btn layui-btn-sm layui-btn-primary layui-btn-fluid img-del\" style=\"margin-top: 10px;border:none\">删除" + "</a>\n";
             strVar += "                        <\/div>";
             return $(strVar);
 
@@ -313,6 +308,9 @@
             params += "                                       class=\"layui-input\" value=\"\">";
             params += "                            <\/div>";
             params += "                        <\/div>";
+            params += " <div class=\"layui-inline\">";
+            params += "                                    <button class=\"layui-btn-danger layui-btn layui-btn-sm params-del\">删除<\/button>";
+            params += "                                <\/div>";
             params += "                    <\/div>";
 
             return $(params);
@@ -333,7 +331,7 @@
             });
 
             //设置删除按钮功能
-            $(".layui-btn-danger").click(function () {
+            $(".img-del").click(function () {
                 $(this).parent(".img").remove()
             })
         }

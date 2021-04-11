@@ -2,9 +2,389 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>商品保存 - 天狼小商城管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
+    <style>
+        .layui-input-item {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .img {
+            width: 75px;
+            height: 75px;
+            margin: 10px 20px 0px 0px
+        }
+    </style>
 </head>
 <body>
+<div class="layui-container">
+    <div class="layui-row">
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>商品保存</legend>
+        </fieldset>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-row">
+                <fieldset class="layui-elem-field">
+                    <legend>商品基本信息</legend>
+                    <form class="layui-form layui-form-pane" action="" lay-filter="form">
 
+                        <div class="layui-field-box layui-form">
+                            <input type="hidden" name="imgs" id="imgs">
+                            <input type="hidden" name="id" id="id">
+                            <input id="imgUpload" type="file" style="display: none"/>
+
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="goodsName">商品名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="goodsName" placeholder="请输入商品名" autocomplete="off"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="count">商品数量</label>
+                                <div class="layui-input-block">
+                                    <input type="number" id="count" placeholder="请输入商品数量" autocomplete="off"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="price">商品单价</label>
+                                <div class="layui-input-block">
+                                    <input type="number" id="price" placeholder="请输入商品单价" autocomplete="off"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="typeId">商品类型</label>
+                                <div class="layui-input-block">
+                                    <select id="typeId">
+                                        <option value="">请选择商品类型</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="brandId">品牌厂家</label>
+                                <div class="layui-input-block">
+                                    <select id="brandId">
+                                        <option value="">请选择品牌</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label" for="description">商品详情</label>
+                                <div class="layui-input-block">
+                                    <textarea id="description" placeholder="请输入商品详情" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+            <div class="layui-row">
+                <fieldset class="layui-elem-field" style="padding: 20px">
+                    <legend>设置商品图片</legend>
+                    <div class="layui-field-box">
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                <div class="layui-row imgs">
+                                    <div class="layui-col-xs4 imgAdd img">
+                                        <a href="#" class="layui-btn layui-btn-primary"
+                                           style="width: 75px;height: 75px;padding: 20px">
+                                            +
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="layui-row">
+                <fieldset class="layui-elem-field">
+                    <legend>设置商品参数</legend>
+                    <div style="padding: 10px 10px">
+                        <div class="paramsList">
+                        </div>
+                        <button class="layui-btn-fluid layui-btn layui-btn-primary" id="addParams">添加参数</button>
+                    </div>
+
+                </fieldset>
+            </div>
+            <div class="layui-row">
+                <div>
+                    <button type="button" class="deliver layui-btn layui-btn-normal layui-btn-fluid" id="addGoods">
+                        保存商品
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    layui.use(['table', 'jquery', "form", "layer", "layedit"], function () {
+        const $ = layui.jquery;
+        const form = layui.form;
+        const layer = layui.layer;
+        const token = localStorage.getItem("token");
+
+        $(document).ready(function () {
+            ajax_common("/admin/goods/allSelect", token, function (data) {
+                console.log(data)
+                if (data.succeed) {
+                    let brands = data.data.brands.data;
+                    let types = data.data.types.data;
+                    for (let i = 0; i < types.length; i++) {
+                        let type = types[i];
+                        $("#typeId").append(
+                            $("<option>").attr("value", type.id).html(type.typeName)
+                        )
+                    }
+                    for (let i = 0; i < brands.length; i++) {
+                        let brand = brands[i];
+                        $("#brandId").append(
+                            $("<option>").attr("value", brand.id).html(brand.name)
+                        )
+                    }
+                    let params = {};
+                    params.goodsId = "${goodsId}";
+                    ajax_data("/admin/goods/detail", token, JSON.stringify(params), function (result) {
+                        console.log(result);
+                        if (result.succeed) {
+                            const goods = result.data;
+                            //基本信息
+                            $("#id").val(goods.id);
+                            $("#goodsName").val(goods.goodsName)
+                            $("#description").val(goods.description)
+                            $("#price").val(goods.price)
+                            $("#count").val(goods.count)
+
+                            //下拉框
+                            let typeEle = "#typeId option[value=" + goods.typeId + "]:last";
+                            $(typeEle).attr("selected", "true");
+                            let brandEle = "#brandId option[value=" + goods.brandId + "]:last";
+                            $(brandEle).attr("selected", "true");
+                            form.render('select');
+
+                            //参数
+                            const goodsParamsList = goods.paramsList;
+                            for (let i = 0; i < goodsParamsList.length; i++) {
+                                let goodsParam = goodsParamsList[i];
+                                $(".paramsList").append(goodsParams(goodsParam));
+                                $(".paramsList .paramsItem .params-del").click(function () {
+                                    $(this).parents(".paramsItem").remove();
+                                })
+                            }
+
+                            //图片
+                            const imgs = goods.imgs;
+                            let imgList = imgs.split(",");
+                            for (let i = 0; i < imgList.length; i++) {
+                                console.log(imgList[i]);
+                                $(".imgs").prepend(imgShow(imgList[i]));
+                            }
+                            rest();
+                        } else {
+                            layer.alert("获取详情失败！")
+                        }
+                    })
+                } else {
+                    layer.msg(data.msg);
+                }
+            })
+        })
+
+        $("#addGoods").click(function () {
+            //图片集合重置
+            let data = {};
+            let urls = "";
+            let imgs = $("img");
+            for (let i = 0; i < imgs.length; i++) {
+                let url = $(imgs[i]).attr("src")
+                urls += url + ",";
+            }
+            let paramsList = [];
+            for (let i = 0; i < $(".paramsList .paramsItem").length; i++) {
+                let params = {};
+                params.key = $(".paramsList .paramsItem input[name=key]:eq(" + i + ")").val();
+                params.value = $(".paramsList .paramsItem input[name=value]:eq(" + i + ")").val();
+                paramsList.push(params);
+            }
+
+            data.goodsName = $("#goodsName").val();
+            if (!check(data.goodsName, "商品名不能为空")) {
+                return false;
+            }
+            data.goodsId = '${goodsId}';
+            data.description = $("#description").val();
+            data.imgs = urls;
+            data.brandId = $("#brandId").val();
+            data.typeId = $("#typeId").val();
+            data.count = $("#count").val();
+            if (count < 0) {
+                layer.alert("商品数量不能小于0", {"icon": 2})
+            }
+            data.specifications = paramsList;
+            data.price = $("#price").val();
+            if (price < 0) {
+                layer.alert("商品数量不能小于0", {"icon": 2})
+            }
+            data.state = 0;
+            console.log(data)
+            layer.confirm("确认保存商品?", ['确认', '取消'], function () {
+                ajax_data("/admin/goods/save", token, JSON.stringify(data), function (result) {
+                    console.log(result)
+                    if (result.succeed) {
+                        layer.alert("保存成功", {"icon": 1}, function () {
+                            location.reload();
+                        })
+                    } else {
+                        layer.alert("保存失败", {"icon": 2})
+                    }
+                })
+            });
+
+            return false;
+        });
+
+        function check(name, msg) {
+            if (name == null || name === "" || name.length === 0) {
+                layer.alert(msg, {"icon": 2})
+                return false;
+            }
+            return true;
+        }
+
+        $("#addParams").click(function () {
+            $(".paramsList").append(goodsParams(null));
+            $(".paramsList .paramsItem .params-del").click(function () {
+                $(this).parents(".paramsItem").remove();
+            })
+        })
+
+        $(".imgAdd").click(function () {
+            $("#imgUpload").click();
+        })
+
+        $("#imgUpload").change(function () {
+            let img = $("#imgUpload").get(0).files[0];
+            let formData = new FormData();
+
+            formData.append("upload", img);
+            formData.append("token", token);
+
+            let index = layer.load(1);
+
+            //异步请求
+            $.ajax({
+                url: "http://localhost:8131/resources/api/upload",
+                data: formData,
+                type: "POST",
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                crossDomain: true,//跨域请求
+                xhrFields: {
+                    withCredentials: true//允许携带cookie
+                },
+                success: function (res) {
+                    console.log(res)
+                    if (res.status) {
+                        layer.close(index);
+                        $(".imgs").prepend(imgShow(res.data));
+                        rest();
+                        layer.msg("图片上传成功!");
+                    } else {
+                        layer.close(index);
+                        layer.alert(res.msg, {"icon": 2});
+                    }
+                },
+                error: function (data) {
+                    layer.close(index);
+                    layer.alert("请求超时!", {"icon": 3})
+                }
+            });
+        })
+
+        function imgShow(url) {
+            if (url == null || url === "") {
+                return null;
+            }
+            var strVar = "";
+            strVar += "                        <div class=\"layui-col-xs4 img\">";
+            strVar += "                            <a href=\"#\" class=\"imgBtn\">";
+            strVar += "                                <img src=\"" + url + "\">";
+            strVar += "                            <\/a>";
+            strVar += "                        <a class=\"layui-btn layui-btn-sm layui-btn-primary layui-btn-fluid img-del\" style=\"margin-top: 10px;border:none\">删除" + "</a>\n";
+            strVar += "                        <\/div>";
+            return $(strVar);
+
+        }
+
+        function goodsParams(item) {
+            let params = "";
+            params += " <div class=\"layui-form-item paramsItem \">";
+            params += "                        <div class=\"layui-inline\">";
+            params += "                            <label class=\"layui-form-label\">参数名<\/label>";
+            params += "                            <div class=\"layui-input-inline\">";
+            params += "                                <input type=\"text\" name=\"key\"";
+            if (item != null) {
+                params += "                                       class=\"layui-input\" value='" + item.paramKey + "'/>";
+            } else {
+                params += "                                       class=\"layui-input\" value=\"\">";
+            }
+            params += "                            <\/div>";
+            params += "                        <\/div>";
+            params += "                        <div class=\"layui-inline\">";
+            params += "                            <label class=\"layui-form-label\">参数值<\/label>";
+            params += "                            <div class=\"layui-input-inline\">";
+            params += "                                <input type=\"text\" name=\"value\"";
+            if (item != null) {
+                params += "                                       class=\"layui-input\" value='" + item.paramValue + "'/>";
+            } else {
+                params += "                                       class=\"layui-input\" value=\"\">";
+            }
+            params += "                            <\/div>";
+            params += "                        <\/div>";
+            params += " <div class=\"layui-inline\">";
+            params += "                                    <button class=\"layui-btn-danger layui-btn layui-btn-sm params-del\">删除<\/button>";
+            params += "                                <\/div>";
+            params += "                    <\/div>";
+
+            return $(params);
+        }
+
+//重新绑定按钮事件
+        function rest() {
+            //设置图片预览
+            $(".imgBtn").click(function () {
+                let obj = $(this).children("img")
+                layer.open({
+                    type: 1,
+                    shade: false,
+                    title: false, //不显示标题
+                    shadeClose: true,
+                    content: obj
+                });
+            });
+
+            //设置删除按钮功能
+            $(".img-del").click(function () {
+                $(this).parent(".img").remove()
+            })
+        }
+    })
+</script>
 </html>

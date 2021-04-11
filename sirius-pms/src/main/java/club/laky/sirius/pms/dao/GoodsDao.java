@@ -3,6 +3,7 @@ package club.laky.sirius.pms.dao;
 import club.laky.sirius.pms.entity.Goods;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -67,5 +68,16 @@ public interface GoodsDao {
                                 @Param("typeId") Integer typeId, @Param("state") Integer state);
 
     List<Goods> queryGoodsList(@Param("offset") Integer offset, @Param("limit") Integer limit,
-                        @Param("goodsName") String goodsName, @Param("brandId") Integer brandId, @Param("typeId") Integer typeId, @Param("state") Integer state);
+                               @Param("goodsName") String goodsName, @Param("brandId") Integer brandId, @Param("typeId") Integer typeId, @Param("state") Integer state);
+
+    Integer queryCountGoodsOrder(Integer id);
+
+    List<Goods> queryOnSale(@Param("offset") Integer offset, @Param("limit") Integer limit,
+                            @Param("goodsName") String goodsName, @Param("typeId") Integer typeId,
+                            @Param("brandId") Integer brandId,
+                            @Param("priceStart") BigDecimal priceStart, @Param("priceEnd") BigDecimal priceEnd);
+
+    Integer queryOnSaleCount(@Param("goodsName") String goodsName, @Param("typeId") Integer typeId,
+                             @Param("brandId") Integer brandId,
+                             @Param("priceStart") BigDecimal priceStart, @Param("priceEnd") BigDecimal priceEnd);
 }

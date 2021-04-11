@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * (Goods)实体类
@@ -51,7 +52,13 @@ public class Goods implements Serializable {
     @TableField(exist = false)
     private String typeName;
 
-    public Goods(){
+    @TableField(exist = false)
+    private String url;
+
+    @TableField(exist = false)
+    private List<GoodsParams> paramsList;
+
+    public Goods() {
 
     }
 

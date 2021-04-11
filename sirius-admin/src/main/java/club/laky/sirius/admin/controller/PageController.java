@@ -185,11 +185,30 @@ public class PageController {
     }
 
     /**
+     * 商品上架
+     */
+    @RequestMapping("product/detail")
+    public ModelAndView productDetail(HttpServletRequest request, Integer goodsId) {
+        ModelAndView result = modelUtils.createModel(request, "/product/detail");
+        result.addObject("goodsId", goodsId);
+        return result;
+    }
+
+    /**
      * 商品类型
      */
     @RequestMapping("product/type")
     public ModelAndView productType(HttpServletRequest request) {
         return modelUtils.createModel(request, "/product/type");
+    }
+
+
+    /**
+     * 商品类型添加
+     */
+    @RequestMapping("product/type/add")
+    public ModelAndView productTypeAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/product/addType");
     }
 
     /**
@@ -198,6 +217,14 @@ public class PageController {
     @RequestMapping("product/brand")
     public ModelAndView productBrand(HttpServletRequest request) {
         return modelUtils.createModel(request, "/product/brand");
+    }
+
+    /**
+     * 商品品牌
+     */
+    @RequestMapping("product/brand/add")
+    public ModelAndView productBrandAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/product/addBrand");
     }
 
     /**

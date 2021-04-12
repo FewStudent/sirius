@@ -19,4 +19,9 @@ public class LoginServiceImpl implements LoginService {
         String pwd = jsonObject.getString("pwd");
         return permissionService.login(account, pwd, 0);
     }
+
+    @Override
+    public Object logout(String token) {
+        return permissionService.logout(token);
+    }
 }

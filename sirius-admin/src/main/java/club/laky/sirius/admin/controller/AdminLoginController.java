@@ -44,7 +44,7 @@ public class AdminLoginController {
     public Object logout(@RequestParam String token) {
         try {
             logger.info("-------------系统管理员注销-------------");
-            return service.login(token);
+            return service.logout(token);
         } catch (Exception e) {
             logger.error("系统管理员注销失败：" + e.getMessage());
             return WebResult.error(e.getMessage());

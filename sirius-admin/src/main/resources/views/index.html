@@ -173,7 +173,8 @@
 
         $(".logout").click(function () {
             layer.confirm("是否退出登录?", {"icon": 3}, function () {
-                window.location.href = "/admin/logout？token=" + token;
+                //TODO
+                window.location.href = "/admin/admin/logout?token=" + token;
             })
         })
         $("#info").click(function () {

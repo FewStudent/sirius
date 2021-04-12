@@ -5,4 +5,5 @@ public interface LoginService {
 
     Object login(String jsonBody);
 
+    Object logout(String token);
 }

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
+</head>
+<body>
+<div class="layui-container">
+    <fieldset class="layui-elem-field">
+        <legend>商品信息</legend>
+        <div class="layui-field-box">
+            <div class="layui-col-md6" style="display: flex">
+                <div class="layui-carousel" style="width: 250px;height: 250px" id="goods-img-carousel">
+                    <div carousel-item class="goods-img-list">
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div>
+                    <div>
+                        <p style="font-size: 18px" id="goods-name">商品名</p>
+                    </div>
+                    <div>
+                        <div class="layui-col-md6" style="margin:10px 0px;color: #FFB800;font-size: 16px"
+                             id="goods-price">
+                            价格 : ￥12.5
+                        </div>
+                        <div class="layui-col-md6" style="margin: 10px 0px;font-size: 16px" id="goods-ount">
+                            剩余量： 200
+                        </div>
+                    </div>
+                    <div>
+                        <div class="layui-col-md6" style="margin: 10px 0px" id="goods-type">
+                            类型 : 类型
+                        </div>
+                        <div class="layui-col-md6" style="margin:10px 0px;" id="goods-brand">
+                            品牌 ： 品牌
+                        </div>
+                    </div>
+                    <div class="layui-col-md12" style="margin: 10px 0px">
+                        <h3>商品介绍：</h3>
+                        <p id="goods-desc" style="margin: 5px 0px">
+                            描述
+                        </p>
+                    </div>
+                    <div>
+                        <div class="layui-col-md6">
+                            <button class="layui-btn layui-btn-danger layui-btn-fluid buy">购买</button>
+                        </div>
+                        <div class="layui-col-md6">
+                            <button class="layui-btn layui-btn-warm layui-btn-fluid cart">添加购物车</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>商品规格</legend>
+                <div class="layui-field-box params-list">
+
+                </div>
+            </fieldset>
+        </div>
+        <div class="layui-col-md12">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>评论区</legend>
+                <div class="layui-field-box">
+                    <div style="margin: 10px">
+                        <div class="comment-list">
+
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </fieldset>
+</div>
+</body>
+<script>
+    layui.use(['element', 'jquery', 'layer', 'form', 'laypage', 'carousel'], function () {
+        let element = layui.element;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let form = layui.form;
+        let laypage = layui.laypage;
+        let carousel = layui.carousel;
+        let initPage = false;
+
+        const token = localStorage.getItem("token");
+
+
+        $(document).ready(function () {
+            let data = {};
+            data.goodsId = '${goodsId}';
+            ajax_data("/client/common/goods/detail", token, JSON.stringify(data), function (result) {
+                console.log(result);
+                if (result.succeed) {
+                    const goods = result.data;
+                    const paramsList = goods.paramsList;
+                    let imgs = goods.imgs;
+                    let imgList = imgs.split(",");
+
+                    //基本信息
+                    $("#goods-name").html(goods.goodsName);
+                    $("#goods-type").html("商品类型：" + goods.typeName);
+                    $("#goods-brand").html("商品品牌：" + goods.brandName);
+                    $("#goods-price").html("商品单价：" + goods.price);
+                    $("#goods-desc").html("&nbsp;&nbsp;&nbsp;&nbsp;" + goods.description);
+                    $("#goods-count").html("商品数量：" + goods.count);
+                    //图片
+                    console.log(imgList);
+                    for (let i = 0; i < imgList.length; i++) {
+                        $(".goods-img-list").append(goodsImg(imgList[i]));
+                    }
+                    carousel.render({
+                        elem: '#goods-img-carousel'
+                        , width: '75%' //设置容器宽度
+                        , arrow: 'always' //始终显示箭头
+                        //,anim: 'updown' //切换动画方式
+                    });
+                    //规格值
+                    for (let i = 0; i < paramsList.length; i++) {
+                        let params = paramsList[i];
+                        $(".params-list").append(goodsParams(params));
+                    }
+                } else {
+                    layer.alert("获取详情失败!跳转到首页!", function () {
+                        window.location.href = "/client/page/common/index?token=" + token;
+                    })
+                }
+            })
+
+            ajax_data("/client/common/goods/comments", token, JSON.stringify(data), function (result) {
+                console.log(result);
+                if (result.succeed) {
+                    const commetList = result.data;
+                    for (let i = 0; i < commetList.length; i++) {
+                        $(".comment-list").append(commentItem(commetList[i]));
+                    }
+                } else {
+                    console.log("没有评论!");
+                }
+            })
+        })
+
+        function goodsParams(item) {
+            let params = "";
+            params += " <div class=\"layui-form-item paramsItem \">";
+            params += "                        <div class=\"layui-inline\">";
+            params += "                            <label class=\"layui-form-label\">规格参数<\/label>";
+            params += "                            <div class=\"layui-input-inline\">";
+            params += "                                <input disabled type=\"text\" name=\"key\"";
+            if (item != null) {
+                params += "                                       class=\"layui-input\" value='" + item.paramKey + "'/>";
+            } else {
+                params += "                                       class=\"layui-input\" value=\"\">";
+            }
+            params += "                            <\/div>";
+            params += "                        <\/div>";
+            params += "                        <div class=\"layui-inline\">";
+            params += "                            <label class=\"layui-form-label\">规格值<\/label>";
+            params += "                            <div class=\"layui-input-inline\">";
+            params += "                                <input disabled type=\"text\" name=\"value\"";
+            if (item != null) {
+                params += "                                       class=\"layui-input\" value='" + item.paramValue + "'/>";
+            } else {
+                params += "                                       class=\"layui-input\" value=\"\">";
+            }
+            params += "                            <\/div>";
+            params += "                        <\/div>";
+            params += "                    <\/div>";
+
+            return $(params);
+        }
+
+        function goodsImg(img) {
+            if (img === null || img === '') {
+                return null;
+            }
+            let htmlStr = "";
+            htmlStr += "<div class=\"goods-img\">";
+            htmlStr += "                            <img src='" + img + "' style=\"width: 100%;height: 100%\" alt=\"商品图片\">";
+            htmlStr += "                        <\/div>";
+            return $(htmlStr);
+        }
+
+        function commentItem(comment) {
+            let htmlStr = "";
+            htmlStr += "<div class=\"layui-card\" style=\"border: solid 	#F0E68C 1px\">";
+            htmlStr += "                            <div class=\"layui-card-header\">";
+            htmlStr += "                                <div class=\"layui-col-md6\">";
+            htmlStr += "                                    " + comment.nickName;
+            htmlStr += "                                <\/div>";
+            htmlStr += "                                <div class=\"layui-col-md6\">";
+            htmlStr += "                                    发表于:" + comment.createTime;
+            htmlStr += "                                <\/div>";
+            htmlStr += "                            <\/div>";
+            htmlStr += "                            <div class=\"layui-card-body\">";
+            htmlStr += "                                <p style=\"margin: 5px 0px\">" + comment.content + "<\/p>";
+            htmlStr += "                                <p style=\"margin: 0px 5px;color: limegreen\">-- " + comment.replier + "：" + comment.reply + "<\/p>";
+            htmlStr += "                            <\/div>";
+            htmlStr += "                        <\/div>";
+            return $(htmlStr);
+        }
+    })
+</script>
+</html>

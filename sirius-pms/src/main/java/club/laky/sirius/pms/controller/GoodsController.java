@@ -166,8 +166,8 @@ public class GoodsController {
         try {
             logger.info("-------------商品所有下拉框-------------");
             Map<String, Object> result = new HashMap<>();
-            result.put("types",goodsTypeService.allType());
-            result.put("brands",goodsBrandService.allBrand());
+            result.put("types", goodsTypeService.allType());
+            result.put("brands", goodsBrandService.allBrand());
             return WebResult.success(result);
         } catch (Exception e) {
             logger.error("商品所有下拉框失败：" + e.getMessage());
@@ -175,18 +175,18 @@ public class GoodsController {
         }
     }
 
-        /**
-             * 获取已上架的商品
-             */
-            @ResponseBody
-            @RequestMapping("allOnSale")
-            public Object allOnSale(@RequestBody String jsonBody) {
-                try {
-                    logger.info("-------------获取已上架的商品-------------");
-                    return service.allOnSale(jsonBody);
-                } catch (Exception e) {
-                    logger.error("获取已上架的商品失败：" + e.getMessage());
-                    return WebResult.error(e.getMessage());
-                }
-            }
+    /**
+     * 获取已上架的商品
+     */
+    @ResponseBody
+    @RequestMapping("allOnSale")
+    public Object allOnSale(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------获取已上架的商品-------------");
+            return service.allOnSale(jsonBody);
+        } catch (Exception e) {
+            logger.error("获取已上架的商品失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
 }

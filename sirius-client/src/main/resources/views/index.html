@@ -2,9 +2,212 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>首页 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
+<div class="layui-container">
+    <fieldset class="layui-elem-field">
+        <legend>- 商品列表 -</legend>
+        <div class="layui-field-box">
+            <div class="search layui-form">
+                <div class="layui-row layui-col-space10">
+                    <div class="layui-col-md4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商品名</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="goodsName" autocomplete="off"
+                                       placeholder="请输入商品名" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商品类型</label>
+                            <div class="layui-input-block">
+                                <select name="typeId" id="typeId">
+                                    <option value="">请选择商品类型</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商品品牌</label>
+                            <div class="layui-input-block">
+                                <select name="brandId" id="brandId">
+                                    <option value="">请选择商品品牌</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单价范围-起</label>
+                            <div class="layui-input-block">
+                                <input type="number" id="priceStart" autocomplete="off"
+                                       placeholder="请输入最低单价" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单价范围-止</label>
+                            <div class="layui-input-block">
+                                <input type="number" id="priceEnd" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入最大单价" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <button class="layui-btn layui-btn-normal layui-btn-fluid goods-search">搜索</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="layui-border-blue">
+            <div class="layui-row layui-col-space10 goodsList">
 
+            </div>
+            <div id="goods-page"></div>
+        </div>
+    </fieldset>
+</div>
 </body>
+<script>
+    layui.use(['element', 'jquery', 'layer', 'form', 'laypage'], function () {
+        let element = layui.element;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let form = layui.form;
+        let laypage = layui.laypage;
+        let initPage = false;
+
+        const token = localStorage.getItem("token");
+
+
+        $(".goods-search").click(function () {
+            initPage = false;
+            reload(1);
+        })
+
+        $(document).ready(function () {
+            ajax_common("/client/common/goods/allSelect", token, function (data) {
+                console.log(data)
+                if (data.succeed) {
+                    let brands = data.data.brands.data;
+                    let types = data.data.types.data;
+                    for (let i = 0; i < types.length; i++) {
+                        let type = types[i];
+                        $("#typeId").append(
+                            $("<option>").attr("value", type.id).html(type.typeName)
+                        )
+                    }
+                    for (let i = 0; i < brands.length; i++) {
+                        let brand = brands[i];
+                        $("#brandId").append(
+                            $("<option>").attr("value", brand.id).html(brand.name)
+                        )
+                    }
+                    form.render("select");
+                } else {
+                    layer.msg(data.msg);
+                }
+            })
+
+            reload(1);
+        })
+
+        function reload(page) {
+            $(".goodsList").empty()
+            ajax_data("/client/common/goods/allOnSale", token, requestData(page), function (result) {
+                console.log(result);
+                if (result.succeed) {
+                    const count = result.data.count;
+                    const goodsList = result.data.data;
+                    for (let i = 0; i < goodsList.length; i++) {
+                        let goods = goodsList[i];
+                        $(".goodsList").append(goodsItem(goods));
+                    }
+                    $(".goods-detail").click(function () {
+                        let id = $(this).attr("lay-id");
+                        toDetail(id);
+                    })
+                    if (!initPage) {
+                        initPage = true;
+                        laypage.render({
+                            elem: 'goods-page'
+                            , count: count
+                            , limit: 15
+                            , curr: page
+                            , theme: '#FF5722'
+                            , layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+                            , jump: function (obj) {
+                                reload(obj.curr);
+                            }
+                        });
+                    }
+                } else {
+                    layer.msg(result.msg);
+                }
+            })
+        }
+
+        function toDetail(goodsId) {
+            if (goodsId === null) {
+                return;
+            }
+            const url = "/client/page/common/detail?goodsId=" + goodsId + "&token=" + token;
+            window.open(url);
+        }
+
+        function requestData(page) {
+            let data = {};
+            data.page = page;
+            data.limit = 15;
+            data.goodsName = $("#goodsName").val();
+            data.priceStart = $("#priceStart").val();
+            data.priceEnd = $("#priceEnd").val();
+            data.brandId = $("#brandId").val();
+            data.typeId = $("#typeId").val();
+            return JSON.stringify(data);
+        }
+
+        function goodsItem(goods) {
+            let goodsVar = "";
+            goodsVar += "<div class=\"layui-col-md4 goods-item\">";
+            goodsVar += "                    <fieldset class=\"layui-elem-field\">";
+            goodsVar += "                        <div style=\"margin: 10px\">";
+            goodsVar += "                            <div style=\"display: flex\" class=\"goods-img\">";
+            goodsVar += "                                <div style=\"margin: auto;\">";
+            goodsVar += "<a href='javaScript:;' lay-id='" + goods.id + "' class='goods-detail'>"
+            goodsVar += "                                    <img alt='商品图片' src='" + goods.url + "' width=\"250px\" height=\"250px\">";
+            goodsVar += "</a>"
+            goodsVar += "                                <\/div>";
+            goodsVar += "                            <\/div>";
+            goodsVar += "                            <div class=\"goods-info\" style=\"margin: 10px\">";
+            goodsVar += "                                <div class=\"goods-price\" style=\"color: red\">";
+            goodsVar += "                                    价格：￥" + goods.price;
+            goodsVar += "                                <\/div>";
+            goodsVar += "                                <div class=\"goods-name\" style='margin: 5px 0px'>";
+            goodsVar += "                                    商品名:" + goods.goodsName;
+            goodsVar += "                                <\/div>";
+            goodsVar += "                                <div>";
+            goodsVar += "                                    <div class=\"layui-col-md6 goods-type\" style='margin: 5px 0px'>";
+            goodsVar += "                                        类型：" + goods.typeName;
+            goodsVar += "                                    <\/div>";
+            goodsVar += "                                    <div class=\"layui-col-md6 goods-brand\" style='margin: 5px 0px'>";
+            goodsVar += "                                        品牌：" + goods.brandName;
+            goodsVar += "                                    <\/div>";
+            goodsVar += "                                <\/div>";
+            goodsVar += "                            <\/div>";
+            goodsVar += "                        <\/div>";
+            goodsVar += "                    <\/fieldset>";
+            goodsVar += "                <\/div>";
+            return $(goodsVar);
+        }
+    })
+</script>
 </html>

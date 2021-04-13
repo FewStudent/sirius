@@ -20,33 +20,41 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select id,
-               goods_name,
-               type_id,
-               description,
-               imgs,
-               count,
-               price,
-               state,
-               brand_id,
+        select g.id,
+               g.goods_name,
+               g.type_id,
+               g.description,
+               g.imgs,
+               g.count,
+               g.price,
+               g.state,
+               g.brand_id,
+               gb.name                          brand_name,
+               gt.type_name,
                SUBSTRING_INDEX(imgs, ',', 1) as url
-        from shop_mall.goods
-        where id = #{id}
+        from shop_mall.goods g
+                 left join shop_mall.goods_type gt on gt.id = g.type_id
+                 left join goods_brand gb on g.brand_id = gb.id
+        where g.id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select id,
-               goods_name,
-               type_id,
-               description,
-               imgs,
-               count,
-               price,
-               state,
-               brand_id,
+        select g.id,
+               g.goods_name,
+               g.type_id,
+               g.description,
+               g.imgs,
+               g.count,
+               g.price,
+               g.state,
+               g.brand_id,
+               gb.name                          brand_name,
+               gt.type_name,
                SUBSTRING_INDEX(imgs, ',', 1) as url
-        from shop_mall.goods
+        from shop_mall.goods g
+                 left join shop_mall.goods_type gt on gt.id = g.type_id
+                 left join goods_brand gb on g.brand_id = gb.id
         limit #{offset}, #{limit}
     </select>
 
@@ -181,23 +189,27 @@
         where goods_id = #{id}
     </select>
     <select id="queryOnSale" resultMap="BaseResultMap">
-        select * from goods
+        select g.*, gt.type_name, gb.`name` brand_name,
+        SUBSTRING_INDEX(imgs,',',1) as url
+        from goods g
+        left join goods_type gt on gt.id = g.type_id
+        left join goods_brand gb on gb.id = g.brand_id
         <where>
-            state = 1 and goods.count > 0
+            g.state = 1 and g.count > 0
             <if test="goodsName !=null and goodsName != ''">
-                and goods_name like CONCAT(#{goodsName},'%')
+                and g.goods_name like CONCAT(#{goodsName},'%')
             </if>
             <if test="brandId !=null">
-                and brand_id = #{brandId}
+                and g.brand_id = #{brandId}
             </if>
             <if test="typeId !=null">
-                and type_id = #{typeId}
+                and g.type_id = #{typeId}
             </if>
             <if test="priceStart !=null">
-                and price &lt;= #{priceStart}
+                and g.price &gt;= #{priceStart}
             </if>
             <if test="priceEnd !=null">
-                and price &gt; #{priceEnd}
+                and g.price &lt;= #{priceEnd}
             </if>
         </where>
         limit #{offset},#{limit}
@@ -216,10 +228,10 @@
                 and type_id = #{typeId}
             </if>
             <if test="priceStart !=null">
-                and price &lt;= #{priceStart}
+                and price &gt;= #{priceStart}
             </if>
             <if test="priceEnd !=null">
-                and price &gt; #{priceEnd}
+                and price &lt; #{priceEnd}
             </if>
         </where>
     </select>

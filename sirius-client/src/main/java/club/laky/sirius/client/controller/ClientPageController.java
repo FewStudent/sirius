@@ -39,4 +39,14 @@ public class ClientPageController {
         return modelUtils.createModel(request, "/regist");
     }
 
+
+    /**
+     * 商品详情
+     */
+    @RequestMapping("/common/detail")
+    public ModelAndView productDetail(HttpServletRequest request, Integer goodsId) {
+        ModelAndView result = modelUtils.createModel(request, "/detail");
+        result.addObject("goodsId", goodsId);
+        return result;
+    }
 }

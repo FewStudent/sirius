@@ -80,4 +80,6 @@ public interface GoodsDao {
     Integer queryOnSaleCount(@Param("goodsName") String goodsName, @Param("typeId") Integer typeId,
                              @Param("brandId") Integer brandId,
                              @Param("priceStart") BigDecimal priceStart, @Param("priceEnd") BigDecimal priceEnd);
+
+    List<Goods> getGoodsByIds(List<String> ids);
 }

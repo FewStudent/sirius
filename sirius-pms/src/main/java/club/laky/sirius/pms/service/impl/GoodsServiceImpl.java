@@ -4,11 +4,11 @@ import club.laky.sirius.pms.dao.GoodsDao;
 import club.laky.sirius.pms.dao.GoodsParamsDao;
 import club.laky.sirius.pms.entity.Goods;
 import club.laky.sirius.pms.entity.GoodsParams;
-import club.laky.sirius.pms.service.GoodsBrandService;
 import club.laky.sirius.pms.service.GoodsService;
 import club.laky.sirius.pms.utils.WebResult;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -240,5 +240,17 @@ public class GoodsServiceImpl implements GoodsService {
         result.put("count", count);
 
         return WebResult.success(result);
+    }
+
+    @Override
+    public List<Goods> getGoodsByIds(String ids) {
+        String[] idArray = ids.split(",");
+        List<String> idList = new ArrayList<>();
+        for (int i = 0; i < idArray.length; i++) {
+            if (!StringUtils.isEmpty(idArray[i])) {
+                idList.add(idArray[i]);
+            }
+        }
+        return goodsDao.getGoodsByIds(idList);
     }
 }

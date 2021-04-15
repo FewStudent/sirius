@@ -1,7 +1,7 @@
-package club.laky.sirius.ums.controller;
+package club.laky.sirius.oms.controller;
 
-import club.laky.sirius.ums.client.FeignCacheService;
-import club.laky.sirius.ums.client.FeignTestService;
+import club.laky.sirius.oms.client.FeignCacheService;
+import club.laky.sirius.oms.client.FeignTestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

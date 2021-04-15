@@ -1,4 +1,4 @@
-package club.laky.sirius.ums.config;
+package club.laky.sirius.oms.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

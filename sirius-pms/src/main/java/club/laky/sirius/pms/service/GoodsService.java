@@ -104,4 +104,6 @@ public interface GoodsService {
     WebResult detail(Integer goodsId);
 
     WebResult allOnSale(String jsonBody);
+
+    List<Goods> getGoodsByIds(String ids);
 }

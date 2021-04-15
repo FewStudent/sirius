@@ -1,5 +1,6 @@
 package club.laky.sirius.pms.controller;
 
+import club.laky.sirius.pms.entity.Goods;
 import club.laky.sirius.pms.service.GoodsBrandService;
 import club.laky.sirius.pms.service.GoodsService;
 import club.laky.sirius.pms.service.GoodsTypeService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -187,6 +189,21 @@ public class GoodsController {
         } catch (Exception e) {
             logger.error("获取已上架的商品失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取商品信息
+     */
+    @ResponseBody
+    @RequestMapping("getGoodsByIds")
+    public List<Goods> getGoodsByIds(@RequestParam String ids) {
+        try {
+            logger.info("-------------获取商品信息-------------");
+            return service.getGoodsByIds(ids);
+        } catch (Exception e) {
+            logger.error("获取商品信息失败：" + e.getMessage());
+            return null;
         }
     }
 }

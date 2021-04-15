@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.laky.sirius.oms.dao.GoodsOrderDao">
+
+    <resultMap id="BaseResultMap" type="club.laky.sirius.oms.entity.GoodsOrder">
+        <!--@Table goods_order-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
+        <result property="uId" column="u_id" jdbcType="INTEGER"/>
+        <result property="nickName" column="nickname" jdbcType="VARCHAR"/>
+
+        <result property="createTime" column="create_time" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="addressId" column="address_id" jdbcType="INTEGER"/>
+
+        <result property="addressName" column="addressName" jdbcType="VARCHAR"/>
+
+        <collection property="goodsList" ofType="club.laky.sirius.oms.entity.GoodsOrderList">
+            <id column="list_id" property="id" jdbcType="INTEGER"/>
+            <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+            <result property="goodsCount" column="goods_count" jdbcType="INTEGER"/>
+
+            <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
+            <result property="price" column="price"/>
+            <result property="url" column="url"/>
+        </collection>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               order_num,
+               u_id,
+               create_time,
+               state,
+               address_id
+        from shop_mall.goods_order
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id,
+               order_num,
+               u_id,
+               create_time,
+               state,
+               address_id
+        from shop_mall.goods_order
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        id, order_num, u_id, create_time, state, address_id
+        from shop_mall.goods_order
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="orderNum != null and orderNum != ''">
+                and order_num = #{orderNum}
+            </if>
+            <if test="uId != null">
+                and u_id = #{uId}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                and create_time = #{createTime}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+            <if test="addressId != null">
+                and address_id = #{addressId}
+            </if>
+        </where>
+    </select>
+    <select id="queryGoodsCount" resultType="java.lang.Integer">
+        select count(*) from goods where id in
+        <foreach collection="ids" close=")" index="index" item="id" open="(" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="queryOrderDetail" resultMap="BaseResultMap">
+        select gol.id                          as list_id,
+               gol.goods_count,
+               g.goods_name,
+               g.price,
+               SUBSTRING_INDEX(g.imgs, ',', 1) as url,
+               ua.u_address,
+               go.*
+        from goods_order go
+                 left join goods_order_list gol on go.id = gol.order_id
+                 left join goods g on g.id = gol.goods_id
+                 left join user_address ua on ua.id = go.address_id
+
+        where go.id = #{id}
+    </select>
+
+    <select id="queryMyOrder" resultType="club.laky.sirius.oms.entity.GoodsOrder">
+        select go.*,CONCAT(ua.u_address,',',ua.u_detail) as address,su.nickname
+        from goods_order go
+        left join sys_user su on su.id = go.u_id
+        left join user_address ua on ua.id = go.address_id
+        <where>
+            <if test="state !=null">
+                and go.state = #{state}
+            </if>
+            <if test="userId !=null">
+                and su.id = #{userId}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="queryMyOrderCount" resultType="java.lang.Integer">
+        select count(*)
+        from goods_order go
+        left join sys_user su on su.id = go.u_id
+        left join user_address ua on ua.id = go.address_id
+        <where>
+            <if test="state !=null">
+                and go.state = #{state}
+            </if>
+            <if test="userId !=null">
+                and su.id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="queryAdminOrders" resultMap="BaseResultMap">
+        select go.*,CONCAT(ua.u_address,',',ua.u_detail) as address,su.nickname
+        from goods_order go
+        left join sys_user su on su.id = go.u_id
+        left join user_address ua on ua.id = go.address_id
+        <where>
+            <if test="state !=null">
+                and go.state = #{state}
+            </if>
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="no !=null and no != ''">
+                and go.order_num = #{no}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+    <select id="queryAdminOrdersCount" resultType="java.lang.Integer">
+        select count(*)
+        left join sys_user su on su.id = go.u_id
+        left join user_address ua on ua.id = go.address_id
+        <where>
+            <if test="state !=null">
+                and go.state = #{state}
+            </if>
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="no !=null and no != ''">
+                and go.order_num = #{no}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_mall.goods_order(order_num, u_id, create_time, state, address_id)
+        values (#{orderNum}, #{uId}, #{createTime}, #{state}, #{addressId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shop_mall.goods_order
+        <set>
+            <if test="orderNum != null and orderNum != ''">
+                order_num = #{orderNum},
+            </if>
+            <if test="uId != null">
+                u_id = #{uId},
+            </if>
+            <if test="createTime != null and createTime != ''">
+                create_time = #{createTime},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="addressId != null">
+                address_id = #{addressId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shop_mall.goods_order
+        where id = #{id}
+    </delete>
+
+</mapper>

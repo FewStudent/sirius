@@ -235,4 +235,11 @@
             </if>
         </where>
     </select>
+    <select id="getGoodsByIds" resultType="club.laky.sirius.pms.entity.Goods">
+        select * from goods
+        where id in
+        <foreach collection="ids" item="id" separator="," index="index" close=")" open="(">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

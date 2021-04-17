@@ -84,130 +84,172 @@
 </body>
 <script>
     layui.use(['element', 'jquery', 'layer', 'form', 'laypage', 'carousel'], function () {
-        let element = layui.element;
-        let $ = layui.jquery;
-        let layer = layui.layer;
-        let form = layui.form;
-        let laypage = layui.laypage;
-        let carousel = layui.carousel;
-        let initPage = false;
+            let element = layui.element;
+            let $ = layui.jquery;
+            let layer = layui.layer;
+            let form = layui.form;
+            let laypage = layui.laypage;
+            let carousel = layui.carousel;
+            let initPage = false;
 
-        const token = localStorage.getItem("token");
+            const token = localStorage.getItem("token");
 
-
-        $(document).ready(function () {
-            let data = {};
-            data.goodsId = '${goodsId}';
-            ajax_data("/client/common/goods/detail", token, JSON.stringify(data), function (result) {
-                console.log(result);
-                if (result.succeed) {
-                    const goods = result.data;
-                    const paramsList = goods.paramsList;
-                    let imgs = goods.imgs;
-                    let imgList = imgs.split(",");
-
-                    //基本信息
-                    $("#goods-name").html(goods.goodsName);
-                    $("#goods-type").html("商品类型：" + goods.typeName);
-                    $("#goods-brand").html("商品品牌：" + goods.brandName);
-                    $("#goods-price").html("商品单价：" + goods.price);
-                    $("#goods-desc").html("&nbsp;&nbsp;&nbsp;&nbsp;" + goods.description);
-                    $("#goods-count").html("商品数量：" + goods.count);
-                    //图片
-                    console.log(imgList);
-                    for (let i = 0; i < imgList.length; i++) {
-                        $(".goods-img-list").append(goodsImg(imgList[i]));
+            $(".buy").click(function () {
+                layer.prompt({title: '请输入购买数量', formType: 2}, function (text, index) {
+                    if (isNumber(text)) {
+                        layer.confirm("是否确认下单?", function () {
+                            let data = {};
+                            let list = [];
+                            let item = {};
+                            item.goodsId = "${goodsId}";
+                            item.count = text;
+                            list.push(item);
+                            data.list = list;
+                            ajax_data("/client/order/saveOrder", token, JSON.stringify(data), function (result) {
+                                if (result.succeed) {
+                                    window.location.href = "/client/page/order/detail?orderNum=" + result.data + "&token=" + token;
+                                } else {
+                                    layer.msg(result.msg);
+                                }
+                            })
+                        })
+                    } else {
+                        layer.alert("输入的数量错误，数量必须为正整数!", {"icon": 2})
                     }
-                    carousel.render({
-                        elem: '#goods-img-carousel'
-                        , width: '75%' //设置容器宽度
-                        , arrow: 'always' //始终显示箭头
-                        //,anim: 'updown' //切换动画方式
-                    });
-                    //规格值
-                    for (let i = 0; i < paramsList.length; i++) {
-                        let params = paramsList[i];
-                        $(".params-list").append(goodsParams(params));
-                    }
-                } else {
-                    layer.alert("获取详情失败!跳转到首页!", function () {
-                        window.location.href = "/client/page/common/index?token=" + token;
-                    })
-                }
+                });
             })
 
-            ajax_data("/client/common/goods/comments", token, JSON.stringify(data), function (result) {
-                console.log(result);
-                if (result.succeed) {
-                    const commetList = result.data;
-                    for (let i = 0; i < commetList.length; i++) {
-                        $(".comment-list").append(commentItem(commetList[i]));
-                    }
-                } else {
-                    console.log("没有评论!");
+            //正整数校验
+            function isNumber(val) {
+                if (val === "") {
+                    return false;
                 }
+
+                if (!(/(^[1-9]\d*$)/.test(val))) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            $(".cart").click(function () {
+                layer.msg("假装添加购物车");
             })
-        })
 
-        function goodsParams(item) {
-            let params = "";
-            params += " <div class=\"layui-form-item paramsItem \">";
-            params += "                        <div class=\"layui-inline\">";
-            params += "                            <label class=\"layui-form-label\">规格参数<\/label>";
-            params += "                            <div class=\"layui-input-inline\">";
-            params += "                                <input disabled type=\"text\" name=\"key\"";
-            if (item != null) {
-                params += "                                       class=\"layui-input\" value='" + item.paramKey + "'/>";
-            } else {
-                params += "                                       class=\"layui-input\" value=\"\">";
+            $(document).ready(function () {
+                let data = {};
+                data.goodsId = '${goodsId}';
+                ajax_data("/client/common/goods/detail", token, JSON.stringify(data), function (result) {
+                    console.log(result);
+                    if (result.succeed) {
+                        const goods = result.data;
+                        const paramsList = goods.paramsList;
+                        let imgs = goods.imgs;
+                        let imgList = imgs.split(",");
+
+                        //基本信息
+                        $("#goods-name").html(goods.goodsName);
+                        $("#goods-type").html("商品类型：" + goods.typeName);
+                        $("#goods-brand").html("商品品牌：" + goods.brandName);
+                        $("#goods-price").html("商品单价：￥" + goods.price);
+                        $("#goods-desc").html("&nbsp;&nbsp;&nbsp;&nbsp;" + goods.description);
+                        $("#goods-count").html("商品数量：" + goods.count);
+                        //图片
+                        console.log(imgList);
+                        for (let i = 0; i < imgList.length; i++) {
+                            $(".goods-img-list").append(goodsImg(imgList[i]));
+                        }
+                        carousel.render({
+                            elem: '#goods-img-carousel'
+                            , width: '75%' //设置容器宽度
+                            , arrow: 'always' //始终显示箭头
+                            //,anim: 'updown' //切换动画方式
+                        });
+                        //规格值
+                        for (let i = 0; i < paramsList.length; i++) {
+                            let params = paramsList[i];
+                            $(".params-list").append(goodsParams(params));
+                        }
+                    } else {
+                        layer.alert("获取详情失败!跳转到首页!", function () {
+                            window.location.href = "/client/page/common/index?token=" + token;
+                        })
+                    }
+                })
+
+                ajax_data("/client/common/goods/comments", token, JSON.stringify(data), function (result) {
+                    console.log(result);
+                    if (result.succeed) {
+                        const commetList = result.data;
+                        for (let i = 0; i < commetList.length; i++) {
+                            $(".comment-list").append(commentItem(commetList[i]));
+                        }
+                    } else {
+                        console.log("没有评论!");
+                    }
+                })
+            })
+
+            function goodsParams(item) {
+                let params = "";
+                params += " <div class=\"layui-form-item paramsItem \">";
+                params += "                        <div class=\"layui-inline\">";
+                params += "                            <label class=\"layui-form-label\">规格参数<\/label>";
+                params += "                            <div class=\"layui-input-inline\">";
+                params += "                                <input disabled type=\"text\" name=\"key\"";
+                if (item != null) {
+                    params += "                                       class=\"layui-input\" value='" + item.paramKey + "'/>";
+                } else {
+                    params += "                                       class=\"layui-input\" value=\"\">";
+                }
+                params += "                            <\/div>";
+                params += "                        <\/div>";
+                params += "                        <div class=\"layui-inline\">";
+                params += "                            <label class=\"layui-form-label\">规格值<\/label>";
+                params += "                            <div class=\"layui-input-inline\">";
+                params += "                                <input disabled type=\"text\" name=\"value\"";
+                if (item != null) {
+                    params += "                                       class=\"layui-input\" value='" + item.paramValue + "'/>";
+                } else {
+                    params += "                                       class=\"layui-input\" value=\"\">";
+                }
+                params += "                            <\/div>";
+                params += "                        <\/div>";
+                params += "                    <\/div>";
+
+                return $(params);
             }
-            params += "                            <\/div>";
-            params += "                        <\/div>";
-            params += "                        <div class=\"layui-inline\">";
-            params += "                            <label class=\"layui-form-label\">规格值<\/label>";
-            params += "                            <div class=\"layui-input-inline\">";
-            params += "                                <input disabled type=\"text\" name=\"value\"";
-            if (item != null) {
-                params += "                                       class=\"layui-input\" value='" + item.paramValue + "'/>";
-            } else {
-                params += "                                       class=\"layui-input\" value=\"\">";
+
+            function goodsImg(img) {
+                if (img === null || img === '') {
+                    return null;
+                }
+                let htmlStr = "";
+                htmlStr += "<div class=\"goods-img\">";
+                htmlStr += "                            <img src='" + img + "' style=\"width: 100%;height: 100%\" alt=\"商品图片\">";
+                htmlStr += "                        <\/div>";
+                return $(htmlStr);
             }
-            params += "                            <\/div>";
-            params += "                        <\/div>";
-            params += "                    <\/div>";
 
-            return $(params);
-        }
-
-        function goodsImg(img) {
-            if (img === null || img === '') {
-                return null;
+            function commentItem(comment) {
+                let htmlStr = "";
+                htmlStr += "<div class=\"layui-card\" style=\"border: solid 	#F0E68C 1px\">";
+                htmlStr += "                            <div class=\"layui-card-header\">";
+                htmlStr += "                                <div class=\"layui-col-md6\">";
+                htmlStr += "                                    " + comment.nickName;
+                htmlStr += "                                <\/div>";
+                htmlStr += "                                <div class=\"layui-col-md6\">";
+                htmlStr += "                                    发表于:" + comment.createTime;
+                htmlStr += "                                <\/div>";
+                htmlStr += "                            <\/div>";
+                htmlStr += "                            <div class=\"layui-card-body\">";
+                htmlStr += "                                <p style=\"margin: 5px 0px\">" + comment.content + "<\/p>";
+                htmlStr += "                                <p style=\"margin: 0px 5px;color: limegreen\">-- " + comment.replier + "：" + comment.reply + "<\/p>";
+                htmlStr += "                            <\/div>";
+                htmlStr += "                        <\/div>";
+                return $(htmlStr);
             }
-            let htmlStr = "";
-            htmlStr += "<div class=\"goods-img\">";
-            htmlStr += "                            <img src='" + img + "' style=\"width: 100%;height: 100%\" alt=\"商品图片\">";
-            htmlStr += "                        <\/div>";
-            return $(htmlStr);
         }
-
-        function commentItem(comment) {
-            let htmlStr = "";
-            htmlStr += "<div class=\"layui-card\" style=\"border: solid 	#F0E68C 1px\">";
-            htmlStr += "                            <div class=\"layui-card-header\">";
-            htmlStr += "                                <div class=\"layui-col-md6\">";
-            htmlStr += "                                    " + comment.nickName;
-            htmlStr += "                                <\/div>";
-            htmlStr += "                                <div class=\"layui-col-md6\">";
-            htmlStr += "                                    发表于:" + comment.createTime;
-            htmlStr += "                                <\/div>";
-            htmlStr += "                            <\/div>";
-            htmlStr += "                            <div class=\"layui-card-body\">";
-            htmlStr += "                                <p style=\"margin: 5px 0px\">" + comment.content + "<\/p>";
-            htmlStr += "                                <p style=\"margin: 0px 5px;color: limegreen\">-- " + comment.replier + "：" + comment.reply + "<\/p>";
-            htmlStr += "                            <\/div>";
-            htmlStr += "                        <\/div>";
-            return $(htmlStr);
-        }
-    })
+    )
 </script>
 </html>

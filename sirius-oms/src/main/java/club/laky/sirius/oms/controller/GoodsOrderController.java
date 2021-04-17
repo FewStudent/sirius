@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  * @since 2021-04-15 22:08:37
  */
 @RestController
-@RequestMapping("goodsOrder")
+@RequestMapping("/api/order")
 public class GoodsOrderController {
 
     private static final Logger logger = LoggerFactory.getLogger(GoodsOrderController.class);
@@ -43,7 +43,7 @@ public class GoodsOrderController {
      */
     @ResponseBody
     @RequestMapping("saveOrder")
-    public Object saveOrder(@RequestBody String jsonBody) {
+    public Object saveOrder(@RequestParam String jsonBody) {
         try {
             logger.info("-------------保存订单-------------");
             return goodsOrderService.saveOrder(jsonBody);

@@ -161,6 +161,7 @@
                     console.log(result.data.token)
                     window.location.href = "/client/page/common/index?token=" + result.data.token;
                 } else {
+                    layer.close(index);
                     layer.msg(result.msg, {"icon": 2});
                 }
 

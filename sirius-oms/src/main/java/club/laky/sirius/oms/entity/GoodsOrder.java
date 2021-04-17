@@ -54,6 +54,9 @@ public class GoodsOrder implements Serializable {
     @TableField(exist = false)
     private List<GoodsOrderList> goodsList;
 
+    @TableField(exist = false)
+    private String email;
+
 
     public Integer getId() {
         return id;
@@ -126,5 +129,13 @@ public class GoodsOrder implements Serializable {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

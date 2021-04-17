@@ -81,5 +81,5 @@ public interface GoodsDao {
                              @Param("brandId") Integer brandId,
                              @Param("priceStart") BigDecimal priceStart, @Param("priceEnd") BigDecimal priceEnd);
 
-    List<Goods> getGoodsByIds(List<String> ids);
+    List<Goods> getGoodsByIds(@Param("ids") List<String> ids);
 }

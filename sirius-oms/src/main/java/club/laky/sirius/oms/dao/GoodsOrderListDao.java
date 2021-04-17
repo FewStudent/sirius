@@ -60,10 +60,14 @@ public interface GoodsOrderListDao {
      * @param id 主键
      * @return 影响行数
      */
-    int deleteById(Integer id);
+    int deleteById(@Param("id") Integer id);
 
     /**
      * 批量增加
      * */
-    int batchInsert(List<GoodsOrderList> goodsOrderLists);
+    int batchInsert(@Param("goodsOrderLists") List<GoodsOrderList> goodsOrderLists,@Param("orderId")Integer orderId);
+
+    List<GoodsOrderList> queryByOrderId(@Param("orderId") Integer orderId);
+
+    int goodsChange(@Param("orderId") Integer orderId);
 }

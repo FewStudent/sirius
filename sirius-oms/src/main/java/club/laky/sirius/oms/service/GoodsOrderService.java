@@ -56,9 +56,9 @@ public interface GoodsOrderService {
     /**
      * 保存订单
      * */
-    WebResult saveOrder(String jsonBody,Integer userId,Integer addressId);
+    WebResult saveOrder(String jsonBody);
 
-    WebResult orderDetail(Integer orderId);
+    WebResult orderDetail(String orderNum);
 
     WebResult getMyOrders(String jsonBody);
 

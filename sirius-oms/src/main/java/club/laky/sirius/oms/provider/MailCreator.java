@@ -1,4 +1,4 @@
-package club.laky.sirius.admin.receiver;
+package club.laky.sirius.oms.provider;
 
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

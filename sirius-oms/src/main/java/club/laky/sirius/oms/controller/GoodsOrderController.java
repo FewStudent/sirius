@@ -43,10 +43,10 @@ public class GoodsOrderController {
      */
     @ResponseBody
     @RequestMapping("saveOrder")
-    public Object saveOrder(@RequestParam String jsonBody, @RequestParam Integer userId, Integer addressId) {
+    public Object saveOrder(@RequestBody String jsonBody) {
         try {
             logger.info("-------------保存订单-------------");
-            return goodsOrderService.saveOrder(jsonBody, userId, addressId);
+            return goodsOrderService.saveOrder(jsonBody);
         } catch (Exception e) {
             logger.error("保存订单失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
@@ -58,10 +58,10 @@ public class GoodsOrderController {
      */
     @ResponseBody
     @RequestMapping("detail")
-    public Object orderDetail(@RequestParam Integer orderId) {
+    public Object orderDetail(@RequestParam String orderNum) {
         try {
             logger.info("-------------订单详情-------------");
-            return goodsOrderService.orderDetail(orderId);
+            return goodsOrderService.orderDetail(orderNum);
         } catch (Exception e) {
             logger.error("订单详情失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
@@ -103,7 +103,7 @@ public class GoodsOrderController {
      */
     @ResponseBody
     @RequestMapping("checkSendOrder")
-    public Object checkSendOrder(@RequestBody Integer orderId) {
+    public Object checkSendOrder(@RequestParam Integer orderId) {
         try {
             logger.info("-------------确认发货-------------");
             return goodsOrderService.checkSendOrder(orderId);
@@ -118,7 +118,7 @@ public class GoodsOrderController {
      */
     @ResponseBody
     @RequestMapping("cancelOrder")
-    public Object cancelOrder(@RequestBody Integer orderId) {
+    public Object cancelOrder(@RequestParam Integer orderId) {
         try {
             logger.info("-------------取消订单-------------");
             return goodsOrderService.cancelOrder(orderId);
@@ -133,7 +133,7 @@ public class GoodsOrderController {
      */
     @ResponseBody
     @RequestMapping("checkTakeOrder")
-    public Object checkTakeOrder(@RequestBody Integer orderId) {
+    public Object checkTakeOrder(@RequestParam Integer orderId) {
         try {
             logger.info("-------------确认收货-------------");
             return goodsOrderService.checkTakeOrder(orderId);
@@ -148,7 +148,7 @@ public class GoodsOrderController {
      */
     @ResponseBody
     @RequestMapping("closeOrder")
-    public Object closeOrder(@RequestBody Integer orderId) {
+    public Object closeOrder(@RequestParam Integer orderId) {
         try {
             logger.info("-------------订单完结-------------");
             return goodsOrderService.closeOrder(orderId);

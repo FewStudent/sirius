@@ -2,6 +2,7 @@ package club.laky.sirius.admin.controller;
 
 import club.laky.sirius.admin.receiver.MailCreator;
 import club.laky.sirius.admin.service.MailService;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,11 @@ public class TestController {
     public Object code() {
         try {
             logger.info("-------------获得验证码-------------");
-            mailCreator.send("好家伙", null);
+            JSONObject object = new JSONObject();
+            object.put("email","1047904478@qq.com");
+            object.put("title","标题");
+            object.put("msg","7963");
+            mailCreator.send(object.toJSONString(), null);
             return "还行";
         } catch (Exception e) {
             logger.error("获得验证码失败：" + e.getMessage());

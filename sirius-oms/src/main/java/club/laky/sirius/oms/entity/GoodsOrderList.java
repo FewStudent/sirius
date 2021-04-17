@@ -101,4 +101,5 @@ public class GoodsOrderList implements Serializable {
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
+
 }

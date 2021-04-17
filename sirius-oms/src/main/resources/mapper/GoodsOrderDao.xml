@@ -14,6 +14,7 @@
         <result property="addressId" column="address_id" jdbcType="INTEGER"/>
 
         <result property="addressName" column="addressName" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
 
         <collection property="goodsList" ofType="club.laky.sirius.oms.entity.GoodsOrderList">
             <id column="list_id" property="id" jdbcType="INTEGER"/>
@@ -28,14 +29,10 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select id,
-               order_num,
-               u_id,
-               create_time,
-               state,
-               address_id
-        from shop_mall.goods_order
-        where id = #{id}
+        select o.*,su.email
+        from goods_order o
+        left join sys_user su on su.id = o.u_id
+        where o.id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -95,7 +92,7 @@
                  left join goods g on g.id = gol.goods_id
                  left join user_address ua on ua.id = go.address_id
 
-        where go.id = #{id}
+        where go.order_num = #{orderNum}
     </select>
 
     <select id="queryMyOrder" resultType="club.laky.sirius.oms.entity.GoodsOrder">

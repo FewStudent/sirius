@@ -73,6 +73,6 @@ public interface FeignGoodsService {
     @RequestMapping(value = "/api/goods/allSelect", method = RequestMethod.GET)
     Object allSelect();
 
-    @RequestMapping(value = "getGoodsByIds", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/goods/getGoodsByIds", method = RequestMethod.GET)
     List<Goods> getGoodsByIds(@RequestParam String ids);
 }

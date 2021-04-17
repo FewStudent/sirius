@@ -65,9 +65,9 @@ public interface GoodsOrderDao {
      */
     int deleteById(Integer id);
 
-    int queryGoodsCount(List<String> ids);
+    int queryGoodsCount(@Param("ids") List<String> ids);
 
-    GoodsOrder queryOrderDetail(Integer id);
+    GoodsOrder queryOrderDetail(@Param("orderNum") String orderNum);
 
     /**
      * 获取我的订单

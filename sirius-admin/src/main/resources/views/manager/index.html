@@ -36,9 +36,10 @@
 </script>
 </body>
 <script>
-    layui.use(['table', 'jquery'], function () {
+    layui.use(['table', 'jquery','form'], function () {
         const token = localStorage.getItem("token");
         let table = layui.table;
+        const form = layui.form;
         let $ = layui.jquery;
         /* 表格数据载入 */
         table.render({
@@ -116,6 +117,27 @@
                 ]
             ],
             id: 'Reload' //表格重载的id
+        });
+
+        $("#rest").click(function () {
+            $("#orderNum").val("");
+            $("#nickname").val("");
+            $("#state").val("");
+            form.render();
+        })
+
+        /* 表格重载 */
+        $('#search').on('click', function () {
+            table.reload('Reload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    nickname: $('#nickname').val(),
+                    orderNum: $('#orderNum').val(),
+                    state: $("#state").val()
+                }
+            });
         });
 
         //头工具栏事件

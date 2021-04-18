@@ -107,7 +107,7 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
     @Override
     @Transactional
     public WebResult saveOrder(String jsonBody) {
-        JSONObject params = JSON.parseObject(jsonBody    );
+        JSONObject params = JSON.parseObject(jsonBody);
         Integer addressId = params.getInteger("addressId");
         Integer userId = params.getInteger("userId");
         JSONArray orderList = params.getJSONArray("list");
@@ -157,7 +157,7 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
             logger.error("订单生成失败");
             throw new RuntimeException("生成订单失败!");
         }
-        int result = goodsOrderListDao.batchInsert(goodsOrderLists,goodsOrder.getId());
+        int result = goodsOrderListDao.batchInsert(goodsOrderLists, goodsOrder.getId());
         if (result != count) {
             logger.error("订单生成失败");
             throw new RuntimeException("订单生成失败!");
@@ -191,8 +191,11 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
         Integer userId = params.getInteger("userId");
         Integer page = params.getInteger("page");
         Integer limit = params.getInteger("limit");
+        if (state == -1) {
+            state = null;
+        }
 
-        List<GoodsOrder> orderList = goodsOrderDao.queryMyOrder(userId, state, page, limit);
+        List<GoodsOrder> orderList = goodsOrderDao.queryMyOrder(userId, state, (page - 1) * limit, limit);
         Integer count = goodsOrderDao.queryMyOrderCount(userId, state);
         Map<String, Object> result = new HashMap<>();
         result.put("list", orderList);
@@ -209,7 +212,7 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
         Integer page = params.getInteger("page");
         Integer limit = params.getInteger("limit");
 
-        List<GoodsOrder> orderList = goodsOrderDao.queryAdminOrders(orderNum, state, nickname, page, limit);
+        List<GoodsOrder> orderList = goodsOrderDao.queryAdminOrders(orderNum, state, nickname, (page - 1) * limit, limit);
         Integer count = goodsOrderDao.queryAdminOrdersCount(orderNum, state, nickname);
         Map<String, Object> result = new HashMap<>();
         result.put("list", orderList);
@@ -264,9 +267,9 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
     @Override
     public WebResult cancelOrder(Integer orderId) {
         GoodsOrder order = goodsOrderDao.queryById(orderId);
-        if(order == null){
+        if (order == null) {
             logger.error("订单不存在!");
-            throw  new RuntimeException("订单不存在");
+            throw new RuntimeException("订单不存在");
         }
         if (!order.getState().equals(OrderState.START)) {
             logger.error("订单不是<下单>状态,取消订单失败");

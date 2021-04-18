@@ -46,7 +46,7 @@ public class GoodsOrder implements Serializable {
      * 用户昵称
      */
     @TableField(exist = false)
-    private String nickName;
+    private String nickname;
 
     /**
      * 商品列表
@@ -56,6 +56,9 @@ public class GoodsOrder implements Serializable {
 
     @TableField(exist = false)
     private String email;
+
+    @TableField(exist = false)
+    private String url;
 
 
     public Integer getId() {
@@ -123,19 +126,27 @@ public class GoodsOrder implements Serializable {
     }
 
 
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

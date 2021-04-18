@@ -63,6 +63,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
             SysUser user = JSON.parseObject((String) result.get("data"), SysUser.class);
             if(user == null){
                 logger.error("用户token已过期");
+                response.sendRedirect(request.getContextPath() + "/admin/page/login");
                 return false;
             }
             logger.info("获取到用户：{}的信息", user.getAccount());

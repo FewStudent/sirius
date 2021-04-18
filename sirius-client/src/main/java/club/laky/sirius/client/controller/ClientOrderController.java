@@ -6,6 +6,7 @@ import club.laky.sirius.client.feign.FeignOrderService;
 import club.laky.sirius.client.utils.WebResult;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,16 +34,10 @@ public class ClientOrderController {
     public Object saveOrder(HttpServletRequest request, @RequestBody String jsonBody) {
         try {
             logger.info("-------------保存订单-------------");
-            String token = request.getHeader("token");
-            if (!StringUtils.isEmpty(token)) {
-                Map<String, Object> data = (Map<String, Object>) cacheService.get(token);
-                SysUser user = JSON.parseObject((String) data.get("data"), SysUser.class);
 
-                JSONObject object = JSONObject.parseObject(jsonBody);
-                object.put("userId", user.getId());
-                return orderService.saveOrder(object.toJSONString());
-            }
-            return WebResult.error("保存失败!");
+            JSONObject object = JSONObject.parseObject(jsonBody);
+            object.put("userId", getUserId(request));
+            return orderService.saveOrder(object.toJSONString());
         } catch (Exception e) {
             logger.error("保存订单失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
@@ -69,10 +64,12 @@ public class ClientOrderController {
      */
     @ResponseBody
     @RequestMapping("getMyOrders")
-    public Object getMyOrders(@RequestBody String jsonBody) {
+    public Object getMyOrders(HttpServletRequest request, @RequestBody String jsonBody) {
         try {
             logger.info("-------------获取我的订单-------------");
-            return orderService.getMyOrders(jsonBody);
+            JSONObject object = JSONObject.parseObject(jsonBody);
+            object.put("userId", getUserId(request));
+            return orderService.getMyOrders(object.toJSONString());
         } catch (Exception e) {
             logger.error("获取我的订单失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
@@ -107,5 +104,15 @@ public class ClientOrderController {
             logger.error("确认收货失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
         }
+    }
+
+    private Integer getUserId(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        if (!StringUtils.isEmpty(token)) {
+            Map<String, Object> data = (Map<String, Object>) cacheService.get(token);
+            SysUser user = JSON.parseObject((String) data.get("data"), SysUser.class);
+            return user.getId();
+        }
+        return null;
     }
 }

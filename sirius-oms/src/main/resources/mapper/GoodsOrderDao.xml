@@ -7,14 +7,16 @@
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
         <result property="uId" column="u_id" jdbcType="INTEGER"/>
-        <result property="nickName" column="nickname" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
 
         <result property="createTime" column="create_time" jdbcType="VARCHAR"/>
         <result property="state" column="state" jdbcType="INTEGER"/>
         <result property="addressId" column="address_id" jdbcType="INTEGER"/>
 
-        <result property="addressName" column="addressName" jdbcType="VARCHAR"/>
+        <result property="addressName" column="address" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
+
+        <result property="url" column="url" jdbcType="VARCHAR"/>
 
         <collection property="goodsList" ofType="club.laky.sirius.oms.entity.GoodsOrderList">
             <id column="list_id" property="id" jdbcType="INTEGER"/>
@@ -29,9 +31,9 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select o.*,su.email
+        select o.*, su.email
         from goods_order o
-        left join sys_user su on su.id = o.u_id
+                 left join sys_user su on su.id = o.u_id
         where o.id = #{id}
     </select>
 
@@ -86,20 +88,25 @@
                g.price,
                SUBSTRING_INDEX(g.imgs, ',', 1) as url,
                ua.u_address,
+               su.nickname,
+               su.email,
                go.*
         from goods_order go
                  left join goods_order_list gol on go.id = gol.order_id
                  left join goods g on g.id = gol.goods_id
                  left join user_address ua on ua.id = go.address_id
-
+                 left join sys_user su on go.u_id = su.id
         where go.order_num = #{orderNum}
     </select>
 
-    <select id="queryMyOrder" resultType="club.laky.sirius.oms.entity.GoodsOrder">
-        select go.*,CONCAT(ua.u_address,',',ua.u_detail) as address,su.nickname
+    <select id="queryMyOrder" resultMap="BaseResultMap">
+        select go.*,CONCAT(ua.u_address,',',ua.u_detail) as address,su.nickname,
+        SUBSTRING_INDEX(g.imgs,',',1) as url
         from goods_order go
         left join sys_user su on su.id = go.u_id
         left join user_address ua on ua.id = go.address_id
+        LEFT JOIN goods_order_list gol on gol.id = go.id
+        LEFT JOIN goods g on g.id = gol.goods_id
         <where>
             <if test="state !=null">
                 and go.state = #{state}
@@ -108,6 +115,8 @@
                 and su.id = #{userId}
             </if>
         </where>
+        GROUP BY go.order_num
+        order by go.create_time
         limit #{offset},#{limit}
     </select>
 
@@ -126,7 +135,7 @@
         </where>
     </select>
     <select id="queryAdminOrders" resultMap="BaseResultMap">
-        select go.*,CONCAT(ua.u_address,',',ua.u_detail) as address,su.nickname
+        select go.*,CONCAT(ua.u_address,',',ua.u_detail) as address,su.nickname,su.email
         from goods_order go
         left join sys_user su on su.id = go.u_id
         left join user_address ua on ua.id = go.address_id
@@ -145,6 +154,7 @@
     </select>
     <select id="queryAdminOrdersCount" resultType="java.lang.Integer">
         select count(*)
+        from goods_order go
         left join sys_user su on su.id = go.u_id
         left join user_address ua on ua.id = go.address_id
         <where>

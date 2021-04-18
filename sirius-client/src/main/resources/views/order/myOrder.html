@@ -2,9 +2,153 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>我的订单 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
 
+<div class="layui-container">
+    <div class="order-content">
+
+        <div class="order-list">
+
+        </div>
+        <div class="order-page">
+            <div id="order-page"></div>
+        </div>
+    </div>
+
+</div>
 </body>
+<script>
+    layui.use(['element', 'jquery', 'layer', 'form', 'laypage', 'carousel'], function () {
+        let element = layui.element;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let laypage = layui.laypage;
+        let carousel = layui.carousel;
+        let initPage = false;
+
+        const token = localStorage.getItem("token");
+
+
+        function reload(page) {
+            let url = "/client/order/getMyOrders?token=" + token;
+            let data = {};
+            data.page = page;
+            data.limit = 15;
+            data.state = -1;
+            ajax_data(url, token, JSON.stringify(data), function (result) {
+                if (result.succeed) {
+                    $(".order-list").empty();
+                    const data = result.data.list;
+                    const count = result.data.count;
+                    for (let i = 0; i < data.length; i++) {
+                        $(".order-list").append(orderItem(data[i]));
+                    }
+                    if (!initPage) {
+                        initPage = true;
+                        laypage.render({
+                            elem: 'order-page'
+                            , count: count
+                            , limit: 15
+                            , curr: page
+                            , theme: '#FF5722'
+                            , layout: ['count', 'prev', 'page', 'next', 'skip']
+                            , jump: function (obj) {
+                                reload(obj.curr);
+                            }
+                        });
+                    }
+                    $(".order-detail").click(function () {
+                        const orderNum = $(this).attr("lay-num");
+                        let url = "/client/page/order/detail?orderNum=" + orderNum + "&token=" + token;
+                        window.open(url)
+                    })
+                } else {
+                    layer.msg(result.msg, {"icon": 2});
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            reload(1);
+        })
+
+        function orderItem(order) {
+            let strVar = "";
+            strVar += "<div class=\"layui-card order-item\" style=\"border: solid 1px lightgray\">";
+            strVar += "            <div class=\"layui-card-body\">";
+            strVar += "                <div class=\"layui-row\">";
+            strVar += "                    <div class=\"layui-card layui-col-md2\">";
+            strVar += "                        <div class=\"layui-card-body\">";
+            strVar += "                            <img src='" + order.url + "' style=\"width: 105px;height: 105px\" alt=\"订单图片\">";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                    <div class=\"layui-card layui-col-md8\">";
+            strVar += "                        <div class=\"layui-card-header\">单号：" + order.orderNum;
+            strVar += "                            <span class=\"layui-badge " + stateColor(order.state) + "\">" + stateName(order.state) + "<\/span>";
+            strVar += "                        <\/div>";
+            strVar += "                        <div class=\"layui-card-body\">";
+            strVar += "                            <div class=\"layui-col-md12\" style=\"padding: 2px\">";
+            strVar += "                                收货地址：" + order.addressName + "<br>";
+            strVar += "                                下单时间：" + order.createTime;
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                    <div class=\"layui-card layui-col-md2\" style=\"padding: 20px\">";
+            strVar += "                        <div class=\"layui-card-body\" style=\"display: flex\">";
+            strVar += "                            <div style=\"margin: auto\">";
+            strVar += "                                <button lay-num='" + order.orderNum + "' class=\"order-detail layui-btn-fluid layui-btn layui-btn-primary\">查看详情<\/button>";
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                <\/div>";
+            strVar += "            <\/div>";
+            strVar += "        <\/div>";
+            return $(strVar);
+        }
+
+        function stateColor(state) {
+            let color;
+            switch (state) {
+                case 0:
+                    color = "layui-bg-green";
+                    break;
+                case 1:
+                    color = "";
+                    break;
+                case 2:
+                    color = "layui-bg-orange";
+                    break;
+                case 3:
+                    color = "layui-bg-blue";
+                    break;
+                case 4:
+                    color = "layui-bg-black";
+                    break;
+            }
+            return color;
+        }
+
+        function stateName(state) {
+            switch (state) {
+                case 0 :
+                    return "已下单";
+                case 1 :
+                    return "已发货";
+                case 2 :
+                    return "已收货";
+                case 3 :
+                    return "已完结";
+                case 4 :
+                    return "已取消";
+            }
+        }
+
+    })
+</script>
 </html>

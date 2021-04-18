@@ -65,6 +65,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
             SysUser user = JSON.parseObject((String) result.get("data"), SysUser.class);
             if(user == null){
                 logger.error("用户token已过期");
+                response.sendRedirect(request.getContextPath() + "/client/page/common/index");
                 return false;
             }
             logger.info("获取到用户：{}的信息", user.getAccount());
@@ -73,7 +74,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
                 return true;
             } else {
                 logger.error("没有该访问权限：{},重定向到首页", uri);
-                response.sendRedirect(request.getContextPath() + "/client/page/index");
+                response.sendRedirect(request.getContextPath() + "/client/page/common/index");
                 /*response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setHeader("Content-type", "text/html;charset=UTF-8");
                 response.getWriter().write("没有该权限");*/
@@ -81,7 +82,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
             }
         } else {
             logger.error("token令牌{}已过期,重定向到登录页面", token);
-            response.sendRedirect(request.getContextPath() + "/client/page/login");
+            response.sendRedirect(request.getContextPath() + "/client/page/common/login");
             return false;
         }
     }

@@ -143,13 +143,27 @@ public class PageController {
 
 
     /**
-     * 发货中的管理
+     * 发货中的订单管理
      */
     @RequestMapping("order/processing")
     public ModelAndView orderProcessing(HttpServletRequest request) {
         return modelUtils.createModel(request, "/order/processing");
     }
 
+    /**
+     * 订单列表
+     */
+    @RequestMapping("order/list")
+    public ModelAndView orderList(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/order/list");
+    }
+
+    @RequestMapping("order/detail")
+    public ModelAndView orderDetail(HttpServletRequest request, String orderNum) {
+        ModelAndView result = modelUtils.createModel(request, "/order/detail");
+        result.addObject("orderNum", orderNum);
+        return result;
+    }
 
     /**
      * 完结订单

@@ -59,4 +59,12 @@ public class ClientPageController {
         result.addObject("orderNum", orderNum);
         return result;
     }
+
+    /**
+     * 我的订单
+     */
+    @RequestMapping("order/myOrder")
+    public ModelAndView myOrder(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/order/myOrder");
+    }
 }

@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * 用户购物车表(UserCart)表数据库访问层
  *
- * @author lakyjpan
- * @since 2021-04-18 22:10:59
+ * @author lakyjapn
+ * @since 2021-04-19 18:12:58
  */
 public interface UserCartDao {
 

@@ -5,31 +5,31 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
 /**
- * 用户购物车表(UserCart)实体类
+ * (GoodsCollection)实体类
  *
  * @author lakyjapn
- * @since 2021-04-19 18:12:53
+ * @since 2021-04-19 18:12:33
  */
-public class UserCart implements Serializable {
-    private static final long serialVersionUID = 636435460222613135L;
+public class GoodsCollection implements Serializable {
+    private static final long serialVersionUID = -41698866691618953L;
 
     private Integer id;
     /**
      * 商品ID
      */
     private Integer goodsId;
-    /**
-     * 商品数量
-     */
-    private Integer count;
-    /**
-     * 用户ID
-     */
-    private Integer uId;
     @TableField(exist = false)
     private String goodsName;
     @TableField(exist = false)
     private String nickname;
+    /**
+     * 用户ID
+     */
+    private Integer uId;
+    /**
+     * 收藏日期
+     */
+    private String collectTime;
 
 
     public Integer getId() {
@@ -48,16 +48,20 @@ public class UserCart implements Serializable {
         this.goodsId = goodsId;
     }
 
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
     public Integer getUId() {
         return uId;
+    }
+
+    public void setUId(Integer uId) {
+        this.uId = uId;
+    }
+
+    public String getCollectTime() {
+        return collectTime;
+    }
+
+    public void setCollectTime(String collectTime) {
+        this.collectTime = collectTime;
     }
 
     public String getGoodsName() {
@@ -75,11 +79,4 @@ public class UserCart implements Serializable {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-
-    public void setUId(Integer uId) {
-
-
-        this.uId = uId;
-    }
-
 }

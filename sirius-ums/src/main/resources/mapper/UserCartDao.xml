@@ -8,6 +8,8 @@
         <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
         <result property="count" column="count" jdbcType="INTEGER"/>
         <result property="uId" column="u_id" jdbcType="INTEGER"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="goodsName" column="goodsName" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->

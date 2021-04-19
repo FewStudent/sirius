@@ -71,7 +71,16 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/addressDetail", method = RequestMethod.GET)
     Object addressDetail(@RequestParam Integer id);
+
     //用户商品收藏API
+    @RequestMapping(value = "/deleteCollection", method = RequestMethod.GET)
+    Object deleteCollection(@RequestParam Integer id);
+
+    @RequestMapping(value = "/adminCollectionList", method = RequestMethod.GET)
+    WebResult adminCollectionList(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/adminCollectionCount", method = RequestMethod.GET)
+    Integer adminCollectionCount(@RequestBody String jsonBody);
 
     //用户购物车API
 }

@@ -3,7 +3,6 @@ package club.laky.sirius.ums.service.impl;
 import club.laky.sirius.ums.entity.UserCart;
 import club.laky.sirius.ums.dao.UserCartDao;
 import club.laky.sirius.ums.service.UserCartService;
-import club.laky.sirius.ums.utils.WebResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,8 +11,8 @@ import java.util.List;
 /**
  * 用户购物车表(UserCart)表服务实现类
  *
- * @author lakyjpan
- * @since 2021-04-18 22:10:59
+ * @author lakyjapn
+ * @since 2021-04-19 18:12:59
  */
 @Service("userCartService")
 public class UserCartServiceImpl implements UserCartService {
@@ -35,7 +34,7 @@ public class UserCartServiceImpl implements UserCartService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit  查询条数
+     * @param limit 查询条数
      * @return 对象列表
      */
     @Override
@@ -76,10 +75,5 @@ public class UserCartServiceImpl implements UserCartService {
     @Override
     public boolean deleteById(Integer id) {
         return this.userCartDao.deleteById(id) > 0;
-    }
-
-    @Override
-    public WebResult userCartList(String jsonBody) {
-        return null;
     }
 }

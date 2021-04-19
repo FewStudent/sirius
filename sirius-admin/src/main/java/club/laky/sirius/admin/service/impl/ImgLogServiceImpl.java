@@ -3,6 +3,7 @@ package club.laky.sirius.admin.service.impl;
 import club.laky.sirius.admin.entity.ImgLog;
 import club.laky.sirius.admin.dao.ImgLogDao;
 import club.laky.sirius.admin.service.ImgLogService;
+import club.laky.sirius.admin.utils.WebResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,7 +35,7 @@ public class ImgLogServiceImpl implements ImgLogService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -73,7 +74,29 @@ public class ImgLogServiceImpl implements ImgLogService {
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(Integer id) {
-        return this.imgLogDao.deleteById(id) > 0;
+    public WebResult deleteById(Integer id) {
+        if (this.imgLogDao.deleteById(id) > 0) {
+            return WebResult.success("删除成功");
+        }
+        return WebResult.error("删除失败");
+    }
+
+    @Override
+    public Object deleteAll() {
+        if (imgLogDao.deleteAll() > 0) {
+            return WebResult.success("清除成功!");
+        }
+        return WebResult.error("清除失败");
+    }
+
+    @Override
+    public Integer queryListCount() {
+        return this.imgLogDao.queryListCount();
+
+    }
+
+    @Override
+    public List<ImgLog> queryList(Integer offset, Integer limit) {
+        return this.imgLogDao.queryList(offset, limit);
     }
 }

@@ -1,5 +1,7 @@
 package club.laky.sirius.admin.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 /**
@@ -10,23 +12,26 @@ import java.io.Serializable;
  */
 public class LoginLog implements Serializable {
     private static final long serialVersionUID = 693860880458246488L;
-    
+
     private Integer id;
     /**
-    * 登录情况
-    */
+     * 登录情况
+     */
     private String msg;
     /**
-    * 用户ID，只有不是账号不存在的情况下才记录
-    */
+     * 用户ID，只有不是账号不存在的情况下才记录
+     */
     private Integer uId;
+
+    @TableField(exist = false)
+    private String nickname;
     /**
-    * 是否成功
-    */
+     * 是否成功
+     */
     private String succeed;
     /**
-    * 记录日期
-    */
+     * 记录日期
+     */
     private String createTime;
 
 

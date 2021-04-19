@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="club.laky.sirius.admin.dao.LoginLogDao">
-
     <resultMap id="BaseResultMap" type="club.laky.sirius.admin.entity.LoginLog">
         <!--@Table login_log-->
         <result property="id" column="id" jdbcType="INTEGER"/>
@@ -9,28 +8,34 @@
         <result property="uId" column="u_id" jdbcType="INTEGER"/>
         <result property="succeed" column="succeed" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="OTHER"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select
-          id, msg, u_id, succeed, create_time
+        select id,
+               msg,
+               u_id,
+               succeed,
+               create_time
         from shop_mall.login_log
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select
-          id, msg, u_id, succeed, create_time
-        from shop_mall.login_log
-        limit #{offset}, #{limit}
+        select id,
+               msg,
+               u_id,
+               succeed,
+               create_time
+        from shop_mall.login_log limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, msg, u_id, succeed, create_time
+        id, msg, u_id, succeed, create_time
         from shop_mall.login_log
         <where>
             <if test="id != null">
@@ -79,7 +84,25 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from shop_mall.login_log where id = #{id}
+        delete
+        from shop_mall.login_log
+        where id = #{id}
     </delete>
 
+    <select id="queryList" resultMap="BaseResultMap">
+        selectll
+                .
+                *
+                ,su.nickname
+        from login_log ll
+                left join sys_user su on su.id = ll.u_id
+                limit
+                #{offset}
+                ,
+                #{limit}
+                order
+                by
+                create_date
+                desc
+    </select>
 </mapper>

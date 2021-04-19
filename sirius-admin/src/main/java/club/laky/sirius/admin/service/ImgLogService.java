@@ -1,6 +1,8 @@
 package club.laky.sirius.admin.service;
 
 import club.laky.sirius.admin.entity.ImgLog;
+import club.laky.sirius.admin.utils.WebResult;
+
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public interface ImgLogService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<ImgLog> queryAllByLimit(int offset, int limit);
@@ -50,6 +52,11 @@ public interface ImgLogService {
      * @param id 主键
      * @return 是否成功
      */
-    boolean deleteById(Integer id);
+    WebResult deleteById(Integer id);
 
+    Object deleteAll();
+
+    Integer queryListCount();
+
+    List<ImgLog> queryList(Integer offset, Integer limit);
 }

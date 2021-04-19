@@ -3,6 +3,7 @@ package club.laky.sirius.admin.service.impl;
 import club.laky.sirius.admin.entity.LoginLog;
 import club.laky.sirius.admin.dao.LoginLogDao;
 import club.laky.sirius.admin.service.LoginLogService;
+import club.laky.sirius.admin.utils.WebResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,7 +35,7 @@ public class LoginLogServiceImpl implements LoginLogService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -75,5 +76,23 @@ public class LoginLogServiceImpl implements LoginLogService {
     @Override
     public boolean deleteById(Integer id) {
         return this.loginLogDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public WebResult deleteAll() {
+        if (this.loginLogDao.delteAll() > 0) {
+            return WebResult.success("删除成功");
+        }
+        return WebResult.error("删除失败");
+    }
+
+    @Override
+    public Integer queryListCount() {
+        return this.loginLogDao.queryListCount();
+    }
+
+    @Override
+    public List<LoginLog> queryList(Integer offset, Integer limit) {
+        return this.loginLogDao.queryList(offset,limit);
     }
 }

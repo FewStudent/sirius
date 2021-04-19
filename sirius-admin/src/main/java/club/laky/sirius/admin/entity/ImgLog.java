@@ -1,5 +1,7 @@
 package club.laky.sirius.admin.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 /**
@@ -10,23 +12,25 @@ import java.io.Serializable;
  */
 public class ImgLog implements Serializable {
     private static final long serialVersionUID = 599681301792781366L;
-    
+
     private Integer id;
     /**
-    * 图片地址
-    */
+     * 图片地址
+     */
     private String imgUrl;
     /**
-    * 上传用户ID
-    */
+     * 上传用户ID
+     */
     private Integer uId;
+    @TableField(exist = false)
+    private String nickname;
     /**
-    * 创建时间
-    */
+     * 创建时间
+     */
     private String createDate;
     /**
-    * 用户类型 1 管理员 2 客户端用户
-    */
+     * 用户类型 1 管理员 2 客户端用户
+     */
     private Integer userType;
 
 
@@ -70,4 +74,12 @@ public class ImgLog implements Serializable {
         this.userType = userType;
     }
 
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

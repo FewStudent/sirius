@@ -1,7 +1,10 @@
 package club.laky.sirius.admin.dao;
 
 import club.laky.sirius.admin.entity.LoginLog;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 /**
@@ -24,7 +27,7 @@ public interface LoginLogDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<LoginLog> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -62,4 +65,11 @@ public interface LoginLogDao {
      */
     int deleteById(Integer id);
 
+    @Delete("delete from login_log")
+    Integer delteAll();
+
+    @Select("select count(*) from login_log")
+    Integer queryListCount();
+
+    List<LoginLog> queryList(Integer offset, Integer limit);
 }

@@ -1,7 +1,10 @@
 package club.laky.sirius.admin.dao;
 
 import club.laky.sirius.admin.entity.ImgLog;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 /**
@@ -24,7 +27,7 @@ public interface ImgLogDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<ImgLog> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -62,4 +65,11 @@ public interface ImgLogDao {
      */
     int deleteById(Integer id);
 
+    @Delete("delete from img_log")
+    Integer deleteAll();
+
+    @Select("select count(*) from img_log")
+    Integer queryListCount();
+
+    List<ImgLog> queryList(Integer offset, Integer limit);
 }

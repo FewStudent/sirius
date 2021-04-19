@@ -65,4 +65,7 @@ public interface GoodsCommentDao {
 
     List<GoodsComment> queryByGoodsId(@Param("goodsId") Integer goodsId);
 
+    List<GoodsComment> commentList(@Param("offset") Integer offset, @Param("limit") Integer limit, @Param("goodsName") String goodsName, @Param("nickname") String nickname);
+
+    Integer commentCount(@Param("goodsName") String goodsName, @Param("nickname") String nickname);
 }

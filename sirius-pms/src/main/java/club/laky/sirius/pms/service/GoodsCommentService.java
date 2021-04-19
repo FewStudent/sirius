@@ -25,7 +25,7 @@ public interface GoodsCommentService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<GoodsComment> queryAllByLimit(int offset, int limit);
@@ -55,4 +55,12 @@ public interface GoodsCommentService {
     boolean deleteById(Integer id);
 
     WebResult getCommentByGoodsId(Integer goodsId);
+
+    WebResult commentList(Integer offset, Integer limit, String goodsName, String nickname);
+
+    Integer commentCount(String goodsName, String nickname);
+
+    WebResult insertComment(String jsonBody);
+
+    WebResult reply(String jsonBody);
 }

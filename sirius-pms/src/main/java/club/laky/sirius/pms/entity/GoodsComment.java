@@ -46,6 +46,9 @@ public class GoodsComment implements Serializable {
     private Integer replyBy;
 
     @TableField(exist = false)
+    private String goodsName;
+
+    @TableField(exist = false)
     private String replier;
 
     @TableField(exist = false)

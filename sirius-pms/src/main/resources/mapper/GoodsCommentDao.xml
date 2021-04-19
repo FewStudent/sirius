@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="club.laky.sirius.pms.dao.GoodsCommentDao">
-
     <resultMap id="BaseResultMap" type="club.laky.sirius.pms.entity.GoodsComment">
         <!--@Table goods_comment-->
         <result property="id" column="id" jdbcType="INTEGER"/>
@@ -15,6 +14,7 @@
 
         <result property="replier" column="replier"/>
         <result property="nickName" column="nickname"/>
+        <result property="goodsName" column="goods_name"/>
     </resultMap>
 
     <!--查询单个-->
@@ -41,8 +41,7 @@
                reply,
                reply_time,
                reply_by
-        from shop_mall.goods_comment
-        limit #{offset}, #{limit}
+        from shop_mall.goods_comment limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -80,9 +79,10 @@
     <select id="queryByGoodsId" resultMap="BaseResultMap">
         select gc.*, su1.nickname nickname, su2.nickname replier
         from goods_comment gc
-                 left join sys_user su1 on gc.u_id = su1.id
-                 left join sys_user su2 on gc.reply_by = su2.id
+                     left join sys_user su1 on gc.u_id = su1.id
+                     left join sys_user su2 on gc.reply_by = su2.id
         where gc.goods_id = #{goodsId}
+        order gc.create_time
     </select>
 
     <!--新增所有列-->
@@ -127,4 +127,35 @@
         where id = #{id}
     </delete>
 
+    <select id="commentList" resultMap="BaseResultMap">
+        select gc.*,su1.nickname nickname, su2.nickname replier,g.goods_name
+        left join sys_user su1 on su1.id = gc.u_id
+        left join sys_user su2 on su2.id = gc.reply_by
+        left join goods g on g.id = gc.goods_id
+        <where>
+            <if test="goodsName != null">
+                g.goods_name like CONCAT(goodsName,'%')
+            </if>
+            <if test="nickname != null">
+                su1.nickname like CONCAT(nickname,'%')
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+        order gc.create_time
+    </select>
+
+    <select id="commentCount" resultType="java.lang.Integer">
+        select count(*)
+        left join sys_user su1 on su1.id = gc.u_id
+        left join sys_user su2 on su2.id = gc.reply_by
+        left join goods g on g.id = gc.goods_id
+        <where>
+            <if test="goodsName != null">
+                g.goods_name like CONCAT(goodsName,'%')
+            </if>
+            <if test="nickname != null">
+                su1.nickname like CONCAT(nickname,'%')
+            </if>
+        </where>
+    </select>
 </mapper>

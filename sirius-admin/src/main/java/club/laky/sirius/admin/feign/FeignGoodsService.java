@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "pms-service")
 public interface FeignGoodsService {
 
+    //----------- 商品信息
     @RequestMapping(value = "/api/goods/save", method = RequestMethod.GET)
     WebResult goodsSave(String jsonBody);
 
@@ -37,6 +38,7 @@ public interface FeignGoodsService {
     @RequestMapping(value = "/api/goods/listCount", method = RequestMethod.GET)
     int queryGoodsListCount(@RequestBody String jsonBody);
 
+    //------------ 商品品牌信息
     @RequestMapping(value = "/api/goodsBrand/listCount", method = RequestMethod.GET)
     int queryBrandListCount(@RequestBody String jsonBody);
 
@@ -52,6 +54,7 @@ public interface FeignGoodsService {
     @RequestMapping(value = "/api/goodsBrand/allBrand", method = RequestMethod.GET)
     WebResult allBrand();
 
+    //------------ 商品类型信息
     @RequestMapping(value = "/api/goodsType/allType", method = RequestMethod.GET)
     WebResult allType();
 
@@ -69,4 +72,24 @@ public interface FeignGoodsService {
 
     @RequestMapping(value = "/api/goods/allSelect", method = RequestMethod.GET)
     Object allSelect();
+
+    //------------ 商品评论信息
+    @RequestMapping(value = "/api/comment/commentCount", method = RequestMethod.GET)
+    Integer commentCount(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/comment/commentList", method = RequestMethod.GET)
+    WebResult commentList(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/comment/deleteComment", method = RequestMethod.GET)
+    Object deleteComment(@RequestParam Integer id);
+
+    @RequestMapping(value = "/api/comment/reply", method = RequestMethod.GET)
+    Object reply(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/comment/insertComment", method = RequestMethod.GET)
+    Object insertComment(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/comment/getCommentByGoodsId", method = RequestMethod.GET)
+    Object getCommentByGoodsId(@RequestParam Integer goodsId);
+
 }

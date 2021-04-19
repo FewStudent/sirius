@@ -2,6 +2,7 @@ package club.laky.sirius.admin.controller;
 
 import club.laky.sirius.admin.entity.SysRole;
 import club.laky.sirius.admin.entity.SysRole;
+import club.laky.sirius.admin.service.SysPermissionService;
 import club.laky.sirius.admin.service.SysRoleService;
 import club.laky.sirius.admin.utils.LayuiVO;
 import club.laky.sirius.admin.utils.WebResult;
@@ -29,6 +30,9 @@ public class AdminSysRoleController {
      */
     @Resource
     private SysRoleService service;
+
+    @Resource
+    private SysPermissionService permissionService;
 
     /**
      * 分页查询
@@ -123,10 +127,10 @@ public class AdminSysRoleController {
      */
     @ResponseBody
     @RequestMapping("/permissionList")
-    public Object roleList(@RequestParam Integer userId) {
+    public Object roleList(@RequestParam Integer roleId) {
         try {
             logger.info("-------------查看角色的权限列表-------------");
-            return service.queryByUserId(userId);
+            return permissionService.queryByRoleId(roleId);
         } catch (Exception e) {
             logger.info("查看角色的权限列表失败:{}", e.getMessage());
             return WebResult.error("查看角色的权限列表失败");

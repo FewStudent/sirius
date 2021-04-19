@@ -1,8 +1,12 @@
 package club.laky.sirius.admin.service.impl;
 
+import club.laky.sirius.admin.dao.SysRolePermissionRelationDao;
 import club.laky.sirius.admin.entity.SysPermission;
 import club.laky.sirius.admin.dao.SysPermissionDao;
+import club.laky.sirius.admin.entity.SysRolePermissionRelation;
+import club.laky.sirius.admin.entity.SysUserRoleRelation;
 import club.laky.sirius.admin.service.SysPermissionService;
+import club.laky.sirius.admin.utils.WebResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,6 +22,8 @@ import java.util.List;
 public class SysPermissionServiceImpl implements SysPermissionService {
     @Resource
     private SysPermissionDao sysPermissionDao;
+    @Resource
+    private SysRolePermissionRelationDao relationDao;
 
     /**
      * 通过ID查询单条数据
@@ -85,5 +91,14 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     @Override
     public Object queryAll() {
         return this.sysPermissionDao.queryAll(null);
+    }
+
+    @Override
+    public WebResult queryByRoleId(Integer roleId) {
+        List<SysRolePermissionRelation> roleRelations = relationDao.queryByRoleId(roleId);
+        if (roleRelations == null) {
+            return WebResult.error("获取失败");
+        }
+        return WebResult.success(roleRelations);
     }
 }

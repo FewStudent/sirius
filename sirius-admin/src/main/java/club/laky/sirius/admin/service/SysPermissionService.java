@@ -1,6 +1,8 @@
 package club.laky.sirius.admin.service;
 
 import club.laky.sirius.admin.entity.SysPermission;
+import club.laky.sirius.admin.utils.WebResult;
+
 import java.util.List;
 
 /**
@@ -55,4 +57,6 @@ public interface SysPermissionService {
     Integer queryCount();
 
     Object queryAll();
+
+    WebResult queryByRoleId(Integer roleId);
 }

@@ -1,7 +1,9 @@
 package club.laky.sirius.admin.dao;
 
 import club.laky.sirius.admin.entity.SysRolePermissionRelation;
+import club.laky.sirius.admin.entity.SysUserRoleRelation;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public interface SysRolePermissionRelationDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<SysRolePermissionRelation> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -62,4 +64,5 @@ public interface SysRolePermissionRelationDao {
      */
     int deleteById(Integer roleId);
 
+    List<SysRolePermissionRelation> queryByRoleId(@Param("roleId") Integer roleId);
 }

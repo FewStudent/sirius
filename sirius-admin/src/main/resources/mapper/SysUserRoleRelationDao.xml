@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="club.laky.sirius.admin.dao.SysUserRoleRelationDao">
-
     <resultMap id="BaseResultMap" type="club.laky.sirius.admin.entity.SysUserRoleRelation">
         <!--@Table sys_user_role_relation-->
         <result property="roleId" column="role_id" jdbcType="INTEGER"/>
@@ -11,24 +10,23 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select
-          role_id, user_id
+        select role_id,
+               user_id
         from shop_mall.sys_user_role_relation
         where role_id = #{roleId}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select
-          role_id, user_id
-        from shop_mall.sys_user_role_relation
-        limit #{offset}, #{limit}
+        select role_id,
+               user_id
+        from shop_mall.sys_user_role_relation limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          role_id, user_id
+        role_id, user_id
         from shop_mall.sys_user_role_relation
         <where>
             <if test="roleId != null">
@@ -51,11 +49,15 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from shop_mall.sys_user_role_relation where role_id = #{roleId}
+        delete
+        from shop_mall.sys_user_role_relation
+        where role_id = #{roleId}
     </delete>
 
     <select id="queryByUserId" resultMap="BaseResultMap">
-        select surr.*,sr.role_name from sys_user_role_relation surr
-        left join sys_role sr on sr.id = surr.role_id
+        select surr.*, sr.role_name
+        from sys_user_role_relation surr
+                     left join sys_role sr on sr.id = surr.role_id
+        where surr.user_id = #{userId,jdbcType=INTEGER}
     </select>
 </mapper>

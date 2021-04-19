@@ -6,6 +6,7 @@
         <!--@Table sys_user_role_relation-->
         <result property="roleId" column="role_id" jdbcType="INTEGER"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -39,11 +40,6 @@
         </where>
     </select>
 
-    <!--新增所有列-->
-    <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
-        insert into shop_mall.sys_user_role_relation()
-        values ()
-    </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
@@ -58,4 +54,8 @@
         delete from shop_mall.sys_user_role_relation where role_id = #{roleId}
     </delete>
 
+    <select id="queryByUserId" resultMap="BaseResultMap">
+        select surr.*,sr.role_name from sys_user_role_relation surr
+        left join sys_role sr on sr.id = surr.role_id
+    </select>
 </mapper>

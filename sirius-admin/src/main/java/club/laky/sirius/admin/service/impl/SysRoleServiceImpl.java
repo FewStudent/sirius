@@ -1,8 +1,10 @@
 package club.laky.sirius.admin.service.impl;
 
 import club.laky.sirius.admin.dao.SysPermissionDao;
+import club.laky.sirius.admin.dao.SysUserRoleRelationDao;
 import club.laky.sirius.admin.entity.SysRole;
 import club.laky.sirius.admin.dao.SysRoleDao;
+import club.laky.sirius.admin.entity.SysUserRoleRelation;
 import club.laky.sirius.admin.service.SysRoleService;
 import club.laky.sirius.admin.utils.WebResult;
 import com.alibaba.fastjson.JSONArray;
@@ -26,6 +28,8 @@ public class SysRoleServiceImpl implements SysRoleService {
     private SysRoleDao sysRoleDao;
     @Resource
     private SysPermissionDao permissionDao;
+    @Resource
+    private SysUserRoleRelationDao sysUserRoleRelationDao;
 
     /**
      * 通过ID查询单条数据
@@ -124,5 +128,14 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
 
         return WebResult.success("保存成功!");
+    }
+
+    @Override
+    public WebResult queryByUserId(Integer user_id) {
+        List<SysUserRoleRelation> roleRelations = sysUserRoleRelationDao.queryByUserId(user_id);
+        if (roleRelations == null) {
+            return WebResult.error("获取失败");
+        }
+        return WebResult.success(roleRelations);
     }
 }

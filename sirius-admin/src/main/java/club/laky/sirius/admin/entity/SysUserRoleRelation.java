@@ -1,5 +1,7 @@
 package club.laky.sirius.admin.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 /**
@@ -11,12 +13,15 @@ import java.io.Serializable;
 public class SysUserRoleRelation implements Serializable {
     private static final long serialVersionUID = -16739906743809499L;
     /**
-    * 角色ID
-    */
+     * 角色ID
+     */
     private Integer roleId;
+
+    @TableField(exist = false)
+    private String roleName;
     /**
-    * 用户ID
-    */
+     * 用户ID
+     */
     private Integer userId;
 
 
@@ -36,4 +41,11 @@ public class SysUserRoleRelation implements Serializable {
         this.userId = userId;
     }
 
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 }

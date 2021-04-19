@@ -101,6 +101,7 @@ public class AdminSysRoleController {
 
     /**
      * 保存角色权限
+     *
      * @author panrulang
      */
     @ResponseBody
@@ -112,6 +113,23 @@ public class AdminSysRoleController {
         } catch (Exception e) {
             logger.info("保存角色权限失败:{}", e.getMessage());
             return WebResult.error("保存角色权限失败");
+        }
+    }
+
+    /**
+     * 查看角色的权限列表
+     *
+     * @author panrulang
+     */
+    @ResponseBody
+    @RequestMapping("/permissionList")
+    public Object roleList(@RequestParam Integer userId) {
+        try {
+            logger.info("-------------查看角色的权限列表-------------");
+            return service.queryByUserId(userId);
+        } catch (Exception e) {
+            logger.info("查看角色的权限列表失败:{}", e.getMessage());
+            return WebResult.error("查看角色的权限列表失败");
         }
     }
 }

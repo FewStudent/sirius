@@ -2,6 +2,7 @@ package club.laky.sirius.admin.dao;
 
 import club.laky.sirius.admin.entity.SysUserRoleRelation;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public interface SysUserRoleRelationDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<SysUserRoleRelation> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -38,13 +39,6 @@ public interface SysUserRoleRelationDao {
      */
     List<SysUserRoleRelation> queryAll(SysUserRoleRelation sysUserRoleRelation);
 
-    /**
-     * 新增数据
-     *
-     * @param sysUserRoleRelation 实例对象
-     * @return 影响行数
-     */
-    int insert(SysUserRoleRelation sysUserRoleRelation);
 
     /**
      * 修改数据
@@ -61,5 +55,7 @@ public interface SysUserRoleRelationDao {
      * @return 影响行数
      */
     int deleteById(Integer roleId);
+
+    List<SysUserRoleRelation> queryByUserId(@Param("userId") Integer userId);
 
 }

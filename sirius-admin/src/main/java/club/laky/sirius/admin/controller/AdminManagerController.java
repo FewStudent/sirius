@@ -145,5 +145,21 @@ public class AdminManagerController {
         }
     }
 
+    /**
+     * 查看用户的角色列表
+     *
+     * @author panrulang
+     */
+    @ResponseBody
+    @RequestMapping("/roleList")
+    public Object roleList(@RequestParam Integer userId) {
+        try {
+            logger.info("-------------查看用户的角色列表-------------");
+            return sysRoleService.queryByUserId(userId);
+        } catch (Exception e) {
+            logger.info("查看用户的角色列表失败:{}", e.getMessage());
+            return WebResult.error("查看用户的角色列表失败");
+        }
+    }
 
 }

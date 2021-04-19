@@ -80,8 +80,13 @@ public interface SysUserDao {
                             @Param("jobId") Integer jobId, @Param("state") Integer state);
 
     List<SysUser> queryClientList(@Param("offset") Integer offset, @Param("limit") Integer limit,
-                           @Param("nickname") String nickname, @Param("phone") String phone, @Param("state") Integer state);
+                                  @Param("nickname") String nickname, @Param("phone") String phone, @Param("state") Integer state);
 
     Integer queryClientCount(@Param("nickname") String nickname, @Param("phone") String phone,
                              @Param("state") Integer state);
+
+    List<SysUser> queryUserList(@Param("offset") Integer offset, @Param("limit") Integer limit, @Param("nickname") String nickname,
+                                @Param("phone") String phone, @Param("state") Integer state);
+
+    Integer queryUserCount(@Param("nickname") String nickname, @Param("phone") String phone, @Param("state") Integer state);
 }

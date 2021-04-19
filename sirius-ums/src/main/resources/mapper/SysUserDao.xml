@@ -308,4 +308,49 @@
         su.id
         ) a
     </select>
+
+    <select id="queryUserList" resultMap="BaseResultMap">
+        select su.*
+        from sys_user su
+        left join sys_user_role_relation surr on surr.user_id = su.id
+        left join sys_role sr on sr.id = surr.role_id
+        <where>
+            su.id != 1 and sr.role != 'client'
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="phone !=null and phone != ''">
+                and su.phone like CONCAT(#{phone,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="state !=null">
+                and su.state = #{state}
+            </if>
+        </where>
+        group by su.id
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="queryUserCount" resultType="java.lang.Integer">
+        select count(*)
+        from (
+        select su.*
+        from sys_user su
+        left join sys_user_role_relation surr on surr.user_id = su.id
+        left join sys_role sr on sr.id = surr.role_id
+        <where>
+            su.id != 1 and sr.role != 'client'
+            <if test="nickname !=null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname},'%')
+            </if>
+            <if test="phone !=null and phone != ''">
+                and su.phone like CONCAT(#{phone,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="state !=null">
+                and su.state = #{state}
+            </if>
+        </where>
+        group by su.id) a
+    </select>
 </mapper>

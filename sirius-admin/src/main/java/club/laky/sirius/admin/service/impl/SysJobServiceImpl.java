@@ -56,6 +56,7 @@ public class SysJobServiceImpl implements SysJobService {
      */
     @Override
     public SysJob insert(SysJob sysJob) {
+        cacheService.del(CacheKey.JOBS);
         this.sysJobDao.insert(sysJob);
         return sysJob;
     }
@@ -68,6 +69,7 @@ public class SysJobServiceImpl implements SysJobService {
      */
     @Override
     public SysJob update(SysJob sysJob) {
+        cacheService.del(CacheKey.JOBS);
         this.sysJobDao.update(sysJob);
         return this.queryById(sysJob.getId());
     }
@@ -80,6 +82,7 @@ public class SysJobServiceImpl implements SysJobService {
      */
     @Override
     public boolean deleteById(Integer id) {
+        cacheService.del(CacheKey.JOBS);
         return this.sysJobDao.deleteById(id) > 0;
     }
 
@@ -95,7 +98,7 @@ public class SysJobServiceImpl implements SysJobService {
 
     @Override
     public List<SysJob> queryAll() {
-        Map<String, Object> cache = (Map<String, Object>) cacheService.get(CacheKey.DEPARTMENTS);
+        Map<String, Object> cache = (Map<String, Object>) cacheService.get(CacheKey.JOBS);
         if ("true".equals(cache.get("status"))) {
             //获取缓存成功
             String json = (String) cache.get("data");
@@ -105,7 +108,7 @@ public class SysJobServiceImpl implements SysJobService {
             //缓存获取失败,从数据库获取并缓存
             List<SysJob> jobList = this.sysJobDao.queryAll(null);
             String json = JSON.toJSONString(jobList);
-            cacheService.set(CacheKey.DEPARTMENTS, json);
+            cacheService.set(CacheKey.JOBS, json);
             return jobList;
         }
     }

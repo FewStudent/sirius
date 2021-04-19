@@ -56,6 +56,7 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
      */
     @Override
     public SysDepartment insert(SysDepartment sysDepartment) {
+        cacheService.del(CacheKey.DEPARTMENTS);
         this.sysDepartmentDao.insert(sysDepartment);
         return sysDepartment;
     }
@@ -68,6 +69,7 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
      */
     @Override
     public SysDepartment update(SysDepartment sysDepartment) {
+        cacheService.del(CacheKey.DEPARTMENTS);
         this.sysDepartmentDao.update(sysDepartment);
         return this.queryById(sysDepartment.getId());
     }
@@ -80,6 +82,7 @@ public class SysDepartmentServiceImpl implements SysDepartmentService {
      */
     @Override
     public boolean deleteById(Integer id) {
+        cacheService.del(CacheKey.DEPARTMENTS);
         return this.sysDepartmentDao.deleteById(id) > 0;
     }
 

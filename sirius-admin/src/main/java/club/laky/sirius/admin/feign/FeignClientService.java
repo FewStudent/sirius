@@ -27,4 +27,29 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/client/list", method = RequestMethod.GET)
     Object queryClientList(@RequestBody String toJSONString);
+
+
+    @RequestMapping(value = "/api/client/userList", method = RequestMethod.GET)
+    Object queryUserList(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/client/userCount", method = RequestMethod.GET)
+    Integer queryUserCount(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/client/delete", method = RequestMethod.GET)
+    Object delete(@RequestParam Integer userId);
+
+    @RequestMapping(value = "/api/client/regist", method = RequestMethod.GET)
+    Object regist(@RequestParam String jsonBody);
+
+    @RequestMapping(value = "/api/client/insertManager", method = RequestMethod.GET)
+    Object insertManager(@RequestParam String jsonBody);
+
+    @RequestMapping(value = "/api/client/update", method = RequestMethod.GET)
+    Integer update(@RequestParam String jsonBody);
+
+    @RequestMapping(value = "/api/client/updateUser", method = RequestMethod.GET)
+    Integer updateUser(@RequestParam String jsonBody);
+
+    @RequestMapping(value = "/api/user/detail", method = RequestMethod.GET)
+    Object detail(@RequestParam String account, @RequestParam Integer type);
 }

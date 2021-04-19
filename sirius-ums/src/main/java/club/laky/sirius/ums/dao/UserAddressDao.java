@@ -64,4 +64,10 @@ public interface UserAddressDao {
     int deleteById(Integer id);
 
     List<UserAddress> userAddressList(@Param("userId") Integer userId);
+
+    Integer updateAddressStateByUserId(@Param("u_id") Integer u_id);
+
+    List<UserAddress> adminAddressList(@Param("nickname") String nickname, @Param("page") Integer page, @Param("limit") Integer limit);
+
+    Integer adminAddressCount(@Param("nickname") String nickname);
 }

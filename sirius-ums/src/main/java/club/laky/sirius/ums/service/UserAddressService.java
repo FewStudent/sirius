@@ -1,6 +1,8 @@
 package club.laky.sirius.ums.service;
 
 import club.laky.sirius.ums.entity.UserAddress;
+import club.laky.sirius.ums.utils.WebResult;
+
 import java.util.List;
 
 /**
@@ -58,7 +60,11 @@ public interface UserAddressService {
 
     Object insertAddress(String jsonBody);
 
-    Object adminAddressList(String nickname, Integer page, Integer limit);
+    WebResult adminAddressList(String nickname, Integer page, Integer limit);
+
+    Integer adminAddressCount(String nickname);
 
     Object userAddressList(Integer userId);
+
+    WebResult addressDetail(Integer id);
 }

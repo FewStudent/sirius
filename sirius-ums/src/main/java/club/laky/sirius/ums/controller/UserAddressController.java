@@ -55,11 +55,26 @@ public class UserAddressController {
     }
 
     /**
+     * 收货地址数量
+     */
+    @ResponseBody
+    @RequestMapping("adminAddressCount")
+    public Integer adminAddressCount(@RequestParam String nickname) {
+        try {
+            logger.info("-------------获取用户的收货地址-------------");
+            return userAddressService.adminAddressCount(nickname);
+        } catch (Exception e) {
+            logger.error("获取用户的收货地址失败：" + e.getMessage());
+            return 0;
+        }
+    }
+
+    /**
      * 管理所有用户地址
      */
     @ResponseBody
     @RequestMapping("adminAddressList")
-    public Object adminAddressList(@RequestParam String nickname, @RequestParam Integer page, @RequestParam Integer limit) {
+    public WebResult adminAddressList(@RequestParam String nickname, @RequestParam Integer page, @RequestParam Integer limit) {
         try {
             logger.info("-------------管理所有用户地址-------------");
             return userAddressService.adminAddressList(nickname, page, limit);
@@ -73,8 +88,8 @@ public class UserAddressController {
      * 修改用户地址
      */
     @ResponseBody
-    @RequestMapping("update")
-    public Object update(@RequestBody String jsonBody) {
+    @RequestMapping("updateAddress")
+    public Object updateAddress(@RequestBody String jsonBody) {
         try {
             logger.info("-------------修改用户地址-------------");
             return userAddressService.updateAddress(jsonBody);
@@ -88,8 +103,8 @@ public class UserAddressController {
      * 删除
      */
     @ResponseBody
-    @RequestMapping("delete")
-    public Object delete(@RequestBody Integer addressId) {
+    @RequestMapping("deleteAddress")
+    public Object deleteAddress(@RequestBody Integer addressId) {
         try {
             logger.info("-------------删除-------------");
             return userAddressService.delete(addressId);
@@ -111,6 +126,23 @@ public class UserAddressController {
         } catch (Exception e) {
             logger.error("添加用户地址失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 收货地址详情
+     *
+     * @author panrulang
+     */
+    @ResponseBody
+    @RequestMapping("/addressDetail")
+    public Object addressDetail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------收货地址详情-------------");
+            return userAddressService.addressDetail(id);
+        } catch (Exception e) {
+            logger.info("收货地址详情失败:{}", e.getMessage());
+            return WebResult.error("收货地址详情失败");
         }
     }
 }

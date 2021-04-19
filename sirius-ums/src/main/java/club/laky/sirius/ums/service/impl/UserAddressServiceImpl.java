@@ -4,6 +4,7 @@ import club.laky.sirius.ums.entity.UserAddress;
 import club.laky.sirius.ums.dao.UserAddressDao;
 import club.laky.sirius.ums.service.UserAddressService;
 import club.laky.sirius.ums.utils.WebResult;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -80,7 +81,31 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     @Override
     public Object updateAddress(String jsonBody) {
-        return null;
+        JSONObject params = JSONObject.parseObject(jsonBody);
+        Integer id = params.getInteger("id");
+        Integer u_id = params.getInteger("user_id");
+        String detail = params.getString("detail");
+        String address = params.getString("address");
+        Integer state = params.getInteger("state");
+        String name = params.getString("name");
+        String phone = params.getString("phone");
+
+        UserAddress userAddress = new UserAddress();
+        userAddress.setIsDefault(state);
+        userAddress.setId(id);
+        userAddress.setUAddress(address);
+        userAddress.setUId(u_id);
+        userAddress.setUDetail(detail);
+        userAddress.setUName(name);
+        userAddress.setUPhone(phone);
+        if (state == 1) {
+            //清除所有默认地址
+            userAddressDao.updateAddressStateByUserId(u_id);
+        }
+        if (userAddressDao.update(userAddress) == 1) {
+            return WebResult.success("修改成功!");
+        }
+        return WebResult.error("修改失败");
     }
 
     @Override
@@ -94,12 +119,38 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     @Override
     public Object insertAddress(String jsonBody) {
-        return null;
+        JSONObject params = JSONObject.parseObject(jsonBody);
+        Integer u_id = params.getInteger("user_id");
+        String detail = params.getString("detail");
+        String address = params.getString("address");
+        String name = params.getString("name");
+        String phone = params.getString("phone");
+
+        UserAddress userAddress = new UserAddress();
+        userAddress.setIsDefault(0);
+        userAddress.setUAddress(address);
+        userAddress.setUId(u_id);
+        userAddress.setUDetail(detail);
+        userAddress.setUName(name);
+        userAddress.setUPhone(phone);
+        if (userAddressDao.insert(userAddress) == 1) {
+            return WebResult.success("添加成功!");
+        }
+        return WebResult.error("添加失败");
     }
 
     @Override
-    public Object adminAddressList(String nickname, Integer page, Integer limit) {
-        return null;
+    public WebResult adminAddressList(String nickname, Integer offset, Integer limit) {
+        if ("ALL-SELECT".equals(nickname)) {
+            nickname = null;
+        }
+        List<UserAddress> addressList = this.userAddressDao.adminAddressList(nickname, offset, limit);
+        return WebResult.success(addressList);
+    }
+
+    @Override
+    public Integer adminAddressCount(String nickname) {
+        return this.userAddressDao.adminAddressCount(nickname);
     }
 
     @Override
@@ -109,5 +160,10 @@ public class UserAddressServiceImpl implements UserAddressService {
         }
         List<UserAddress> addressList = this.userAddressDao.userAddressList(userId);
         return WebResult.success(addressList);
+    }
+
+    @Override
+    public WebResult addressDetail(Integer id) {
+        return WebResult.success(userAddressDao.queryById(id));
     }
 }

@@ -1,5 +1,7 @@
 package club.laky.sirius.ums.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 /**
@@ -10,31 +12,34 @@ import java.io.Serializable;
  */
 public class UserAddress implements Serializable {
     private static final long serialVersionUID = -15988849814256808L;
-    
+
     private Integer id;
     /**
-    * 用户ID
-    */
+     * 用户ID
+     */
     private Integer uId;
+
+    @TableField(exist = false)
+    private String nickname;
     /**
-    * 地址
-    */
+     * 地址
+     */
     private String uAddress;
     /**
-    * 详细地址
-    */
+     * 详细地址
+     */
     private String uDetail;
     /**
-    * 电话
-    */
+     * 电话
+     */
     private String uPhone;
     /**
-    * 收货人姓名
-    */
+     * 收货人姓名
+     */
     private String uName;
     /**
-    * 是否为默认地址
-    */
+     * 是否为默认地址
+     */
     private Integer isDefault;
 
 
@@ -94,4 +99,11 @@ public class UserAddress implements Serializable {
         this.isDefault = isDefault;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

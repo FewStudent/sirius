@@ -223,7 +223,6 @@ public class GoodsOrderServiceImpl implements GoodsOrderService {
     @Override
     @Transactional
     public WebResult checkSendOrder(Integer orderId) {
-        //TODO 发货校验
         List<GoodsOrderList> goodsOrderLists = goodsOrderListDao.queryByOrderId(orderId);
         StringBuilder idParams = new StringBuilder();
         for (GoodsOrderList goodsOrderList : goodsOrderLists) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="club.laky.sirius.ums.dao.UserAddressDao">
-
     <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.UserAddress">
         <!--@Table user_address-->
         <result property="id" column="id" jdbcType="INTEGER"/>
@@ -11,6 +10,7 @@
         <result property="uPhone" column="u_phone" jdbcType="VARCHAR"/>
         <result property="uName" column="u_name" jdbcType="VARCHAR"/>
         <result property="isDefault" column="is_default" jdbcType="INTEGER"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -35,8 +35,7 @@
                u_phone,
                u_name,
                is_default
-        from shop_mall.user_address
-        limit #{offset}, #{limit}
+        from shop_mall.user_address limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -113,4 +112,32 @@
         where id = #{id}
     </delete>
 
+    <update id="updateAddressStateByUserId">
+        update user_address
+        set state = 0
+        where u_id = #{u_id,jdbcType=INTEGER}
+    </update>
+
+    <select id="adminAddressCount">
+        select count(*)
+        from user_address ua
+        left join sys_user su on su.id = ua.u_id
+        <where>
+            <if test="nickname != null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="adminAddressList" resultMap="BaseResultMap">
+        select ua.*, su.nickname
+        from user_address ua
+        left join sys_user su on su.id = ua.u_id
+        <where>
+            <if test="nickname != null and nickname != ''">
+                and su.nickname like CONCAT(#{nickname,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
 </mapper>

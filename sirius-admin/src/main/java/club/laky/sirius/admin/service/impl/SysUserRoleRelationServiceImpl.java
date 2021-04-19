@@ -42,17 +42,6 @@ public class SysUserRoleRelationServiceImpl implements SysUserRoleRelationServic
         return this.sysUserRoleRelationDao.queryAllByLimit(offset, limit);
     }
 
-    /**
-     * 新增数据
-     *
-     * @param sysUserRoleRelation 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public SysUserRoleRelation insert(SysUserRoleRelation sysUserRoleRelation) {
-        this.sysUserRoleRelationDao.insert(sysUserRoleRelation);
-        return sysUserRoleRelation;
-    }
 
     /**
      * 修改数据

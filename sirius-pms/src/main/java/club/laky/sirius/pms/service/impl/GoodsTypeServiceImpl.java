@@ -4,6 +4,7 @@ import club.laky.sirius.pms.entity.GoodsType;
 import club.laky.sirius.pms.dao.GoodsTypeDao;
 import club.laky.sirius.pms.service.GoodsTypeService;
 import club.laky.sirius.pms.utils.WebResult;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -35,7 +36,7 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -80,12 +81,34 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
 
     @Override
     public WebResult save(String jsonBody) {
-        return null;
+        JSONObject params = JSONObject.parseObject(jsonBody);
+        Integer id = params.getInteger("id");
+        String typeName = params.getString("typeName");
+        String typeDetail = params.getString("typeDetail");
+        GoodsType goodsType = new GoodsType();
+
+        goodsType.setTypeName(typeName);
+        goodsType.setTypeDetail(typeDetail);
+        //添加
+        if (id == null) {
+            goodsType.setId(id);
+            int result = this.goodsTypeDao.insert(goodsType);
+            if (result == 0) {
+                return WebResult.error("添加失败");
+            }
+            return WebResult.success("添加成功");
+        } else {
+            int result = this.goodsTypeDao.update(goodsType);
+            if (result == 0) {
+                return WebResult.error("修改失败");
+            }
+            return WebResult.success("修改成功");
+        }
     }
 
     @Override
     public List<GoodsType> queryTypeList(Integer offset, Integer limit, String typeName) {
-        return this.goodsTypeDao.queryTypeList(offset,limit,typeName);
+        return this.goodsTypeDao.queryTypeList(offset, limit, typeName);
     }
 
     @Override

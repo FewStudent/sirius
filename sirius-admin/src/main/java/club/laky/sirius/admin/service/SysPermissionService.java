@@ -52,4 +52,7 @@ public interface SysPermissionService {
      */
     boolean deleteById(Integer id);
 
+    Integer queryCount();
+
+    Object queryAll();
 }

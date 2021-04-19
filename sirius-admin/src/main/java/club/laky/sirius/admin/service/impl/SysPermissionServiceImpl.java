@@ -34,7 +34,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -75,5 +75,15 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     @Override
     public boolean deleteById(Integer id) {
         return this.sysPermissionDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public Integer queryCount() {
+        return this.sysPermissionDao.queryCount();
+    }
+
+    @Override
+    public Object queryAll() {
+        return this.sysPermissionDao.queryAll(null);
     }
 }

@@ -1,6 +1,8 @@
 package club.laky.sirius.admin.service;
 
 import club.laky.sirius.admin.entity.SysRole;
+import club.laky.sirius.admin.utils.WebResult;
+
 import java.util.List;
 
 /**
@@ -52,4 +54,11 @@ public interface SysRoleService {
      */
     boolean deleteById(Integer id);
 
+    Integer queryCount();
+
+    Object queryAll();
+
+    WebResult saveRole(String jsonBody);
+
+    WebResult savePermission(String jsonBody);
 }

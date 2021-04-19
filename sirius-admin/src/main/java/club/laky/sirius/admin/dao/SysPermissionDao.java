@@ -2,6 +2,8 @@ package club.laky.sirius.admin.dao;
 
 import club.laky.sirius.admin.entity.SysPermission;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public interface SysPermissionDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<SysPermission> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -62,4 +64,8 @@ public interface SysPermissionDao {
      */
     int deleteById(Integer id);
 
+    @Select("select count(*) from sys_permission")
+    Integer queryCount();
+
+    Integer deleteByRoleId(Integer role_id);
 }

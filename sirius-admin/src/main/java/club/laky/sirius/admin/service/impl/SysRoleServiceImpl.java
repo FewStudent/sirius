@@ -1,11 +1,17 @@
 package club.laky.sirius.admin.service.impl;
 
+import club.laky.sirius.admin.dao.SysPermissionDao;
 import club.laky.sirius.admin.entity.SysRole;
 import club.laky.sirius.admin.dao.SysRoleDao;
 import club.laky.sirius.admin.service.SysRoleService;
+import club.laky.sirius.admin.utils.WebResult;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,6 +24,8 @@ import java.util.List;
 public class SysRoleServiceImpl implements SysRoleService {
     @Resource
     private SysRoleDao sysRoleDao;
+    @Resource
+    private SysPermissionDao permissionDao;
 
     /**
      * 通过ID查询单条数据
@@ -34,7 +42,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -75,5 +83,46 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public boolean deleteById(Integer id) {
         return this.sysRoleDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public Integer queryCount() {
+        return this.sysRoleDao.queryCount();
+
+    }
+
+    @Override
+    public Object queryAll() {
+        return this.sysRoleDao.queryAll(null);
+    }
+
+    @Override
+    public WebResult saveRole(String jsonBody) {
+        JSONObject params = JSONObject.parseObject(jsonBody);
+        Integer user_id = params.getInteger("user_id");
+        String ids = params.getString("ids");
+        sysRoleDao.deleteByUserId(user_id);
+        List<String> idList = Arrays.asList(ids.split(","));
+        Integer result = sysRoleDao.batchInsertRelation(idList, user_id);
+        if (result == 0) {
+            return WebResult.error("保存失败");
+        }
+
+        return WebResult.success("保存成功!");
+    }
+
+    @Override
+    public WebResult savePermission(String jsonBody) {
+        JSONObject params = JSONObject.parseObject(jsonBody);
+        Integer role_id = params.getInteger("role_id");
+        String ids = params.getString("ids");
+        permissionDao.deleteByRoleId(role_id);
+        List<String> idList = Arrays.asList(ids.split(","));
+        Integer result = sysRoleDao.batchInsertPermissionRelation(idList, role_id);
+        if (result == 0) {
+            return WebResult.error("保存失败");
+        }
+
+        return WebResult.success("保存成功!");
     }
 }

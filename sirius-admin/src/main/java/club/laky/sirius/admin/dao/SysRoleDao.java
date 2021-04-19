@@ -1,7 +1,10 @@
 package club.laky.sirius.admin.dao;
 
 import club.laky.sirius.admin.entity.SysRole;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 /**
@@ -24,7 +27,7 @@ public interface SysRoleDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<SysRole> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -62,4 +65,13 @@ public interface SysRoleDao {
      */
     int deleteById(Integer id);
 
+    @Select("select count(*) from sys_role")
+    Integer queryCount();
+
+    @Delete("delete from sys_user_role_relation where user_id = #{user_id}")
+    Integer deleteByUserId(@Param("user_id") Integer user_id);
+
+    Integer batchInsertRelation(@Param("idList") List<String> idList, @Param("user_id") Integer user_id);
+
+    Integer batchInsertPermissionRelation(@Param("idList") List<String> idList, @Param("role_id") Integer role_id);
 }

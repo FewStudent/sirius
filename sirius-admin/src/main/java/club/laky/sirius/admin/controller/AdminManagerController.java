@@ -1,6 +1,7 @@
 package club.laky.sirius.admin.controller;
 
 import club.laky.sirius.admin.feign.FeignClientService;
+import club.laky.sirius.admin.service.SysRoleService;
 import club.laky.sirius.admin.utils.LayuiVO;
 import club.laky.sirius.admin.utils.WebResult;
 import com.alibaba.fastjson.JSONObject;
@@ -26,6 +27,9 @@ public class AdminManagerController {
 
     @Autowired
     private FeignClientService clientService;
+
+    @Autowired
+    private SysRoleService sysRoleService;
 
     /**
      * 分页查询
@@ -123,5 +127,23 @@ public class AdminManagerController {
             return WebResult.error("用户详情失败");
         }
     }
+
+    /**
+     * 保存用户角色
+     *
+     * @author panrulang
+     */
+    @ResponseBody
+    @RequestMapping("/saveRole")
+    public Object saveRole(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------保存用户角色-------------");
+            return sysRoleService.saveRole(jsonBody);
+        } catch (Exception e) {
+            logger.info("保存用户角色失败:{}", e.getMessage());
+            return WebResult.error("保存用户角色失败");
+        }
+    }
+
 
 }

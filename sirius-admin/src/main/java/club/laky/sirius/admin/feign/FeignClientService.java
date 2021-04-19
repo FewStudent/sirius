@@ -52,4 +52,5 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/user/detail", method = RequestMethod.GET)
     Object detail(@RequestParam String account, @RequestParam Integer type);
+
 }

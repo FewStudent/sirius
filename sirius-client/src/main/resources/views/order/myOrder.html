@@ -101,8 +101,11 @@
             strVar += "                    <\/div>";
             strVar += "                    <div class=\"layui-card layui-col-md2\" style=\"padding: 20px\">";
             strVar += "                        <div class=\"layui-card-body\" style=\"display: flex\">";
-            strVar += "                            <div style=\"margin: auto\">";
-            strVar += "                                <button lay-num='" + order.orderNum + "' class=\"order-detail layui-btn-fluid layui-btn layui-btn-primary\">查看详情<\/button>";
+            strVar += "                            <div style=\"margin: 0px\">";
+            strVar += "                                <button lay-num='" + order.orderNum + "' class=\"order-detail layui-btn-fluid layui-btn layui-btn-primary\">查看详情<\/button><br>";
+            if(order.state === 1){
+                strVar += "                                <button lay-num='" + order.orderNum + "' class=\"order-detail layui-btn-fluid layui-btn layui-btn-normal\">确认收货<\/button>";
+            }
             strVar += "                            <\/div>";
             strVar += "                        <\/div>";
             strVar += "                    <\/div>";

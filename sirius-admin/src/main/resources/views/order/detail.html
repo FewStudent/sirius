@@ -28,9 +28,6 @@
 <body>
 <div class="layui-container">
     <div class="layui-row">
-        <fieldset class="layui-elem-field layui-field-title">
-            <legend>订单详情</legend>
-        </fieldset>
     </div>
     <div class="layui-row">
         <div class="layui-col-xs12">
@@ -57,9 +54,9 @@
                                 </div>
                             </div>
                             <div class="layui-input-item">
-                                <label class="layui-form-label" for="address">收货地址</label>
+                                <label class="layui-form-label" for="addressName">收货地址</label>
                                 <div class="layui-input-block">
-                                    <input id="address" placeholder="请输入收货地址" autocomplete="off" disabled
+                                    <input id="addressName" placeholder="请输入收货地址" autocomplete="off" disabled
                                            class="layui-input">
                                 </div>
                             </div>
@@ -131,7 +128,10 @@
                     $("#id").val(order.id);
                     $("#orderNum").val(order.orderNum)
                     $("#nickname").val(order.nickname)
+                    $("#addressName").val(order.addressName)
+                    console.log(order.addressName)
                     $("#createTime").val(order.createTime)
+                    $("#email").val(order.email)
                     $("#state").val(stateName(order.state))
                     if (order.state === 0) {
                         $('.operation-list #checkOrder').css("display", "inline")

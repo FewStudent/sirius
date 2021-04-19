@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.laky.sirius.ums.dao.UserAddressDao">
+
+    <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.UserAddress">
+        <!--@Table user_address-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="uId" column="u_id" jdbcType="INTEGER"/>
+        <result property="uAddress" column="u_address" jdbcType="VARCHAR"/>
+        <result property="uDetail" column="u_detail" jdbcType="VARCHAR"/>
+        <result property="uPhone" column="u_phone" jdbcType="VARCHAR"/>
+        <result property="uName" column="u_name" jdbcType="VARCHAR"/>
+        <result property="isDefault" column="is_default" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               u_id,
+               u_address,
+               u_detail,
+               u_phone,
+               u_name,
+               is_default
+        from shop_mall.user_address
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id,
+               u_id,
+               u_address,
+               u_detail,
+               u_phone,
+               u_name,
+               is_default
+        from shop_mall.user_address
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        id, u_id, u_address, u_detail, u_phone, u_name, is_default
+        from shop_mall.user_address
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="uId != null">
+                and u_id = #{uId}
+            </if>
+            <if test="uAddress != null and uAddress != ''">
+                and u_address = #{uAddress}
+            </if>
+            <if test="uDetail != null and uDetail != ''">
+                and u_detail = #{uDetail}
+            </if>
+            <if test="uPhone != null and uPhone != ''">
+                and u_phone = #{uPhone}
+            </if>
+            <if test="uName != null and uName != ''">
+                and u_name = #{uName}
+            </if>
+            <if test="isDefault != null">
+                and is_default = #{isDefault}
+            </if>
+        </where>
+    </select>
+    <select id="userAddressList" resultMap="BaseResultMap">
+        select *
+        from user_address
+        where u_id = #{userId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_mall.user_address(u_id, u_address, u_detail, u_phone, u_name, is_default)
+        values (#{uId}, #{uAddress}, #{uDetail}, #{uPhone}, #{uName}, #{isDefault})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shop_mall.user_address
+        <set>
+            <if test="uId != null">
+                u_id = #{uId},
+            </if>
+            <if test="uAddress != null and uAddress != ''">
+                u_address = #{uAddress},
+            </if>
+            <if test="uDetail != null and uDetail != ''">
+                u_detail = #{uDetail},
+            </if>
+            <if test="uPhone != null and uPhone != ''">
+                u_phone = #{uPhone},
+            </if>
+            <if test="uName != null and uName != ''">
+                u_name = #{uName},
+            </if>
+            <if test="isDefault != null">
+                is_default = #{isDefault},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shop_mall.user_address
+        where id = #{id}
+    </delete>
+
+</mapper>

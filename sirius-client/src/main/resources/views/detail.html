@@ -83,36 +83,60 @@
 </div>
 </body>
 <script>
+    let addressId;
+
+    function setAddress(id) {
+        addressId = id;
+    }
+
     layui.use(['element', 'jquery', 'layer', 'form', 'laypage', 'carousel'], function () {
-            let element = layui.element;
             let $ = layui.jquery;
             let layer = layui.layer;
-            let form = layui.form;
-            let laypage = layui.laypage;
             let carousel = layui.carousel;
-            let initPage = false;
+            let price = 0;
 
             const token = localStorage.getItem("token");
 
             $(".buy").click(function () {
+
                 layer.prompt({title: '请输入购买数量', formType: 2}, function (text, index) {
                     if (isNumber(text)) {
-                        layer.confirm("是否确认下单?", function () {
-                            let data = {};
-                            let list = [];
-                            let item = {};
-                            item.goodsId = "${goodsId}";
-                            item.count = text;
-                            list.push(item);
-                            data.list = list;
-                            ajax_data("/client/order/saveOrder", token, JSON.stringify(data), function (result) {
-                                if (result.succeed) {
-                                    window.location.href = "/client/page/order/detail?orderNum=" + result.data + "&token=" + token;
-                                } else {
-                                    layer.msg(result.msg);
-                                }
-                            })
-                        })
+                        let totalPrice = text * price;
+                        layer.open({
+                            type: 2,
+                            title: "收货地址列表",
+                            shadeClose: true,
+                            shade: 0.2,
+                            maxmin: true, //开启最大化最小化按钮
+                            area: ['50%', '100%'],
+                            content: "/client/page/user/addressList?token=" + token,
+                            end: function () {
+                                layer.msg("阿这");
+                                console.log("addressId:" + addressId)
+                                layer.confirm("结算金额为：￥" + totalPrice + ",点击确认进行支付?", function () {
+                                    layer.msg("模拟支付ing......", {"icon": 6, time: 2000}, function () {
+                                        let data = {};
+                                        let list = [];
+                                        let item = {};
+                                        item.goodsId = "${goodsId}";
+                                        item.count = text;
+                                        list.push(item);
+                                        data.list = list;
+                                        data.addressId = addressId;
+                                        console.log(data)
+                                        ajax_data("/client/order/saveOrder", token, JSON.stringify(data), function (result) {
+                                            if (result.succeed) {
+                                                window.location.href = "/client/page/order/detail?orderNum=" + result.data + "&token=" + token;
+                                            } else {
+                                                layer.msg(result.msg);
+                                            }
+                                        })
+                                    })
+                                })
+                            }
+                        });
+
+
                     } else {
                         layer.alert("输入的数量错误，数量必须为正整数!", {"icon": 2})
                     }
@@ -154,6 +178,7 @@
                         $("#goods-price").html("商品单价：￥" + goods.price);
                         $("#goods-desc").html("&nbsp;&nbsp;&nbsp;&nbsp;" + goods.description);
                         $("#goods-count").html("商品数量：" + goods.count);
+                        price = goods.price;
                         //图片
                         console.log(imgList);
                         for (let i = 0; i < imgList.length; i++) {

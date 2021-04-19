@@ -54,7 +54,7 @@ public class ClientPageController {
      * 商品详情
      */
     @RequestMapping("/order/detail")
-    public ModelAndView orderDetail(HttpServletRequest request, Integer orderNum) {
+    public ModelAndView orderDetail(HttpServletRequest request, String orderNum) {
         ModelAndView result = modelUtils.createModel(request, "/order/detail");
         result.addObject("orderNum", orderNum);
         return result;
@@ -66,5 +66,23 @@ public class ClientPageController {
     @RequestMapping("order/myOrder")
     public ModelAndView myOrder(HttpServletRequest request) {
         return modelUtils.createModel(request, "/order/myOrder");
+    }
+
+    /**
+     * 我的订单
+     */
+    @RequestMapping("order/newOrder")
+    public ModelAndView newOrder(HttpServletRequest request, String jsonBody) {
+        ModelAndView result = modelUtils.createModel(request, "/order/newOrder");
+        result.addObject("jsonBody", jsonBody);
+        return result;
+    }
+
+    /**
+     * 用户地址
+     */
+    @RequestMapping("user/addressList")
+    public ModelAndView addressList(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/user/addressList");
     }
 }

@@ -30,4 +30,20 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/client/regist", method = RequestMethod.GET)
     Object regist(@RequestBody String jsonBody);
+
+
+    /**
+     * 地址
+     */
+    @RequestMapping(value = "/api/address/userAddressList", method = RequestMethod.GET)
+    Object userAddressList(@RequestParam Integer userId);
+
+    @RequestMapping(value = "/api/address/update", method = RequestMethod.GET)
+    Object update(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/address/delete", method = RequestMethod.GET)
+    Object delete(@RequestBody Integer addressId);
+
+    @RequestMapping(value = "/api/address/insert", method = RequestMethod.GET)
+    Object insert(@RequestBody String jsonBody);
 }

@@ -2,9 +2,205 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>订单详情 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
+    <style>
+        .layui-input-item {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .img {
+            width: 75px;
+            height: 75px;
+            margin: 10px 20px 0px 0px
+        }
+    </style>
 </head>
 <body>
+<div class="layui-container">
+    <div class="layui-row">
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>订单详情</legend>
+        </fieldset>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-row">
+                <fieldset class="layui-elem-field">
+                    <legend>订单基本信息</legend>
+                    <form class="layui-form layui-form-pane" action="" lay-filter="form">
+                        <input id="id" type="hidden">
+                        <div class="layui-field-box layui-form">
+                            <input id="imgUpload" type="file" style="display: none"/>
 
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="orderNum">订单编号</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="orderNum" autocomplete="off" disabled
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="nickname">收货人</label>
+                                <div class="layui-input-block">
+                                    <input id="nickname" placeholder="请输入收货人" autocomplete="off" disabled
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-input-item">
+                                <label class="layui-form-label" for="address">收货地址</label>
+                                <div class="layui-input-block">
+                                    <input id="address" placeholder="请输入收货地址" autocomplete="off" disabled
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" for="email">邮箱</label>
+                                <div class="layui-input-block">
+                                    <input id="email" placeholder="请输入收货人邮箱" autocomplete="off" disabled
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" for="createTime">下单时间</label>
+                                <div class="layui-input-block">
+                                    <input id="createTime" placeholder="请输入下单时间" autocomplete="off" disabled
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" for="state">订单进度</label>
+                                <div class="layui-input-block">
+                                    <input id="state" placeholder="订单进度" autocomplete="off" disabled
+                                           class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+            <div class="layui-row">
+                <fieldset class="layui-elem-field" style="padding: 20px">
+                    <legend>订单商品列表</legend>
+                    <div class="layui-field-box">
+                        <div class="goods-list">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="layui-row">
+                <div class="operation-list">
+                    <button type="button" style="display: none"
+                            class="deliver layui-btn layui-btn-normal layui-btn-fluid" id="checkOrder">
+                        确认收货
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    layui.use(['table', 'jquery', "form", "layer", "layedit"], function () {
+        const $ = layui.jquery;
+        const form = layui.form;
+        const layer = layui.layer;
+        const token = localStorage.getItem("token");
+
+        $(document).ready(function () {
+            let url = "/client/order/detail?orderNum=${orderNum}&token=" + token;
+            ajax_common(url, token, function (result) {
+                console.log(result);
+                if (result.succeed) {
+                    const order = result.data;
+                    //基本信息
+                    $("#id").val(order.id);
+                    $("#orderNum").val(order.orderNum)
+                    $("#nickname").val(order.nickname)
+                    $("#createTime").val(order.createTime)
+                    $("#email").val(order.email)
+                    $("#address").val(order.addressName)
+                    $("#state").val(stateName(order.state))
+                    if (order.state === 1) {
+                        $('.operation-list #checkOrder').css("display", "inline")
+                    }
+                    const goodsList = order.goodsList;
+                    for (let i = 0; i < goodsList.length; i++) {
+                        $(".goods-list").append(goods_item(goodsList[i]));
+                    }
+                } else {
+                    layer.alert("获取详情失败！")
+                }
+            })
+        })
+
+        $("#checkOrder").click(function () {
+            let orderId = $("#id").val();
+            if ($("#state").val() !== "已发货") {
+                layer.alert("订单不是<已发货>状态,无法完结!");
+                return;
+            }
+            layer.confirm("是否确认收货?", {"icon": 3}, function () {
+                let url = "/client/order/checkTakeOrder?orderId=" + orderId + "&token=" + token;
+                ajax_common(url, token, function (result) {
+                    console.log(result)
+                    if (result.succeed) {
+                        layer.alert("收货成功!", {"icon": 1}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg(result.msg);
+                    }
+                })
+            })
+        })
+
+        function goods_item(goods) {
+            let strVar = "";
+            strVar += "<div class=\"layui-card\" style=\"border: solid 1px #D0D0D0\">";
+            strVar += "                                <div class=\"layui-card-body\">";
+            strVar += "                                    <div class=\"layui-row\">";
+            strVar += "                                        <div class=\"layui-col-md4\">";
+            strVar += "                                            <img src='" + goods.url + "' style=\"width: 75px;height: 75px\"";
+            strVar += "                                                 alt=\"商品图片\">";
+            strVar += "                                        <\/div>";
+            strVar += "                                        <div class=\"layui-col-md4\">";
+            strVar += "                                            " + goods.goodsName;
+            strVar += "                                        <\/div>";
+            strVar += "                                        <div class=\"layui-col-md4\">";
+            strVar += "                                            <div style='color: orange'>单价:" + goods.price + "<\/div>";
+            strVar += "                                            <div>数量:" + goods.goodsCount + "<\/div>";
+            strVar += "                                        <\/div>";
+            strVar += "                                    <\/div>";
+            strVar += "                                <\/div>";
+            strVar += "                            <\/div>";
+            return $(strVar);
+        }
+
+        function stateName(state) {
+            switch (state) {
+                case 0 :
+                    return "已下单";
+                case 1 :
+                    return "已发货";
+                case 2 :
+                    return "已收货";
+                case 3 :
+                    return "已完结";
+                case 4 :
+                    return "已取消";
+            }
+        }
+    })
+</script>
 </html>

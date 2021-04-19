@@ -82,12 +82,12 @@
         </foreach>
     </select>
     <select id="queryOrderDetail" resultMap="BaseResultMap">
-        select gol.id                          as list_id,
+        select gol.id                                 as list_id,
                gol.goods_count,
                g.goods_name,
                g.price,
-               SUBSTRING_INDEX(g.imgs, ',', 1) as url,
-               ua.u_address,
+               SUBSTRING_INDEX(g.imgs, ',', 1)        as url,
+               CONCAT(ua.u_address, ',', ua.u_detail) as address,
                su.nickname,
                su.email,
                go.*
@@ -116,7 +116,7 @@
             </if>
         </where>
         GROUP BY go.order_num
-        order by go.create_time
+        ORDER BY go.create_time DESC
         limit #{offset},#{limit}
     </select>
 
@@ -150,6 +150,7 @@
                 and go.order_num = #{no}
             </if>
         </where>
+        ORDER BY go.create_time DESC
         limit #{offset},#{limit}
     </select>
     <select id="queryAdminOrdersCount" resultType="java.lang.Integer">

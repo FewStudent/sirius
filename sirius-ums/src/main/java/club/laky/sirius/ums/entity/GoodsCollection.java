@@ -22,6 +22,8 @@ public class GoodsCollection implements Serializable {
     private String goodsName;
     @TableField(exist = false)
     private String nickname;
+    @TableField(exist = false)
+    private String url;
     /**
      * 用户ID
      */
@@ -78,5 +80,13 @@ public class GoodsCollection implements Serializable {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -3,6 +3,7 @@ package club.laky.sirius.ums.service.impl;
 import club.laky.sirius.ums.entity.UserCart;
 import club.laky.sirius.ums.dao.UserCartDao;
 import club.laky.sirius.ums.service.UserCartService;
+import club.laky.sirius.ums.utils.WebResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -75,5 +76,36 @@ public class UserCartServiceImpl implements UserCartService {
     @Override
     public boolean deleteById(Integer id) {
         return this.userCartDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public WebResult cartList(String jsonBody) {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public Integer cartCount(String jsonBody) {
+        return null;
+    }
+
+    @Override
+    public WebResult userCartList(String jsonBody) {
+        return null;
+    }
+
+    @Override
+    public WebResult clearCart(String goodsIdList) {
+        return null;
+    }
+
+    @Override
+    public WebResult deleteCart(Integer id) {
+        return null;
+    }
+
+    @Override
+    public WebResult insertCart(String jsonBody) {
+        return null;
     }
 }

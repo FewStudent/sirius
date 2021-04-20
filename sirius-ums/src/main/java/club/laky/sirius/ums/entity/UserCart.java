@@ -30,6 +30,8 @@ public class UserCart implements Serializable {
     private String goodsName;
     @TableField(exist = false)
     private String nickname;
+    @TableField(exist = false)
+    private String url;
 
 
     public Integer getId() {
@@ -77,9 +79,14 @@ public class UserCart implements Serializable {
     }
 
     public void setUId(Integer uId) {
-
-
         this.uId = uId;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

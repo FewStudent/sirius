@@ -1,6 +1,8 @@
 package club.laky.sirius.ums.service;
 
 import club.laky.sirius.ums.entity.UserCart;
+import club.laky.sirius.ums.utils.WebResult;
+
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public interface UserCartService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<UserCart> queryAllByLimit(int offset, int limit);
@@ -52,4 +54,15 @@ public interface UserCartService {
      */
     boolean deleteById(Integer id);
 
+    WebResult cartList(String jsonBody);
+
+    Integer cartCount(String jsonBody);
+
+    WebResult userCartList(String jsonBody);
+
+    WebResult clearCart(String goodsIdList);
+
+    WebResult deleteCart(Integer id);
+
+    WebResult insertCart(String jsonBody);
 }

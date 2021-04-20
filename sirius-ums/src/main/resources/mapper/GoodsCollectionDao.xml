@@ -10,6 +10,7 @@
 
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
         <result property="goodsName" column="goodsName" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -83,7 +84,7 @@
     </delete>
 
     <select id="collections" resultMap="BaseResultMap">
-        select gc.*, gc.goods_name
+        select gc.*, gc.goods_name,SUBSTRING_INDEX(g.imgs,',',1) as url
         from goods_collection gc
                      left join goods g on g.id = gc.goods_id
         where gc.u_id = #{userId,jdbcType=INTEGER}
@@ -91,7 +92,7 @@
     </select>
 
     <select id="adminCollectionList" resultMap="BaseResultMap">
-        select gc.*,g.goods_name,su.nickname
+        select gc.*,g.goods_name,su.nickname,SUBSTRING_INDEX(g.imgs,',',1) as url
         from goods_collection gc
         left join sys_user su on su.id = gc.u_id
         left join goods g on g.id = gc.goods_id

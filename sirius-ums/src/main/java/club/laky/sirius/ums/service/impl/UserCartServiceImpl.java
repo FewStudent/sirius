@@ -4,9 +4,11 @@ import club.laky.sirius.ums.entity.UserCart;
 import club.laky.sirius.ums.dao.UserCartDao;
 import club.laky.sirius.ums.service.UserCartService;
 import club.laky.sirius.ums.utils.WebResult;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,7 +37,7 @@ public class UserCartServiceImpl implements UserCartService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -80,32 +82,64 @@ public class UserCartServiceImpl implements UserCartService {
 
     @Override
     public WebResult cartList(String jsonBody) {
-        //TODO
-        return null;
+        JSONObject object = JSONObject.parseObject(jsonBody);
+        String nickname = object.getString("nickname");
+        Integer page = object.getInteger("page");
+        Integer limit = object.getInteger("limit");
+
+        List<UserCart> cartList = this.userCartDao.cartList(nickname, (page - 1) * limit, limit);
+        if (cartList != null) {
+            return WebResult.success(cartList);
+        }
+        return WebResult.error("获取失败");
     }
 
     @Override
     public Integer cartCount(String jsonBody) {
-        return null;
+        JSONObject object = JSONObject.parseObject(jsonBody);
+        String nickname = object.getString("nickname");
+        return this.userCartDao.cartCount(nickname);
     }
 
     @Override
-    public WebResult userCartList(String jsonBody) {
-        return null;
+    public WebResult userCartList(Integer userId) {
+        List<UserCart> userCartList = this.userCartDao.userCartList(userId);
+        if (userCartList == null) {
+            return WebResult.error("获取失败");
+        }
+        return WebResult.success(userCartList);
     }
 
     @Override
     public WebResult clearCart(String goodsIdList) {
-        return null;
+        List<String> ids = Arrays.asList(goodsIdList.split(","));
+        this.userCartDao.clearCart(ids);
+        return WebResult.success("清算结束");
     }
 
     @Override
     public WebResult deleteCart(Integer id) {
-        return null;
+        int result = this.userCartDao.deleteById(id);
+        if (result == 0) {
+            return WebResult.error("删除失败");
+        }
+        return WebResult.success("删除成功！");
     }
 
     @Override
     public WebResult insertCart(String jsonBody) {
-        return null;
+        JSONObject object = JSONObject.parseObject(jsonBody);
+        Integer goodsId = object.getInteger("goodsId");
+        Integer count = object.getInteger("count");
+        Integer uId = object.getInteger("uId");
+
+        UserCart userCart = new UserCart();
+        userCart.setCount(count);
+        userCart.setGoodsId(goodsId);
+        userCart.setUId(uId);
+        if (userCartDao.insert(userCart) == 0) {
+            WebResult.error("添加失败");
+        }
+        return WebResult.success("添加成功！");
     }
 }

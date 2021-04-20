@@ -58,7 +58,7 @@ public interface UserCartService {
 
     Integer cartCount(String jsonBody);
 
-    WebResult userCartList(String jsonBody);
+    WebResult userCartList(Integer userId);
 
     WebResult clearCart(String goodsIdList);
 

@@ -16,16 +16,20 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select
-          id, goods_id, count, u_id
+        select id,
+               goods_id,
+               count,
+               u_id
         from shop_mall.user_cart
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select
-          id, goods_id, count, u_id
+        select id,
+               goods_id,
+               count,
+               u_id
         from shop_mall.user_cart
         limit #{offset}, #{limit}
     </select>
@@ -33,7 +37,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, goods_id, count, u_id
+        id, goods_id, count, u_id
         from shop_mall.user_cart
         <where>
             <if test="id != null">
@@ -49,6 +53,36 @@
                 and u_id = #{uId}
             </if>
         </where>
+    </select>
+    <select id="cartList" resultMap="BaseResultMap">
+        select uc.*, g.goods_name, substring_index(g.imgs, ',', 1)
+        from user_cart uc
+        left join goods g on g.id = uc.goods_id
+        left join sys_user su on uc.u_id = su.id
+        <where>
+            <if test="nickname != null and nickname != ''">
+                su.nickname like CONCAT(#{nickname},'%')
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="cartCount" resultType="java.lang.Integer">
+        select count(*)
+        from user_cart uc
+        left join sys_user su on uc.u_id = su.id
+        <where>
+            <if test="nickname != null and nickname != ''">
+                su.nickname like CONCAT(#{nickname},'%')
+            </if>
+        </where>
+    </select>
+    <select id="userCartList" resultMap="BaseResultMap">
+        select uc.*, g.goods_name, su.nickname
+        from user_cart uc
+                 left join goods g on g.id = uc.goods_id
+                 left outer join sys_user su on su.id = uc.u_id
+        where uc.u_id = #{userId}
     </select>
 
     <!--新增所有列-->
@@ -76,7 +110,16 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from shop_mall.user_cart where id = #{id}
+        delete
+        from shop_mall.user_cart
+        where id = #{id}
+    </delete>
+    <delete id="clearCart">
+        delete from user_cart where id
+        in
+        <foreach collection="ids" open="(" close=")" index="index" separator="," item="id">
+            #{id}
+        </foreach>
     </delete>
 
 </mapper>

@@ -78,10 +78,10 @@ public class UserCartController {
      */
     @ResponseBody
     @RequestMapping("/userCartList")
-    public Object userCartList(@RequestBody String jsonBody) {
+    public Object userCartList(@RequestParam Integer userId) {
         try {
             logger.info("-------------获取用户购物车信息-------------");
-            return userCartService.userCartList(jsonBody);
+            return userCartService.userCartList(userId);
         } catch (Exception e) {
             logger.info("获取用户购物车信息失败:{}", e.getMessage());
             return WebResult.error("获取用户购物车信息失败");

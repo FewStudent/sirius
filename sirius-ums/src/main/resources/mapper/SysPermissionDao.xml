@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.laky.sirius.ums.dao.SysPermissionDao">
+
+    <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.SysPermission">
+        <!--@Table sys_permission-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="permission" column="permission" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               permission,
+               description
+        from shop_mall.sys_permission
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id,
+               permission,
+               description
+        from shop_mall.sys_permission
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+        id, permission, description
+        from shop_mall.sys_permission
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="permission != null and permission != ''">
+                and permission = #{permission}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+        </where>
+    </select>
+    <select id="queryByAccount" resultType="club.laky.sirius.ums.entity.SysPermission">
+        select *
+        from sys_permission sp
+                 left join sys_role_permission_relation srpr on sp.id = srpr.permission_id
+                 left join sys_role sr on srpr.role_id = sr.id
+                 left join sys_user_role_relation surr on sr.id = surr.role_id
+                 left join sys_user su on surr.user_id = su.id
+        where su.account = #{account}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_mall.sys_permission(permission, description)
+        values (#{permission}, #{description})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shop_mall.sys_permission
+        <set>
+            <if test="permission != null and permission != ''">
+                permission = #{permission},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from shop_mall.sys_permission
+        where id = #{id}
+    </delete>
+
+</mapper>

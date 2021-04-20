@@ -3,7 +3,7 @@
 <mapper namespace="club.laky.sirius.ums.dao.SysUserDao">
     <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.SysUser">
         <!--@Table sys_user-->
-        <result property="id" column="id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="account" column="account" jdbcType="VARCHAR"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
@@ -22,15 +22,11 @@
         <result property="job" column="job" jdbcType="VARCHAR"/>
         <result property="role" column="role" jdbcType="VARCHAR"/>
 
-        <collection property="roleList" ofType="club.laky.sirius.ums.entity.SysRole">
-            <id column="role_id"/>
+        <collection property="roleList" ofType="club.laky.sirius.ums.entity.SysRole" column="role_id">
+            <id column="role_id" property="id"/>
             <result property="role" column="role" jdbcType="VARCHAR"/>
-        </collection>
-
-        <collection property="permissionList" ofType="club.laky.sirius.ums.entity.SysPermission">
-            <!-- 这里使用构造方法注入，String 没有属性-->
-            <id column="permission_id"/>
-            <result property="permission" column="permission" jdbcType="VARCHAR"/>
+            <result property="roleDetail" column="role_detail" jdbcType="VARCHAR"/>
+            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
 
@@ -126,14 +122,11 @@
     </select>
 
     <select id="queryLoginUser" resultMap="BaseResultMap">
-        select sp.id permission_id, sr.id role_id, sr.role, sp.permission, su.*
+        select sr.id role_id, sr.role, sr.role_name, sr.role_detail, su.*
         from sys_user su
-                     inner join sys_user_role_relation surr on su.id = surr.user_id
-                     inner join sys_role sr on sr.id = surr.role_id
-                     inner join sys_role_permission_relation srpr on srpr.role_id = sr.id
-                     inner join sys_permission sp on sp.id = srpr.permission_id
+                 inner join sys_user_role_relation surr on su.id = surr.user_id
+                 inner join sys_role sr on sr.id = surr.role_id
         where su.account = #{account}
-        group by sp.permission
     </select>
     <select id="queryAdminList" resultMap="BaseResultMap">
         select su.*,sd.dep_name department,sj.job_name job,GROUP_CONCAT(sr.role_name) as role

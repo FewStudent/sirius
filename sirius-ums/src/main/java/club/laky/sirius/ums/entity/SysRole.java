@@ -10,13 +10,13 @@ import java.io.Serializable;
  */
 public class SysRole implements Serializable {
     private static final long serialVersionUID = 497432682457198769L;
-    
+
     private Integer id;
-    
+
     private String role;
-    
+
     private String roleName;
-    
+
     private String roleDetail;
 
 
@@ -52,4 +52,13 @@ public class SysRole implements Serializable {
         this.roleDetail = roleDetail;
     }
 
+    @Override
+    public String toString() {
+        return "SysRole{" +
+                "id=" + id +
+                ", role='" + role + '\'' +
+                ", roleName='" + roleName + '\'' +
+                ", roleDetail='" + roleDetail + '\'' +
+                '}';
+    }
 }

@@ -63,4 +63,6 @@ public interface SysRoleService {
     WebResult savePermission(String jsonBody);
 
     WebResult queryByUserId(Integer user_id);
+
+    void deleteByUserId(Integer userId);
 }

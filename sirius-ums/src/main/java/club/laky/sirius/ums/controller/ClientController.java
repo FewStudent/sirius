@@ -2,9 +2,11 @@ package club.laky.sirius.ums.controller;
 
 import club.laky.sirius.ums.dao.SysUserDao;
 import club.laky.sirius.ums.dao.SysUserRoleRelationDao;
+import club.laky.sirius.ums.entity.SysRole;
 import club.laky.sirius.ums.entity.SysUser;
 import club.laky.sirius.ums.entity.SysUserRoleRelation;
 import club.laky.sirius.ums.utils.JWTUtils;
+import club.laky.sirius.ums.utils.WebResult;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -104,7 +106,7 @@ public class ClientController {
     @RequestMapping("/delete")
     public Object delete(@RequestParam Integer userId) {
         logger.info("-------------删除用户-------------");
-        return userDao.deleteById(userId);
+        return WebResult.success(userDao.deleteById(userId));
     }
 
     /**
@@ -156,8 +158,8 @@ public class ClientController {
         String password = params.getString("pwd");
         String phone = params.getString("phone");
         Integer roleId = params.getInteger("roleId");
-        Integer dep_id = params.getInteger("dep_id");
-        Integer job_id = params.getInteger("job_id");
+        Integer dep_id = params.getInteger("depId");
+        Integer job_id = params.getInteger("jobId");
         SysUser sysUser = new SysUser();
         sysUser.setState(1);
         sysUser.setPassword(password);
@@ -174,9 +176,9 @@ public class ClientController {
             roleRelation.setRoleId(roleId);
             roleRelation.setUserId(sysUser.getId());
             roleRelationDao.insert(roleRelation);
-            return 1;
+            return WebResult.success("成功");
         }
-        return 0;
+        return WebResult.error("失败");
 
     }
 
@@ -191,18 +193,26 @@ public class ClientController {
         logger.info("-------------修改管理员-------------");
         JSONObject params = JSONObject.parseObject(jsonBody);
 
-        Integer id = params.getInteger("user_id");
+        Integer id = params.getInteger("id");
         String nickname = params.getString("nickname");
         String password = params.getString("pwd");
         String url = params.getString("avatar");
+        String phone = params.getString("phone");
         Integer state = params.getInteger("state");
+        Integer depId = params.getInteger("depId");
+        Integer jobId = params.getInteger("jobId");
         SysUser sysUser = new SysUser();
-        if (StringUtils.isEmpty(password)) {
+        if (!StringUtils.isEmpty(password)) {
             sysUser.setPassword(JWTUtils.md5(password));
         }
-        sysUser.setAvatar(url);
+        if(!StringUtils.isEmpty(url)){
+            sysUser.setAvatar(url);
+        }
         sysUser.setState(state);
         sysUser.setId(id);
+        sysUser.setDepId(depId);
+        sysUser.setJobId(jobId);
+        sysUser.setPhone(phone);
         sysUser.setNickname(nickname);
         return userDao.update(sysUser);
     }
@@ -218,7 +228,7 @@ public class ClientController {
         logger.info("-------------修改用户-------------");
         JSONObject params = JSONObject.parseObject(jsonBody);
 
-        Integer id = params.getInteger("user_id");
+        Integer id = params.getInteger("id");
         String nickname = params.getString("nickname");
         String password = params.getString("pwd");
         String url = params.getString("avatar");
@@ -253,7 +263,11 @@ public class ClientController {
     @RequestMapping("/detail")
     public Object detail(@RequestParam String account, @RequestParam Integer type) {
         logger.info("-------------获取用户详情-------------");
-        return userDao.queryLoginUser(account, type);
+        SysUser sysUser = userDao.queryLoginUser(account, type);
+        for (SysRole sysRole : sysUser.getRoleList()) {
+            logger.info("{}", sysRole.toString());
+        }
+        return sysUser;
     }
 
 }

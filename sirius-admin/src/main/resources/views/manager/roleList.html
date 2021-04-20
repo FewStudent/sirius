@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>角色列表 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-12">
+            <div class="alert alert-info">
+                <blockquote class="layui-elem-quote">请选择您的角色</blockquote>
+            </div>
+            <form class="layui-form">
+                <div class="layui-form-item ">
+                    <div class="layui-input-block roleList">
+
+                    </div>
+                </div>
+                <button class="layui-btn layui-btn-fluid layui-btn-primary check" type="button">确认选择该角色</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['element', 'jquery', 'layer', 'form', 'laypage'], function () {
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let form = layui.form;
+        let token = localStorage.getItem("token");
+        let roleList;
+
+        $(".check").click(function () {
+            let roleId = $('input:radio:checked').val();
+            for (let i = 0; i < roleList.length; i++) {
+                if (roleId === roleList[i].id.toString()) {
+                    parent.addRole(roleList[i]);
+                }
+            }
+            let index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+            parent.layer.close(index);
+        })
+
+        $(document).ready(function () {
+            ajax_common("/admin/role/all", token, function (result) {
+                console.log(result)
+                if (result.succeed) {
+                    let list = result.data;
+                    roleList = list;
+                    for (let i = 0; i < list.length; i++) {
+                        $(".roleList").append(roleItem(list[i]))
+                    }
+                    form.render();
+                } else {
+                    layer.msg(result.msg)
+                }
+            })
+        })
+
+        function roleItem(role) {
+            let strVar = "";
+            strVar += "                            <input type=\"radio\" name=\"role\" value='" + role.id + "' title='" + role.roleName + "' checked=\"\"><br>";
+            strVar += "";
+            return $(strVar);
+        }
+    })
+</script>
+</html>

@@ -31,6 +31,7 @@ public class AdminManagerController {
     @Autowired
     private SysRoleService sysRoleService;
 
+
     /**
      * 分页查询
      */
@@ -70,7 +71,7 @@ public class AdminManagerController {
     public Object update(@RequestBody String jsonBody) {
         try {
             logger.info("-------------修改管理员信息-------------");
-            return clientService.update(jsonBody);
+            return WebResult.success(clientService.update(jsonBody));
         } catch (Exception e) {
             logger.info("修改管理员信息失败:{}", e.getMessage());
             return WebResult.error("修改管理员信息失败");
@@ -87,6 +88,7 @@ public class AdminManagerController {
     public Object delete(@RequestParam Integer userId) {
         try {
             logger.info("-------------删除管理员-------------");
+            sysRoleService.deleteByUserId(userId);
             return clientService.delete(userId);
         } catch (Exception e) {
             logger.info("删除管理员失败:{}", e.getMessage());
@@ -121,7 +123,7 @@ public class AdminManagerController {
     public Object detail(@RequestParam String account) {
         try {
             logger.info("-------------用户详情-------------");
-            return clientService.detail(account, 0);
+            return WebResult.success(clientService.detail(account, 0));
         } catch (Exception e) {
             logger.info("用户详情失败:{}", e.getMessage());
             return WebResult.error("用户详情失败");

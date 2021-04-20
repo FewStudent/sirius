@@ -1,7 +1,9 @@
 package club.laky.sirius.ums.controller;
 
 import club.laky.sirius.ums.dao.LoginLogDao;
+import club.laky.sirius.ums.dao.SysPermissionDao;
 import club.laky.sirius.ums.dao.SysUserDao;
+import club.laky.sirius.ums.entity.SysPermission;
 import club.laky.sirius.ums.entity.SysUser;
 import club.laky.sirius.ums.feign.FeignCacheService;
 import club.laky.sirius.ums.utils.JWTUtils;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author prl
@@ -37,6 +40,8 @@ public class PermissionController {
     private FeignCacheService cacheService;
     @Resource
     private LoginLogDao loginLogDao;
+    @Resource
+    private SysPermissionDao permissionDao;
 
     /**
      * 登录
@@ -51,12 +56,14 @@ public class PermissionController {
         try {
             logger.info("--------------------用户登录开始！----------------");
             SysUser user = userDao.queryLoginUser(account, type);
+
             if (user == null) {
                 logger.error("-------------------登录失败:该账号不存在------------------");
                 loginLogDao.insert(LoginLogFactory.error("该账号不存在"));
                 return WebResult.error("该账号不存在");
             }
-            System.out.println(JWTUtils.md5(pwd));
+            List<SysPermission> permissionList =permissionDao.queryByAccount(account);
+            user.setPermissionList(permissionList);
             if (!JWTUtils.md5(pwd).equals(user.getPassword())) {
                 logger.error("-------------------登录失败:密码错误------------------");
                 loginLogDao.insert(LoginLogFactory.error("密码错误"));

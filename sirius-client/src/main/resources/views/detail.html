@@ -111,7 +111,6 @@
                             area: ['50%', '100%'],
                             content: "/client/page/user/addressList?token=" + token,
                             end: function () {
-                                layer.msg("阿这");
                                 console.log("addressId:" + addressId)
                                 layer.confirm("结算金额为：￥" + totalPrice + ",点击确认进行支付?", function () {
                                     layer.msg("模拟支付ing......", {"icon": 6, time: 2000}, function () {

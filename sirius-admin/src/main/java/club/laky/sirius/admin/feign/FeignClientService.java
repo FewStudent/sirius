@@ -52,7 +52,7 @@ public interface FeignClientService {
     @RequestMapping(value = "/api/client/updateUser", method = RequestMethod.GET)
     Integer updateUser(@RequestParam String jsonBody);
 
-    @RequestMapping(value = "/api/user/detail", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/client/detail", method = RequestMethod.GET)
     Object detail(@RequestParam String account, @RequestParam Integer type);
 
 

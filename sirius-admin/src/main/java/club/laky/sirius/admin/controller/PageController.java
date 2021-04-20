@@ -47,9 +47,9 @@ public class PageController {
      * 管理员编辑
      */
     @RequestMapping("manager/edit")
-    public ModelAndView managerEdit(HttpServletRequest request, Integer id) {
+    public ModelAndView managerEdit(HttpServletRequest request, String account) {
         ModelAndView result = modelUtils.createModel(request, "manager/edit");
-        result.addObject("id", id);
+        result.addObject("account", account);
         return result;
     }
 
@@ -70,6 +70,14 @@ public class PageController {
     }
 
     /**
+     * 角色列表
+     */
+    @RequestMapping("role/list")
+    public ModelAndView roleList(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/manager/roleList");
+    }
+
+    /**
      * 角色编辑
      */
     @RequestMapping("role/edit")
@@ -86,7 +94,7 @@ public class PageController {
     public ModelAndView roleAdd(HttpServletRequest request) {
         return modelUtils.createModel(request, "/role/add");
     }
-    
+
     /**
      * 权限管理
      */

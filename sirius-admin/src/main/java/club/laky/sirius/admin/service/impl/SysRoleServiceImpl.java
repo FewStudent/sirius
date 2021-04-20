@@ -146,4 +146,9 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         return WebResult.success(roleRelations);
     }
+
+    @Override
+    public void deleteByUserId(Integer userId) {
+        sysRoleDao.deleteByUserId(userId);
+    }
 }

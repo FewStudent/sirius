@@ -31,6 +31,9 @@ public class CacheController {
         try {
             logger.info("----------------获取的键为：{}", key);
             Object result = key == null ? null : redisTemplate.opsForValue().get(key);
+            if (result == null) {
+                return ResultMap.error("没有数据");
+            }
             return ResultMap.success(result);
         } catch (Exception e) {
             logger.error("获取失败,原因如下：{}", e.getMessage());

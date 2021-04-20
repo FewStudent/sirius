@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>管理员管理 - 天狼小商城管理系统</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
     <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
 <blockquote class="layui-elem-quote  layui-quote-nm layui-form">
@@ -36,7 +38,7 @@
 </script>
 </body>
 <script>
-    layui.use(['table', 'jquery','form'], function () {
+    layui.use(['table', 'jquery', 'form'], function () {
         const token = localStorage.getItem("token");
         let table = layui.table;
         const form = layui.form;
@@ -52,7 +54,6 @@
                 , icon: 'layui-icon-tips'
             }],
             skin: "row",
-            width: 1120,
             height: 450,
             page: true,
             cols: [
@@ -74,12 +75,12 @@
                     field: 'department',
                     title: '部门',
                     width: 160,
-                    fixed:"right"
+                    fixed: "right"
                 }, {
                     field: 'job',
                     title: '职位',
                     width: 160,
-                    fixed:"right"
+                    fixed: "right"
                 }, {
                     field: 'phone',
                     title: '电话',
@@ -104,7 +105,7 @@
                     field: 'role',
                     title: '权限角色',
                     width: 240
-                },  {
+                }, {
                     field: 'state',
                     title: '状态',
                     width: 100,
@@ -153,7 +154,7 @@
             switch (obj.event) {
                 case 'add':
                     //let addTab = {};
-                    url = "/admin/page/manager/add?token="+token;
+                    url = "/admin/page/manager/add?token=" + token;
                     newTab.id = "manager_add";
                     newTab.title = "管理员添加";
                     newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
@@ -161,7 +162,7 @@
                     parent.tab.change(newTab);
                     break;
                 case 'edit':
-                    url = "/admin/page/manager/edit?token="+token;
+                    url = "/admin/page/manager/edit?account=" + data.username + "&token=" + token;
                     newTab.id = "manager_edit";
                     newTab.title = "管理员修改";
                     newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
@@ -170,21 +171,14 @@
                     break;
                 case 'del':
                     layer.confirm("确认删除该用户?", ['确认', '取消'], function () {
-                        $.ajax({
-                            url: "/admin/manager/del",
-                            type: 'post',
-                            data: JSON.stringify({"id": data.id}),
-                            dataType: "json",
-                            contentType: "application/json; charset=utf-8",
-                            success: function (data) {
-                                if (data.succeed) {
-                                    layer.msg("删除成功!");
-                                    $(".layui-laypage-btn").click();
-                                } else {
-                                    layer.alert(data.msg);
-                                }
+                        ajax_common("/admin/manager/delete?userId=" + data.id, token, function (result) {
+                            if (result.succeed) {
+                                layer.msg("删除成功!");
+                                $(".layui-laypage-btn").click();
+                            } else {
+                                layer.alert(data.msg);
                             }
-                        });
+                        })
                     });
                     break;
                 //自定义头工具栏右侧图标 - 提示

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.io.Serializable;
  * @since 2021-03-20 11:43:11
  */
 @Data
+@ToString
 public class SysUser implements Serializable {
     private static final long serialVersionUID = -80543655455980401L;
 
@@ -42,11 +44,10 @@ public class SysUser implements Serializable {
     private String salt;
 
     @JsonIgnore
-    @TableField(exist = false, value = "permissionList")
+    @TableField(exist = false)
     List<SysPermission> permissionList;
 
-    @JsonIgnore
-    @TableField(exist = false, value = "roleList")
+    @TableField(exist = false)
     List<SysRole> roleList;
 
     @TableField(exist = false)

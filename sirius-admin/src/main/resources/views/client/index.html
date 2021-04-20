@@ -25,7 +25,7 @@
         /* 表格数据载入 */
         table.render({
             elem: '#table',
-            url: '/hms/admin/manager/list',
+            url: '/admin/client/list',
             toolbar: '#outerBar',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示'
@@ -33,7 +33,6 @@
                 , icon: 'layui-icon-tips'
             }],
             skin: "row",
-            width: 1120,
             height: 450,
             page: true,
             cols: [
@@ -88,7 +87,7 @@
                         shade: 0.2,
                         maxmin: true, //开启最大化最小化按钮
                         area: ['50%', '75%'],
-                        content: "/hms/admin/page/manager/add",
+                        content: "/admin/page/client/add",
                         end: function () {
                             $(".layui-laypage-btn").click();
                         }
@@ -102,7 +101,7 @@
                         shade: 0.2,
                         maxmin: true, //开启最大化最小化按钮
                         area: ['50%', '75%'],
-                        content: "/hms/admin/page/manager/edit?id=" + data.id,
+                        content: "/admin/page/client/edit?id=" + data.id,
                         end: function () {
                             $(".layui-laypage-btn").click();
                         }
@@ -111,7 +110,7 @@
                 case 'del':
                     layer.confirm("确认删除该用户?", ['确认', '取消'], function () {
                         $.ajax({
-                            url: "/hms/admin/manager/del",
+                            url: "/admin/client/del",
                             type: 'post',
                             data: JSON.stringify({"id": data.id}),
                             dataType: "json",

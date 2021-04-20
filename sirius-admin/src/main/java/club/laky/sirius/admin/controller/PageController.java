@@ -44,6 +44,24 @@ public class PageController {
     }
 
     /**
+     * 管理员编辑
+     */
+    @RequestMapping("manager/edit")
+    public ModelAndView managerEdit(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "manager/edit");
+        result.addObject("id", id);
+        return result;
+    }
+
+    /**
+     * 管理员添加
+     */
+    @RequestMapping("manager/add")
+    public ModelAndView managerAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/manager/add");
+    }
+
+    /**
      * 角色管理
      */
     @RequestMapping("role/index")
@@ -52,11 +70,38 @@ public class PageController {
     }
 
     /**
+     * 角色编辑
+     */
+    @RequestMapping("role/edit")
+    public ModelAndView roleEdit(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "role/edit");
+        result.addObject("id", id);
+        return result;
+    }
+
+    /**
+     * 角色添加
+     */
+    @RequestMapping("role/add")
+    public ModelAndView roleAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/role/add");
+    }
+    
+    /**
      * 权限管理
      */
     @RequestMapping("permission/index")
     public ModelAndView permissionIndex(HttpServletRequest request) {
         return modelUtils.createModel(request, "/permission/index");
+    }
+
+
+    /**
+     * 权限添加
+     */
+    @RequestMapping("permission/add")
+    public ModelAndView permissionAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/permission/add");
     }
 
     /**
@@ -67,12 +112,50 @@ public class PageController {
         return modelUtils.createModel(request, "/department/index");
     }
 
+
+    /**
+     * 部门编辑
+     */
+    @RequestMapping("department/edit")
+    public ModelAndView departmentEdit(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "department/edit");
+        result.addObject("id", id);
+        return result;
+    }
+
+    /**
+     * 部门添加
+     */
+    @RequestMapping("department/add")
+    public ModelAndView departmentAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/department/add");
+    }
+
     /**
      * 岗位管理
      */
     @RequestMapping("job/index")
     public ModelAndView jobIndex(HttpServletRequest request) {
         return modelUtils.createModel(request, "/job/index");
+    }
+
+
+    /**
+     * 岗位编辑
+     */
+    @RequestMapping("job/edit")
+    public ModelAndView jobEdit(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "job/edit");
+        result.addObject("id", id);
+        return result;
+    }
+
+    /**
+     * 岗位添加
+     */
+    @RequestMapping("job/add")
+    public ModelAndView jobAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/job/add");
     }
 
     /**
@@ -107,6 +190,25 @@ public class PageController {
     public ModelAndView clientStats(HttpServletRequest request) {
         return modelUtils.createModel(request, "/client/stats");
     }
+
+    /**
+     * 用户编辑
+     */
+    @RequestMapping("client/edit")
+    public ModelAndView clientEdit(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "client/edit");
+        result.addObject("id", id);
+        return result;
+    }
+
+    /**
+     * 用户添加
+     */
+    @RequestMapping("client/add")
+    public ModelAndView clientAdd(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/client/add");
+    }
+
 
     /**
      * 客户购物车管理

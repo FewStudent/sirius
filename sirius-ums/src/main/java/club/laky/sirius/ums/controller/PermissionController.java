@@ -1,9 +1,11 @@
 package club.laky.sirius.ums.controller;
 
+import club.laky.sirius.ums.dao.LoginLogDao;
 import club.laky.sirius.ums.dao.SysUserDao;
 import club.laky.sirius.ums.entity.SysUser;
 import club.laky.sirius.ums.feign.FeignCacheService;
 import club.laky.sirius.ums.utils.JWTUtils;
+import club.laky.sirius.ums.utils.LoginLogFactory;
 import club.laky.sirius.ums.utils.PermissionUtils;
 import club.laky.sirius.ums.utils.WebResult;
 import com.alibaba.fastjson.JSONObject;
@@ -33,6 +35,8 @@ public class PermissionController {
     private SysUserDao userDao;
     @Resource
     private FeignCacheService cacheService;
+    @Resource
+    private LoginLogDao loginLogDao;
 
     /**
      * 登录
@@ -43,21 +47,24 @@ public class PermissionController {
      */
     @ResponseBody
     @RequestMapping("/login")
-    public Object login(@RequestParam("account") String account,@RequestParam("pwd") String pwd,@RequestParam("type") int type) {
+    public Object login(@RequestParam("account") String account, @RequestParam("pwd") String pwd, @RequestParam("type") int type) {
         try {
             logger.info("--------------------用户登录开始！----------------");
             SysUser user = userDao.queryLoginUser(account, type);
             if (user == null) {
                 logger.error("-------------------登录失败:该账号不存在------------------");
+                loginLogDao.insert(LoginLogFactory.error("该账号不存在"));
                 return WebResult.error("该账号不存在");
             }
             System.out.println(JWTUtils.md5(pwd));
             if (!JWTUtils.md5(pwd).equals(user.getPassword())) {
                 logger.error("-------------------登录失败:密码错误------------------");
+                loginLogDao.insert(LoginLogFactory.error("密码错误"));
                 return WebResult.error("密码错误");
             }
             if (user.getState() == 0) {
                 logger.error("-------------------登录失败:账号冻结------------------");
+                loginLogDao.insert(LoginLogFactory.error("账号冻结"));
                 return WebResult.error("账号冻结!");
             }
             boolean flag = true;
@@ -68,6 +75,7 @@ public class PermissionController {
             }
             if (!flag) {
                 logger.error("登录失败,非本系统用户!");
+                loginLogDao.insert(LoginLogFactory.error("权限不足"));
                 return WebResult.error("登录失败,非本系统用户");
             }
 
@@ -75,7 +83,8 @@ public class PermissionController {
             String token = JWTUtils.getJWT(user);
             user.setToken(token);
             //令牌缓存一天
-            cacheService.setWithTime(token, JSONObject.toJSON(user).toString(),86400);
+            cacheService.setWithTime(token, JSONObject.toJSON(user).toString(), 86400);
+            loginLogDao.insert(LoginLogFactory.success(user.getId()));
             logger.info("--------------------用户{}登录成功！----------------", account);
             return WebResult.success(user);
         } catch (Exception e) {

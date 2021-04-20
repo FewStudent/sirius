@@ -2,9 +2,202 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>部门列表 - 天狼小商城管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
+    <style>
+        .layui-table-cell {
+            height: auto;
+            line-height: 28px;
+        }
+    </style>
 </head>
 <body>
 
+<blockquote class="layui-elem-quote  layui-quote-nm layui-form">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" id="departmentName" placeholder="请输入部门名" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn  layui-btn-primary" id="search">搜索</button>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn  layui-btn-normal" id="reset">重置</button>
+        </div>
+    </div>
+</blockquote>
+
+<table class="layui-hide" id="table" lay-filter="table"></table>
+
+<script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-sm layui-btn-primary" lay-event="insert">添加</a>
+    <a class="layui-btn layui-btn-sm layui-btn-warm" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除</a>
+</script>
 </body>
+<script>
+    layui.use(['table', 'layer', 'jquery', 'form'], function () {
+        const table = layui.table;
+        const layer = layui.layer;
+        const $ = layui.jquery;
+        const form = layui.form;
+        const token = localStorage.getItem("token");
+        /* 表格数据载入 */
+        table.render({
+            elem: '#table',
+            url: '/admin/department/list?token=' + token,
+            toolbar: '#tool',
+            height: 450,
+            page: true,
+            cols: [[{type: 'radio'}, {
+                field: 'id',
+                title: 'ID',
+                width: 120
+            }, {
+                field: 'depName',
+                title: '部门名',
+                width: 240
+            }, {
+                field: 'depDescription',
+                title: '部门职能',
+                width: 480
+            }, {
+                field: 'depLevel',
+                title: '部门等级',
+                width: 180
+            }
+            ]],
+            id: 'reload' //表格重载的id
+        });
+
+        $(document).ready(function () {
+            ajax_common("/admin/department/allType", token, function (data) {
+                console.log(data)
+                if (data.succeed) {
+                    let types = data.data;
+                    for (let i = 0; i < types.length; i++) {
+                        let type = types[i];
+                        $("#typeId").append(
+                            $("<option>").attr("value", type.id).html(type.typeName)
+                        )
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.msg);
+                }
+            })
+            ajax_common("/admin/department/allBrand", token, function (data) {
+                console.log(data)
+                if (data.succeed) {
+                    let brands = data.data;
+                    for (let i = 0; i < brands.length; i++) {
+                        let brand = brands[i];
+                        $("#brandId").append(
+                            $("<option>").attr("value", brand.id).html(brand.name)
+                        )
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.msg);
+                }
+            })
+        })
+
+        $("#reset").click(function () {
+            location.reload();
+        })
+
+        /* 表格重载 */
+        $('#search').on('click', function () {
+            table.reload('reload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    departmentName: $('#departmentName').val(),
+                    state: $('#state').val(),
+                    brandId: $('#brandId').val(),
+                    typeId: $('#typeId').val()
+                }
+            });
+        });
+
+        //头工具栏事件
+        table.on('toolbar(table)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data[0];
+            if (obj.event !== 'add' && checkStatus.data.length === 0) {
+                layer.alert("至少选择一条数据进行操作!", {"icon": 3});
+                return;
+            }
+            let newTab = {};
+            let url = '';
+            if (obj.event === 'detail') {
+                url = "/admin/page/product/detail?departmentId=" + data.id + "&token=" + token;
+                newTab.id = "department_detail";
+                newTab.title = "部门详情";
+                newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+                parent.tab.add(newTab);
+                parent.tab.change(newTab);
+            } else if (obj.event === "delete") {
+                layer.confirm("是否确认删除?", {"icon": 3}, function () {
+                    let params = {};
+                    params.departmentId = data.id;
+                    ajax_data("/admin/department/delete", token, JSON.stringify(params), function (result) {
+                        console.log(result)
+                        if (result.succeed) {
+                            layer.alert("删除成功!", {"icon": 1}, function () {
+                                location.reload();
+                            });
+                        } else {
+                            layer.msg(result.msg, {"icon": 2});
+                        }
+                    })
+                })
+            } else if (obj.event === "onSale") {
+                if (data.state === 1) {
+                    layer.msg("部门还在上架中,无需再上架!", {"icon": 7});
+                    return;
+                }
+                layer.confirm("是否确认上架?", {"icon": 3}, function () {
+                    let params = {};
+                    params.departmentId = data.id;
+                    ajax_data("/admin/department/onSale", token, JSON.stringify(params), function (result) {
+                        console.log(result)
+                        if (result.succeed) {
+                            layer.alert("上架成功!", {"icon": 1}, function () {
+                                location.reload();
+                            });
+                        } else {
+                            layer.msg(result.msg, {"icon": 5});
+                        }
+                    })
+                })
+            } else if (obj.event === "offShelf") {
+                if (data.state === 0) {
+                    layer.msg("部门已下架,无需再下架!", {"icon": 7});
+                    return;
+                }
+                layer.confirm("是否确认下架?", {"icon": 3}, function () {
+                    let params = {};
+                    params.departmentId = data.id;
+                    ajax_data("/admin/department/offShelf", token, JSON.stringify(params), function (result) {
+                        console.log(result)
+                        if (result.succeed) {
+                            layer.alert("下架成功!", {"icon": 1}, function () {
+                                location.reload();
+                            });
+                        } else {
+                            layer.msg(result.msg, {"icon": 5});
+                        }
+                    })
+                })
+            }
+        });
+
+    });
+</script>
 </html>

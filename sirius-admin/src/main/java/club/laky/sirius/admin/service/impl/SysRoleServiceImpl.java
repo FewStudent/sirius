@@ -1,6 +1,7 @@
 package club.laky.sirius.admin.service.impl;
 
 import club.laky.sirius.admin.dao.SysPermissionDao;
+import club.laky.sirius.admin.dao.SysRolePermissionRelationDao;
 import club.laky.sirius.admin.dao.SysUserRoleRelationDao;
 import club.laky.sirius.admin.entity.SysRole;
 import club.laky.sirius.admin.dao.SysRoleDao;
@@ -30,6 +31,8 @@ public class SysRoleServiceImpl implements SysRoleService {
     private SysPermissionDao permissionDao;
     @Resource
     private SysUserRoleRelationDao sysUserRoleRelationDao;
+    @Resource
+    private SysRolePermissionRelationDao permissionRelationDao;
 
     /**
      * 通过ID查询单条数据
@@ -86,7 +89,12 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public boolean deleteById(Integer id) {
-        return this.sysRoleDao.deleteById(id) > 0;
+        int result = this.sysRoleDao.deleteById(id);
+        if (result == 1) {
+            int count = permissionRelationDao.deleteByRoleId(id);
+            return true;
+        }
+        return false;
     }
 
     @Override

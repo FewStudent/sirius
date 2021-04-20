@@ -7,7 +7,6 @@
         <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
         <result property="uId" column="u_id" jdbcType="INTEGER"/>
         <result property="createDate" column="create_date" jdbcType="OTHER"/>
-        <result property="userType" column="user_type" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
@@ -15,8 +14,7 @@
         select id,
                img_url,
                u_id,
-               create_date,
-               user_type
+               create_date
         from shop_mall.img_log
         where id = #{id}
     </select>
@@ -26,15 +24,15 @@
         select id,
                img_url,
                u_id,
-               create_date,
-               user_type
-        from shop_mall.img_log limit #{offset}, #{limit}
+               create_date
+        from shop_mall.img_log
+        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-        id, img_url, u_id, create_date, user_type
+        id, img_url, u_id, create_date
         from shop_mall.img_log
         <where>
             <if test="id != null">
@@ -49,16 +47,13 @@
             <if test="createDate != null">
                 and create_date = #{createDate}
             </if>
-            <if test="userType != null">
-                and user_type = #{userType}
-            </if>
         </where>
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into shop_mall.img_log(img_url, u_id, create_date, user_type)
-        values (#{imgUrl}, #{uId}, #{createDate}, #{userType})
+        insert into shop_mall.img_log(img_url, u_id, create_date)
+        values (#{imgUrl}, #{uId}, #{createDate}})
     </insert>
 
     <!--通过主键修改数据-->
@@ -74,9 +69,6 @@
             <if test="createDate != null">
                 create_date = #{createDate},
             </if>
-            <if test="userType != null">
-                user_type = #{userType},
-            </if>
         </set>
         where id = #{id}
     </update>
@@ -89,11 +81,10 @@
     </delete>
 
     <select id="queryList" resultMap="BaseResultMap">
-        select ig.*, sy.nickname
+        select ig.*, su.nickname
         from img_log ig
-                left join sys_user su on su.id = ig.u_ids
-                limit #{offset}
-           , #{limit}
-        order by create_date desc
+                 left join sys_user su on su.id = ig.u_id
+        order by ig.create_date desc
+        limit #{offset} , #{limit}
     </select>
 </mapper>

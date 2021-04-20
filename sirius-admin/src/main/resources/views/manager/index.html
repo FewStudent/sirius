@@ -171,7 +171,7 @@
                 case 'del':
                     layer.confirm("确认删除该用户?", ['确认', '取消'], function () {
                         $.ajax({
-                            url: "/hms/admin/manager/del",
+                            url: "/admin/manager/del",
                             type: 'post',
                             data: JSON.stringify({"id": data.id}),
                             dataType: "json",

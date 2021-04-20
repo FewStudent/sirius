@@ -74,8 +74,11 @@ public class LoginLogServiceImpl implements LoginLogService {
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(Integer id) {
-        return this.loginLogDao.deleteById(id) > 0;
+    public WebResult deleteById(Integer id) {
+        if (this.loginLogDao.deleteById(id) > 0) {
+            return WebResult.success("删除成功");
+        }
+        return WebResult.error("删除失败");
     }
 
     @Override
@@ -93,6 +96,6 @@ public class LoginLogServiceImpl implements LoginLogService {
 
     @Override
     public List<LoginLog> queryList(Integer offset, Integer limit) {
-        return this.loginLogDao.queryList(offset,limit);
+        return this.loginLogDao.queryList(offset, limit);
     }
 }

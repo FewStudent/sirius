@@ -52,7 +52,7 @@ public interface LoginLogService {
      * @param id 主键
      * @return 是否成功
      */
-    boolean deleteById(Integer id);
+    WebResult deleteById(Integer id);
 
     WebResult deleteAll();
 

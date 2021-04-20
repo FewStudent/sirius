@@ -65,4 +65,6 @@ public interface SysRolePermissionRelationDao {
     int deleteById(Integer roleId);
 
     List<SysRolePermissionRelation> queryByRoleId(@Param("roleId") Integer roleId);
+
+    Integer deleteByRoleId(@Param("id") Integer id);
 }

@@ -2,9 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>权限管理 - 天狼小商城管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
 </head>
 <body>
+<blockquote class="layui-elem-quote">权限管理</blockquote>
+<table class="layui-hide" id="table" lay-filter="table"></table>
 
+<script type="text/html" id="outerBar">
+    <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</a>
+    <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
+</script>
 </body>
+<script>
+    layui.use(['table', 'jquery', 'form'], function () {
+        const token = localStorage.getItem("token");
+        let table = layui.table;
+        const form = layui.form;
+        let $ = layui.jquery;
+        /* 表格数据载入 */
+        table.render({
+            elem: '#table',
+            url: '/admin/permission/list?token=' + token,
+            toolbar: '#outerBar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }],
+            skin: "row",
+            height: 450,
+            page: true,
+            cols: [
+                [{type: 'radio', fixed: 'left'}, {
+                    field: 'id',
+                    title: 'ID',
+                    width: 160,
+                    sort: true,
+                    fixed: 'left'
+                }, {
+                    field: 'permission',
+                    title: '权限权限',
+                    width: 360
+                }, {
+                    field: 'description',
+                    title: '权限描述',
+                    width: 500
+                }
+                ]
+            ],
+            id: 'Reload' //表格重载的id
+        });
+
+        //头工具栏事件
+        table.on('toolbar(table)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data[0];
+            if (obj.event !== 'add' && checkStatus.data.length === 0) {
+                layer.msg("至少选择一条数据进行操作!", {"icon": 3});
+                return;
+            }
+            let newTab = {};
+            let url = '';
+            switch (obj.event) {
+                case 'add':
+                    //let addTab = {};
+                    url = "/admin/page/permission/add?token=" + token;
+                    newTab.id = "permission_add";
+                    newTab.title = "权限添加";
+                    newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+                    parent.tab.add(newTab);
+                    parent.tab.change(newTab);
+                    break;
+                case 'edit':
+                    url = "/admin/page/permission/edit?token=" + token;
+                    newTab.id = "permission_edit";
+                    newTab.title = "权限修改";
+                    newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+                    parent.tab.add(newTab);
+                    parent.tab.change(newTab);
+                    break;
+                case 'del':
+                    layer.confirm("确认删除该用户?", ['确认', '取消'], function () {
+                        $.ajax({
+                            url: "/admin/permission/del",
+                            type: 'post',
+                            data: JSON.stringify({"id": data.id}),
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (data) {
+                                if (data.succeed) {
+                                    layer.msg("删除成功!");
+                                    $(".layui-laypage-btn").click();
+                                } else {
+                                    layer.alert(data.msg);
+                                }
+                            }
+                        });
+                    });
+                    break;
+                //自定义头工具栏右侧图标 - 提示
+                case 'LAYTABLE_TIPS':
+                    layer.msg('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            }
+        });
+
+    });
+</script>
 </html>

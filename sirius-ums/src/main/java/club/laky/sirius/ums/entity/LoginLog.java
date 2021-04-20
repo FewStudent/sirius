@@ -1,37 +1,32 @@
-package club.laky.sirius.admin.entity;
-
-import com.baomidou.mybatisplus.annotation.TableField;
+package club.laky.sirius.ums.entity;
 
 import java.io.Serializable;
 
 /**
  * 登录日志(LoginLog)实体类
  *
- * @author lakyjapn
- * @since 2021-04-19 14:41:13
+ * @author lakyjpan
+ * @since 2021-04-20 00:13:49
  */
 public class LoginLog implements Serializable {
-    private static final long serialVersionUID = 693860880458246488L;
-
+    private static final long serialVersionUID = -47706095935082647L;
+    
     private Integer id;
     /**
-     * 登录情况
-     */
+    * 登录情况
+    */
     private String msg;
     /**
-     * 用户ID，只有不是账号不存在的情况下才记录
-     */
+    * 用户ID，只有不是账号不存在的情况下才记录
+    */
     private Integer uId;
-
-    @TableField(exist = false)
-    private String nickname;
     /**
-     * 是否成功
-     */
+    * 是否成功
+    */
     private String succeed;
     /**
-     * 记录日期
-     */
+    * 记录日期
+    */
     private String createTime;
 
 
@@ -75,11 +70,4 @@ public class LoginLog implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
 }

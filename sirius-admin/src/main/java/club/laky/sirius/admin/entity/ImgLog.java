@@ -28,10 +28,6 @@ public class ImgLog implements Serializable {
      * 创建时间
      */
     private String createDate;
-    /**
-     * 用户类型 1 管理员 2 客户端用户
-     */
-    private Integer userType;
 
 
     public Integer getId() {
@@ -64,14 +60,6 @@ public class ImgLog implements Serializable {
 
     public void setCreateDate(String createDate) {
         this.createDate = createDate;
-    }
-
-    public Integer getUserType() {
-        return userType;
-    }
-
-    public void setUserType(Integer userType) {
-        this.userType = userType;
     }
 
 

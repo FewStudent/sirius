@@ -36,6 +36,22 @@ public class PageController {
     }
 
     /**
+     * 首页
+     */
+    @RequestMapping("welcome")
+    public ModelAndView welcome(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/welcome");
+    }
+
+    /**
+     * 跳转到用户信息页面
+     */
+    @RequestMapping("userInfo")
+    public ModelAndView userInfo(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/userInfo");
+    }
+
+    /**
      * 后台用户管理
      */
     @RequestMapping("manager/index")
@@ -380,4 +396,5 @@ public class PageController {
     public ModelAndView orderStats(HttpServletRequest request) {
         return modelUtils.createModel(request, "/stats/orderStats");
     }
+
 }

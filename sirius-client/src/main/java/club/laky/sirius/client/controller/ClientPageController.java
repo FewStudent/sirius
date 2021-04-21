@@ -85,4 +85,13 @@ public class ClientPageController {
     public ModelAndView addressList(HttpServletRequest request) {
         return modelUtils.createModel(request, "/user/addressList");
     }
+
+
+    /**
+     * 用户信息
+     */
+    @RequestMapping("user/edit")
+    public ModelAndView userEdit(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/user/userInfo");
+    }
 }

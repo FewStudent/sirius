@@ -18,6 +18,9 @@ public interface FeignClientService {
     @RequestMapping(value = "/api/login", method = RequestMethod.GET)
     Object login(@RequestParam("account") String account, @RequestParam("pwd") String pwd, @RequestParam("type") int type);
 
+    @RequestMapping(value = "/api/queryLoginUser", method = RequestMethod.GET)
+    Object queryLoginUser(@RequestParam String account, @RequestParam Integer type);
+
     //用户相关API
     @RequestMapping(value = "/api/manager/count", method = RequestMethod.GET)
     Integer queryAdminCount(@RequestBody String jsonBody);

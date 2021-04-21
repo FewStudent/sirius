@@ -1,0 +1,74 @@
+<div class="layui-layout layui-layout-admin">
+
+    <div class="layui-header">
+        <div class="layui-logo">天狼小商城平台</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="javaScript:;" class="index">首页</a></li>
+            <li class="layui-nav-item"><a href="javaScript:;" class="suggestion">意见反馈</a></li>
+            <li class="layui-nav-item"><a href="javaScript:;" class="search-record">搜索记录</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">个人信息</a>
+                <dl class="layui-nav-child"> <!-- 二级菜单 -->
+                    <dd><a href="javaScript:;" class="my-info">个人信息</a></dd>
+                    <dd><a href="javaScript:;" class="my-address">我的收货地址</a></dd>
+                    <dd><a href="javaScript:;" class="my-collect">我的收藏</a></dd>
+                    <dd><a href="javaScript:;" class="my-order">我的订单</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <!--: if(client == null){ -->
+                <a href="javascript:;" class="to-login">
+                    <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+                         class="layui-nav-img">
+                    用户未登录
+                </a>
+                <!--: } -->
+                <!--: if(client != null){ -->
+                <a href="javascript:;">
+                    <img src="${client.avatar}"
+                         class="layui-nav-img">
+                    ${client.nickname}
+                </a>
+                <!--: } -->
+            </li>
+            <!--: if(client != null){ -->
+            <li class="layui-nav-item"><a href="javaScript:;" class="logout">Sign out</a></li>
+            <!--: } -->
+        </ul>
+    </div>
+</div>
+<script>
+    const token = localStorage.getItem("token");
+
+
+    layui.use(["element"], function () {
+        const element = layui.element;
+
+        $(".to-login").click(function () {
+            window.location.href = "/admin/admin/logout?token=" + token;
+        })
+        $(".logout").click(function () {
+            console.log("logout")
+        })
+        $(".index").click(function () {
+            window.location.href = "/client/page/common/index?token=" + token;
+        })
+        $(".suggestion").click(function () {
+            //TODO
+        })
+        $(".search-record").click(function () {
+            console.log("search-record")
+        })
+        $(".my-info").click(function () {
+            window.location.href = "/client/page/user/userInfo?token=" + token;
+        })
+        $(".my-collect").click(function () {
+            window.location.href = "/client/page/user/myCollect?token=" + token;
+        })
+        $(".my-order").click(function () {
+            window.location.href = "/client/page/order/myOrder?token=" + token;
+        })
+    })
+</script>

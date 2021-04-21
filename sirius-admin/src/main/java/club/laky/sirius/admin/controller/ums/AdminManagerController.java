@@ -1,10 +1,14 @@
-package club.laky.sirius.admin.controller;
+package club.laky.sirius.admin.controller.ums;
 
+import club.laky.sirius.admin.entity.SysUser;
+import club.laky.sirius.admin.feign.FeignCacheService;
 import club.laky.sirius.admin.feign.FeignClientService;
 import club.laky.sirius.admin.service.SysRoleService;
 import club.laky.sirius.admin.utils.LayuiVO;
 import club.laky.sirius.admin.utils.WebResult;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author panrulang
@@ -30,6 +36,9 @@ public class AdminManagerController {
 
     @Autowired
     private SysRoleService sysRoleService;
+
+    @Autowired
+    private FeignCacheService cacheService;
 
 
     /**
@@ -163,5 +172,50 @@ public class AdminManagerController {
             return WebResult.error("查看用户的角色列表失败");
         }
     }
+
+    /**
+     * 当前用户详情
+     */
+    @ResponseBody
+    @RequestMapping("userInfo")
+    public Object userInfo(HttpServletRequest request) {
+        try {
+            logger.info("-------------当前用户详情-------------");
+            String token = request.getHeader("token");
+            if (!StringUtils.isEmpty(token)) {
+                Map<String, Object> data = (Map<String, Object>) cacheService.get(token);
+                SysUser user = JSON.parseObject((String) data.get("data"), SysUser.class);
+                if (user != null) {
+                    return WebResult.success(user);
+                }
+            }
+            return WebResult.error("获取失败");
+        } catch (Exception e) {
+            logger.error("当前用户详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 更新用户信息
+     */
+    @ResponseBody
+    @RequestMapping("updateInfo")
+    public Object updateInfo(HttpServletRequest request, @RequestBody String jsonBody) {
+        try {
+            logger.info("-------------更新用户信息-------------");
+            String token = request.getHeader("token");
+            Integer result = clientService.update(jsonBody);
+            if (result == 1) {
+                cacheService.del(token);
+                return WebResult.success("修改成功");
+            }
+            return WebResult.error("修改失败");
+        } catch (Exception e) {
+            logger.error("更新用户信息失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
 
 }

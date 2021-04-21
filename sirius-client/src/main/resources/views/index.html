@@ -9,7 +9,8 @@
     <script src="/static/js/common.js"></script>
 </head>
 <body>
-<div class="layui-container">
+<!--: include("/item/header.html"){} -->
+<div class="layui-container" style="margin-top: 50px">
     <fieldset class="layui-elem-field">
         <legend>- 商品列表 -</legend>
         <div class="layui-field-box">
@@ -75,6 +76,7 @@
         </div>
     </fieldset>
 </div>
+
 </body>
 <script>
     layui.use(['element', 'jquery', 'layer', 'form', 'laypage'], function () {

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改信息 - 天狼小商城后台管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row layui-col-space5">
+        <div class="grid-demo">
+            <fieldset class="layui-elem-field" style="margin-top: 10px;">
+                <legend>用户信息</legend>
+                <div class="layui-field-box">
+
+                    <div class="layui-row">
+                        <div class="layui-col-md6">
+                            <div style="display: flex">
+                                <div style="margin: auto">
+                                    <a id="img" href="javaScript:">
+                                        <img id="photo" src="/static/images/001.jpg" alt=""
+                                             style="height: 200px;width: 200px">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md6">
+                            <form class="layui-form layui-form-pane" action="" lay-filter="form">
+                                <input type="hidden" name="id" id="id">
+                                <input type="hidden" name="avatar" id="avatar">
+                                <input type="file" id="file" style="display: none"/>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">账号</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="account" name="account" placeholder="请输入"
+                                               autocomplete="off"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">昵称</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="nickname" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">电话</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="phone" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">邮件</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="email" placeholder="请输入" autocomplete="off"
+                                               class="layui-input" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">密码</label>
+                                    <div class="layui-input-block">
+                                        <input type="password" id="pwd1" name="pwd" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">确认密码</label>
+                                    <div class="layui-input-block">
+                                        <input type="password" id="pwd2" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item" style="text-align: center">
+                                    <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="form">修改
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    layui.use(['form', 'layer', 'jquery', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , $ = layui.jquery
+            , laydate = layui.laydate;
+
+        const token = localStorage.getItem("token");
+
+        laydate.render({
+            elem: '#birthday'
+            , type: 'date' //默认，可不填
+        });
+
+        //点击头像选择文件
+        $("#img").click(function () {
+            $('#file').click();
+        });
+
+        $("#file").change(function () {
+            let img = $("#file").get(0).files[0];
+            let formData = new FormData();
+
+            formData.append("upload", img);
+            formData.append("token", token);
+
+            let index = layer.load(1);
+
+            //异步请求
+            $.ajax({
+                url: "http://localhost:8131/resources/api/upload",
+                data: formData,
+                type: "POST",
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                crossDomain: true,//跨域请求
+                xhrFields: {
+                    withCredentials: true//允许携带cookie
+                },
+                success: function (res) {
+                    console.log(res)
+                    if (res.status) {
+                        layer.close(index);
+                        $("#photo").attr("src", res.data);
+                        $("#avatar").val(res.data);
+                        layer.msg("图片上传成功!");
+                    } else {
+                        layer.close(index);
+                        layer.alert(res.msg, {"icon": 2});
+                    }
+                },
+                error: function (data) {
+                    layer.close(index);
+                    layer.alert("请求超时!", {"icon": 3})
+                }
+            });
+        })
+
+        $(document).ready(function () {
+            ajax_common("/admin/manager/userInfo", token, function (result) {
+                console.log(result)
+                if (result.succeed) {
+                    let item = result.data;
+                    $("#photo").attr("src", item.avatar);
+                    form.val('form', {
+                        "id": item.id,
+                        "account": item.username,
+                        "nickname": item.nickname,
+                        "phone": item.phone,
+                        "email": item.email,
+                        "state": item.state,
+                        "avatar": item.avatar,
+                        "birthday": item.birthday
+                    })
+                    /*$("#account").val(item.username);
+                    console.log($("#account"))
+                    console.log($("#account").val())
+                    $("#nickname").val(item.nickname);
+                    $("#phone").val(item.phone);
+                    $("#depId").val(item.depId);*/
+                    form.render();
+                }
+            })
+        })
+
+        form.on('submit(form)', function (data) {
+            console.log(data.field)
+            if ($("#account").val() === null) {
+                layer.alert("账号不能为空!", {"icon": 2})
+                return false;
+            }
+            if ($("#pwd1").val() !== $("#pwd2").val()) {
+                layer.alert("密码不一致!", {"icon": 2})
+                return false;
+            }
+            layer.confirm("确认修改?", ['确认', '取消'], function () {
+                ajax_data("/admin/manager/updateInfo", token, JSON.stringify(data.field), function (result) {
+                    if (!result.succeed) {
+                        layer.msg("修改失败", {"icon": 2})
+                    } else {
+                        let index = parent.layer.getFrameIndex(window.name);//获取窗口索引
+                        layer.alert("修改成功,请重新登录!", {"icon": 1}, function () {
+                            parent.layer.close(index);
+                            parent.location.reload();
+                        });//关闭弹窗，父页面刷新
+                    }
+                })
+            });
+
+            return false;
+        });
+
+    })
+</script>
+</html>

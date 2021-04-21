@@ -62,7 +62,7 @@ public class PermissionController {
                 loginLogDao.insert(LoginLogFactory.error("该账号不存在"));
                 return WebResult.error("该账号不存在");
             }
-            List<SysPermission> permissionList =permissionDao.queryByAccount(account);
+            List<SysPermission> permissionList = permissionDao.queryByAccount(account);
             user.setPermissionList(permissionList);
             if (!JWTUtils.md5(pwd).equals(user.getPassword())) {
                 logger.error("-------------------登录失败:密码错误------------------");
@@ -116,6 +116,24 @@ public class PermissionController {
                 logger.error("注销失败：{}", e.getMessage());
                 return WebResult.error("注销失败：" + e.getMessage());
             }
+        }
+    }
+
+    /**
+     * 获取登录用户信息
+     */
+    @ResponseBody
+    @RequestMapping("queryLoginUser")
+    public Object queryLoginUser(@RequestParam String account, @RequestParam Integer type) {
+        try {
+            logger.info("-------------获取登录用户信息-------------");
+            SysUser user = userDao.queryLoginUser(account, type);
+            List<SysPermission> permissionList = permissionDao.queryByAccount(account);
+            user.setPermissionList(permissionList);
+            return WebResult.success(user);
+        } catch (Exception e) {
+            logger.error("获取登录用户信息失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
         }
     }
 

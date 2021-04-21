@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户统计 - 天狼小商城管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
+    <style>
+        .layui-table-cell {
+            height: auto;
+            line-height: 28px;
+        }
+    </style>
+</head>
+<body>
+<blockquote class="layui-elem-quote">用户统计</blockquote>
+
+
+<table class="layui-hide" id="table" lay-filter="table"></table>
+
+</body>
+<script>
+    layui.use(['table', 'layer', 'jquery', 'form'], function () {
+        const table = layui.table;
+        const layer = layui.layer;
+        const $ = layui.jquery;
+        const form = layui.form;
+        const token = localStorage.getItem("token");
+        /* 表格数据载入 */
+        table.render({
+            elem: '#table',
+            url: '/admin/stats/user?token=' + token,
+            height: 450,
+            page: true,
+            cols: [[{type: 'radio'}, {
+                field: 'date',
+                title: '统计日期',
+                width: 240
+            }, {
+                field: 'admin_count',
+                title: '日增管理员数量',
+                width: 240
+            }, {
+                field: 'admin_create_rate',
+                title: '日增管理员占比',
+                width: 240,
+                templet:function (d){
+                    return d.admin_create_rate + "%";
+                }
+            }, {
+                field: 'client_count',
+                title: '日增用户数量',
+                width: 240
+            },  {
+                field: 'client_create_rate',
+                title: '日增用户占比',
+                width: 240,
+                templet:function (d){
+                    return d.client_create_rate + "%";
+                }
+            }
+            ]],
+            id: 'reload' //表格重载的id
+        });
+
+
+    });
+</script>
+</html>

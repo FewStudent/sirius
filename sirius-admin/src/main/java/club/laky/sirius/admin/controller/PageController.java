@@ -200,14 +200,6 @@ public class PageController {
 
 
     /**
-     * 用户统计
-     */
-    @RequestMapping("client/stats")
-    public ModelAndView clientStats(HttpServletRequest request) {
-        return modelUtils.createModel(request, "/client/stats");
-    }
-
-    /**
      * 用户编辑
      */
     @RequestMapping("client/edit")
@@ -291,14 +283,6 @@ public class PageController {
         return modelUtils.createModel(request, "/order/end");
     }
 
-    /**
-     * 订单统计
-     */
-    @RequestMapping("order/stats")
-    public ModelAndView orderStats(HttpServletRequest request) {
-        return modelUtils.createModel(request, "/order/stats");
-    }
-
 
     /**
      * 商品列表
@@ -380,12 +364,20 @@ public class PageController {
         return result;
     }
 
+
     /**
-     * 商品统计
+     * 用户统计
      */
-    @RequestMapping("product/stats")
-    public ModelAndView productStats(HttpServletRequest request) {
-        return modelUtils.createModel(request, "/product/stats");
+    @RequestMapping("user/stats")
+    public ModelAndView clientStats(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/stats/userStats");
     }
 
+    /**
+     * 订单统计
+     */
+    @RequestMapping("order/stats")
+    public ModelAndView orderStats(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/stats/orderStats");
+    }
 }

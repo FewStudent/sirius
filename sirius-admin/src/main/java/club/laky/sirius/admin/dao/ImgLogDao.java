@@ -1,6 +1,8 @@
 package club.laky.sirius.admin.dao;
 
 import club.laky.sirius.admin.entity.ImgLog;
+import club.laky.sirius.admin.vo.OrderStatVO;
+import club.laky.sirius.admin.vo.UserStatVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -72,4 +74,14 @@ public interface ImgLogDao {
     Integer queryListCount();
 
     List<ImgLog> queryList(Integer offset, Integer limit);
+
+    //这四个是忒儿的 TODO
+    List<UserStatVO> queryUserStat(@Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    Integer queryUserStatCount();
+
+    List<OrderStatVO> queryOrderStat(@Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    Integer queryOrderStatCount();
+
 }

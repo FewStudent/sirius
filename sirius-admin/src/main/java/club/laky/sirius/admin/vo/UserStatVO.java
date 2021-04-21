@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 public class UserStatVO implements Serializable {
-    private String create_time;
+    private String date;
     private Integer create_count;
     private Integer admin_count;
     private Integer client_count;

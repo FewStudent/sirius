@@ -9,6 +9,25 @@
         <result property="createDate" column="create_date" jdbcType="OTHER"/>
     </resultMap>
 
+    <resultMap id="userStatsMap" type="club.laky.sirius.admin.vo.UserStatVO">
+        <result column="date" property="date"/>
+        <result column="create_count" property="create_count"/>
+        <result column="admin_count" property="admin_count"/>
+        <result column="client_count" property="client_count"/>
+        <result column="admin_create_rate" property="admin_create_rate"/>
+        <result column="client_create_rate" property="client_create_rate"/>
+    </resultMap>
+
+    <resultMap id="orderStatsMap" type="club.laky.sirius.admin.vo.OrderStatVO">
+        <result column="date" property="date"/>
+        <result column="create_count" property="create_count"/>
+        <result column="start_count" property="start_count"/>
+        <result column="send_count" property="send_count"/>
+        <result column="take_count" property="take_count"/>
+        <result column="end_count" property="end_count"/>
+        <result column="cancel_count" property="cancel_count"/>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
         select id,
@@ -53,7 +72,7 @@
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into shop_mall.img_log(img_url, u_id, create_date)
-        values (#{imgUrl}, #{uId}, #{createDate}})
+        values (#{imgUrl}, #{uId}, #{createDate})
     </insert>
 
     <!--通过主键修改数据-->
@@ -86,5 +105,75 @@
                  left join sys_user su on su.id = ig.u_id
         order by ig.create_date desc
         limit #{offset} , #{limit}
+    </select>
+    <select id="queryUserStat" resultMap="userStatsMap">
+        SELECT date_format(create_time, '%Y-%m-%d')                              AS date,
+               count(*)                                                          AS create_count,
+               IFNULL(SUM(IF(roles != 'client', 1, 0)), 0)                       as admin_count,
+               IFNULL(SUM(IF(roles = 'client', 1, 0)), 0)                        as client_count,
+               IFNULL(ROUND(SUM(IF(roles != 'client', 1, 0))
+                                / SUM(IF(roles is not null, 1, 0)) * 100, 2), 0) as admin_create_rate,
+               IFNULL(ROUND(SUM(IF(roles = 'client', 1, 0))
+                                / SUM(IF(roles is not null, 1, 0)) * 100, 2), 0) as client_create_rate
+        FROM (
+                 SELECT su.create_time,
+                        su.nickname,
+                        GROUP_CONCAT(sr.role) as roles
+                 FROM sys_user su
+                          LEFT JOIN sys_user_role_relation surr ON surr.user_id = su.id
+                          LEFT JOIN sys_role sr ON sr.id = surr.role_id
+                 GROUP BY su.id
+             ) t
+        GROUP BY date_format(create_time, '%Y-%m-%d')
+        ORDER BY create_time DESC
+        limit #{offset},#{limit}
+    </select>
+    <select id="queryOrderStat" resultMap="orderStatsMap">
+        SELECT date_format(create_time, '%Y-%m-%d') AS date,
+               count(*)                             AS create_count,
+               IFNULL(SUM(IF(state = 0, 1, 0)), 0)  as start_count,
+               IFNULL(SUM(IF(state = 1, 1, 0)), 0)  as send_count,
+               IFNULL(SUM(IF(state = 2, 1, 0)), 0)  as take_count,
+               IFNULL(SUM(IF(state = 3, 1, 0)), 0)  as end_count,
+               IFNULL(SUM(IF(state = 4, 1, 0)), 0)  as cancel_count
+        FROM goods_order
+        GROUP BY date_format(create_time, '%Y-%m-%d')
+        ORDER BY create_time DESC
+        limit #{offset},#{limit}
+    </select>
+    <select id="queryUserStatCount" resultType="java.lang.Integer">
+        select count(*)
+        from (SELECT date_format(create_time, '%Y-%m-%d')                              AS date,
+                     count(*)                                                          AS create_count,
+                     IFNULL(SUM(IF(roles != 'client', 1, 0)), 0)                       as admin_count,
+                     IFNULL(SUM(IF(roles = 'client', 1, 0)), 0)                        as client_count,
+                     IFNULL(ROUND(SUM(IF(roles != 'client', 1, 0))
+                                      / SUM(IF(roles is not null, 1, 0)) * 100, 2), 0) as admin_create_rate,
+                     IFNULL(ROUND(SUM(IF(roles = 'client', 1, 0))
+                                      / SUM(IF(roles is not null, 1, 0)) * 100, 2), 0) as client_create_rate
+              FROM (
+                       SELECT su.create_time,
+                              su.nickname,
+                              GROUP_CONCAT(sr.role) as roles
+                       FROM sys_user su
+                                LEFT JOIN sys_user_role_relation surr ON surr.user_id = su.id
+                                LEFT JOIN sys_role sr ON sr.id = surr.role_id
+                       GROUP BY su.id
+                   ) t
+              GROUP BY date_format(create_time, '%Y-%m-%d')) t
+    </select>
+    <select id="queryOrderStatCount" resultType="java.lang.Integer">
+        select count(*)
+        from (
+                 SELECT date_format(create_time, '%Y-%m-%d') AS date,
+                        count(*)                             AS create_count,
+                        IFNULL(SUM(IF(state = 0, 1, 0)), 0)  as start_count,
+                        IFNULL(SUM(IF(state = 1, 1, 0)), 0)  as send_count,
+                        IFNULL(SUM(IF(state = 2, 1, 0)), 0)  as take_count,
+                        IFNULL(SUM(IF(state = 3, 1, 0)), 0)  as end_count,
+                        IFNULL(SUM(IF(state = 4, 1, 0)), 0)  as cancel_count
+                 FROM goods_order
+                 GROUP BY date_format(create_time, '%Y-%m-%d')
+             ) t
     </select>
 </mapper>

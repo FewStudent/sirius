@@ -1,6 +1,5 @@
-package club.laky.sirius.admin.controller;
+package club.laky.sirius.admin.controller.sys;
 
-import club.laky.sirius.admin.entity.SysPermission;
 import club.laky.sirius.admin.entity.SysPermission;
 import club.laky.sirius.admin.service.SysPermissionService;
 import club.laky.sirius.admin.utils.LayuiVO;

@@ -1,4 +1,4 @@
-package club.laky.sirius.admin.controller;
+package club.laky.sirius.admin.controller.pms;
 
 import club.laky.sirius.admin.feign.FeignGoodsService;
 import club.laky.sirius.admin.utils.LayuiVO;

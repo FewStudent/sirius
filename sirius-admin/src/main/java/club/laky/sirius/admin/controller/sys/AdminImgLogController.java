@@ -1,7 +1,6 @@
-package club.laky.sirius.admin.controller;
+package club.laky.sirius.admin.controller.sys;
 
-import club.laky.sirius.admin.entity.LoginLog;
-import club.laky.sirius.admin.service.LoginLogService;
+import club.laky.sirius.admin.service.ImgLogService;
 import club.laky.sirius.admin.utils.LayuiVO;
 import club.laky.sirius.admin.utils.WebResult;
 import org.slf4j.Logger;
@@ -11,21 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * 登录日志(LoginLog)表控制层
+ * 图片上传记录(ImgLog)表控制层
  *
  * @author lakyjapn
- * @since 2021-04-19 14:41:13
+ * @since 2021-04-19 14:40:55
  */
 @RestController
-@RequestMapping("/admin/loginLog")
-public class AdminLoginLogController {
-    private static final Logger logger = LoggerFactory.getLogger(AdminLoginLogController.class);
+@RequestMapping("/admin/imgLog")
+public class AdminImgLogController {
+    private static final Logger logger = LoggerFactory.getLogger(AdminImgLogController.class);
 
     /**
      * 服务对象
      */
     @Resource
-    private LoginLogService loginLogService;
+    private ImgLogService imgLogService;
 
     /**
      * 分页查询
@@ -34,15 +33,15 @@ public class AdminLoginLogController {
     @RequestMapping("/list")
     public LayuiVO selectAll(Integer page, Integer limit) {
         try {
-            logger.info("-------------查询所有登录日志信息-------------");
+            logger.info("-------------查询所有图片日志信息-------------");
             LayuiVO layData = new LayuiVO();
             layData.setCode(0);
             layData.setMsg("");
-            layData.setCount(loginLogService.queryListCount());
-            layData.setData(loginLogService.queryList((page - 1) * limit, limit));
+            layData.setCount(imgLogService.queryListCount());
+            layData.setData(imgLogService.queryList((page - 1) * limit, limit));
             return layData;
         } catch (Exception e) {
-            logger.info("查询所有登录日志信息失败:{}", e.getMessage());
+            logger.info("查询所有图片日志信息失败:{}", e.getMessage());
             return null;
         }
     }
@@ -57,7 +56,7 @@ public class AdminLoginLogController {
     public Object deleteAll() {
         try {
             logger.info("-------------删除所有-------------");
-            return loginLogService.deleteAll();
+            return imgLogService.deleteAll();
         } catch (Exception e) {
             logger.info("删除所有失败:{}", e.getMessage());
             return WebResult.error("删除所有失败");
@@ -74,7 +73,7 @@ public class AdminLoginLogController {
     public Object delete(@RequestParam Integer id) {
         try {
             logger.info("-------------删除一条-------------");
-            return loginLogService.deleteById(id);
+            return imgLogService.deleteById(id);
         } catch (Exception e) {
             logger.info("删除一条失败:{}", e.getMessage());
             return WebResult.error("删除一条失败");

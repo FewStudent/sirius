@@ -1,4 +1,4 @@
-package club.laky.sirius.admin.controller;
+package club.laky.sirius.admin.controller.sys;
 
 import club.laky.sirius.admin.entity.SysDepartment;
 import club.laky.sirius.admin.service.SysDepartmentService;

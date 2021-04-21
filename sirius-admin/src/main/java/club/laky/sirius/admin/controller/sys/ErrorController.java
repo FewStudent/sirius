@@ -1,4 +1,4 @@
-package club.laky.sirius.admin.controller;
+package club.laky.sirius.admin.controller.sys;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

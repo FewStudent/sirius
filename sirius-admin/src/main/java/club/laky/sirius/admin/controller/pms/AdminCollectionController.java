@@ -1,4 +1,4 @@
-package club.laky.sirius.admin.controller;
+package club.laky.sirius.admin.controller.pms;
 
 import club.laky.sirius.admin.feign.FeignClientService;
 import club.laky.sirius.admin.utils.LayuiVO;
@@ -17,13 +17,13 @@ import java.util.List;
 /**
  * @author panrulang
  * @Desrcription:
- * @date 2021/4/19 16:43
+ * @date 2021/4/19 18:36
  */
 @Controller
-@RequestMapping("/admin/cart")
-public class AdminCartController {
+@RequestMapping("/admin/collection")
+public class AdminCollectionController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminCartController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminCollectionController.class);
 
     @Autowired
     private FeignClientService clientService;
@@ -35,27 +35,26 @@ public class AdminCartController {
     @RequestMapping("/list")
     public LayuiVO selectAll(Integer page, Integer limit, String nickname) {
         try {
-            logger.info("-------------查询所有购物车信息信息-------------");
-
-            JSONObject object = new JSONObject();
-            object.put("page", page);
-            object.put("limit", limit);
-            object.put("nickname", nickname);
+            logger.info("-------------查询所有用户收藏信息-------------");
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("limit", limit);
+            jsonBody.put("page", page);
+            jsonBody.put("nickname", nickname);
 
             LayuiVO layData = new LayuiVO();
             layData.setCode(0);
             layData.setMsg("");
-            layData.setCount(clientService.cartCount(object.toJSONString()));
-            layData.setData((List) clientService.cartList(object.toJSONString()).getData());
+            layData.setCount(clientService.adminCollectionCount(jsonBody.toJSONString()));
+            layData.setData((List) clientService.adminCollectionList(jsonBody.toJSONString()).getData());
             return layData;
         } catch (Exception e) {
-            logger.info("查询所有购物车信息信息失败:{}", e.getMessage());
+            logger.info("查询所有用户收藏信息失败:{}", e.getMessage());
             return null;
         }
     }
 
     /**
-     * 购物车信息删除
+     * 刪除
      *
      * @author panrulang
      */
@@ -63,11 +62,11 @@ public class AdminCartController {
     @RequestMapping("/delete")
     public Object delete(@RequestParam Integer id) {
         try {
-            logger.info("-------------购物车信息删除-------------");
-            return clientService.deleteCart(id);
+            logger.info("-------------刪除-------------");
+            return clientService.deleteCollection(id);
         } catch (Exception e) {
-            logger.info("购物车信息删除失败:{}", e.getMessage());
-            return WebResult.error("购物车信息删除失败");
+            logger.info("刪除失败:{}", e.getMessage());
+            return WebResult.error("刪除失败");
         }
     }
 

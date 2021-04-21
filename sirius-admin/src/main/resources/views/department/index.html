@@ -33,7 +33,7 @@
 <table class="layui-hide" id="table" lay-filter="table"></table>
 
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-sm layui-btn-primary" lay-event="insert">添加</a>
+    <a class="layui-btn layui-btn-sm layui-btn-primary" lay-event="add">添加</a>
     <a class="layui-btn layui-btn-sm layui-btn-warm" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">删除</a>
 </script>
@@ -73,39 +73,6 @@
             id: 'reload' //表格重载的id
         });
 
-        $(document).ready(function () {
-            ajax_common("/admin/department/allType", token, function (data) {
-                console.log(data)
-                if (data.succeed) {
-                    let types = data.data;
-                    for (let i = 0; i < types.length; i++) {
-                        let type = types[i];
-                        $("#typeId").append(
-                            $("<option>").attr("value", type.id).html(type.typeName)
-                        )
-                    }
-                    form.render('select');
-                } else {
-                    layer.msg(data.msg);
-                }
-            })
-            ajax_common("/admin/department/allBrand", token, function (data) {
-                console.log(data)
-                if (data.succeed) {
-                    let brands = data.data;
-                    for (let i = 0; i < brands.length; i++) {
-                        let brand = brands[i];
-                        $("#brandId").append(
-                            $("<option>").attr("value", brand.id).html(brand.name)
-                        )
-                    }
-                    form.render('select');
-                } else {
-                    layer.msg(data.msg);
-                }
-            })
-        })
-
         $("#reset").click(function () {
             location.reload();
         })
@@ -117,10 +84,7 @@
                     curr: 1 //重新从第 1 页开始
                 },
                 where: {
-                    departmentName: $('#departmentName').val(),
-                    state: $('#state').val(),
-                    brandId: $('#brandId').val(),
-                    typeId: $('#typeId').val()
+                    departmentName: $('#departmentName').val()
                 }
             });
         });
@@ -130,15 +94,15 @@
             var checkStatus = table.checkStatus(obj.config.id);
             var data = checkStatus.data[0];
             if (obj.event !== 'add' && checkStatus.data.length === 0) {
-                layer.alert("至少选择一条数据进行操作!", {"icon": 3});
+                layer.msg("至少选择一条数据进行操作!", {"icon": 3});
                 return;
             }
             let newTab = {};
             let url = '';
-            if (obj.event === 'detail') {
-                url = "/admin/page/product/detail?departmentId=" + data.id + "&token=" + token;
-                newTab.id = "department_detail";
-                newTab.title = "部门详情";
+            if (obj.event === 'add') {
+                url = "/admin/page/department/add?token=" + token;
+                newTab.id = "department_add";
+                newTab.title = "部门添加";
                 newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
                 parent.tab.add(newTab);
                 parent.tab.change(newTab);
@@ -146,7 +110,7 @@
                 layer.confirm("是否确认删除?", {"icon": 3}, function () {
                     let params = {};
                     params.departmentId = data.id;
-                    ajax_data("/admin/department/delete", token, JSON.stringify(params), function (result) {
+                    ajax_common("/admin/department/delete?id=" + data.id, token, function (result) {
                         console.log(result)
                         if (result.succeed) {
                             layer.alert("删除成功!", {"icon": 1}, function () {
@@ -157,47 +121,15 @@
                         }
                     })
                 })
-            } else if (obj.event === "onSale") {
-                if (data.state === 1) {
-                    layer.msg("部门还在上架中,无需再上架!", {"icon": 7});
-                    return;
-                }
-                layer.confirm("是否确认上架?", {"icon": 3}, function () {
-                    let params = {};
-                    params.departmentId = data.id;
-                    ajax_data("/admin/department/onSale", token, JSON.stringify(params), function (result) {
-                        console.log(result)
-                        if (result.succeed) {
-                            layer.alert("上架成功!", {"icon": 1}, function () {
-                                location.reload();
-                            });
-                        } else {
-                            layer.msg(result.msg, {"icon": 5});
-                        }
-                    })
-                })
-            } else if (obj.event === "offShelf") {
-                if (data.state === 0) {
-                    layer.msg("部门已下架,无需再下架!", {"icon": 7});
-                    return;
-                }
-                layer.confirm("是否确认下架?", {"icon": 3}, function () {
-                    let params = {};
-                    params.departmentId = data.id;
-                    ajax_data("/admin/department/offShelf", token, JSON.stringify(params), function (result) {
-                        console.log(result)
-                        if (result.succeed) {
-                            layer.alert("下架成功!", {"icon": 1}, function () {
-                                location.reload();
-                            });
-                        } else {
-                            layer.msg(result.msg, {"icon": 5});
-                        }
-                    })
-                })
+            } else if (obj.event === 'edit') {
+                url = "/admin/page/department/edit?id=" + data.id + "&token=" + token;
+                newTab.id = "department_edit";
+                newTab.title = "部门修改";
+                newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+                parent.tab.add(newTab);
+                parent.tab.change(newTab);
             }
-        });
-
+        })
     });
 </script>
 </html>

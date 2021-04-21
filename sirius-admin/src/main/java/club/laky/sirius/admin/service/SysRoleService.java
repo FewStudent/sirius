@@ -65,4 +65,6 @@ public interface SysRoleService {
     WebResult queryByUserId(Integer user_id);
 
     void deleteByUserId(Integer userId);
+
+    WebResult detail(Integer id);
 }

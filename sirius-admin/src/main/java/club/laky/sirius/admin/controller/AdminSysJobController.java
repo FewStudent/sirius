@@ -60,7 +60,7 @@ public class AdminSysJobController {
 
     @ResponseBody
     @RequestMapping("/insert")
-    public Object insert(SysJob job) {
+    public Object insert(@RequestBody SysJob job) {
         try {
             logger.info("-------------添加岗位信息-------------");
             return WebResult.success(service.insert(job));
@@ -73,13 +73,28 @@ public class AdminSysJobController {
 
     @ResponseBody
     @RequestMapping("/update")
-    public Object update(SysJob job) {
+    public Object update(@RequestBody SysJob job) {
         try {
             logger.info("-------------修改岗位信息-------------");
             return WebResult.success(service.update(job));
         } catch (Exception e) {
             logger.info("修改岗位信息失败:{}", e.getMessage());
             return WebResult.error("修改岗位信息失败");
+        }
+    }
+
+    /**
+     * 详情
+     */
+    @ResponseBody
+    @RequestMapping("detail")
+    public Object detail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------详情-------------");
+            return WebResult.success(service.queryById(id));
+        } catch (Exception e) {
+            logger.error("详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
         }
     }
 

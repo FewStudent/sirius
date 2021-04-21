@@ -2,9 +2,92 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>修改修改 - 天狼小商城后台管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
+<div class="layui-container">
+    <div class="layui-row layui-col-space5">
+        <div class="grid-demo">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                <legend>部门信息</legend>
+            </fieldset>
+            <form class="layui-form layui-form-pane" action="" lay-filter="form">
+                <input type="hidden" name="id">
 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">部门名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="depName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">部门描述</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="depDescription" placeholder="请输入" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">部门等级</label>
+                    <div class="layui-input-block">
+                        <input type="number" id="depLevel" name="depLevel" placeholder="请输入" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="text-align: center">
+                    <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="form">修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    layui.use(['form', 'layer', 'jquery'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , $ = layui.jquery;
+
+        const token = localStorage.getItem("token");
+
+        ajax_common("/admin/department/detail?id=${id}", token, function (result) {
+            console.log(result)
+            if (result.succeed) {
+                let item = result.data;
+                console.log(item)
+                form.val('form', {
+                    "id": item.id,
+                    "depName": item.depName,
+                    "depDescription": item.depDescription,
+                    "depLevel": item.depLevel
+                })
+            }
+        })
+
+        form.on('submit(form)', function (data) {
+            layer.confirm("确认修改?", ['确认', '取消'], function () {
+                console.log(data.field)
+                ajax_data("/admin/department/update", token, JSON.stringify(data.field), function (result) {
+                    if (!result.succeed) {
+                        layer.msg("修改失败")
+                    } else {
+                        let index = parent.layer.getFrameIndex(window.name);//获取窗口索引
+                        layer.msg("修改成功", {time: 200}, function () {
+                            parent.layer.close(index);
+                            location.reload();
+                        });//关闭弹窗，父页面刷新
+                    }
+                })
+            });
+
+            return false;
+        });
+
+    })
+</script>
 </html>

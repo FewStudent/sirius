@@ -61,7 +61,7 @@ public class AdminSysDepartmentController {
 
     @ResponseBody
     @RequestMapping("/insert")
-    public Object insert(SysDepartment department) {
+    public Object insert(@RequestBody SysDepartment department) {
         try {
             logger.info("-------------添加部门信息-------------");
             return WebResult.success(service.insert(department));
@@ -74,7 +74,7 @@ public class AdminSysDepartmentController {
 
     @ResponseBody
     @RequestMapping("/update")
-    public Object update(SysDepartment department) {
+    public Object update(@RequestBody SysDepartment department) {
         try {
             logger.info("-------------修改部门信息-------------");
             return WebResult.success(service.update(department));
@@ -93,6 +93,21 @@ public class AdminSysDepartmentController {
         } catch (Exception e) {
             logger.info("获取所有部门信息失败:{}", e.getMessage());
             return WebResult.error("获取所有部门信息失败");
+        }
+    }
+
+    /**
+     * 详情
+     */
+    @ResponseBody
+    @RequestMapping("detail")
+    public Object detail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------详情-------------");
+            return WebResult.success(service.queryById(id));
+        } catch (Exception e) {
+            logger.error("详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
         }
     }
 }

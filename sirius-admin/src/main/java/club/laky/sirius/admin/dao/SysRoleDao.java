@@ -74,4 +74,6 @@ public interface SysRoleDao {
     Integer batchInsertRelation(@Param("idList") List<String> idList, @Param("user_id") Integer user_id);
 
     Integer batchInsertPermissionRelation(@Param("idList") List<String> idList, @Param("role_id") Integer role_id);
+
+    SysRole queryOne(Integer id);
 }

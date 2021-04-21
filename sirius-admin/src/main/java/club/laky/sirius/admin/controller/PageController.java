@@ -103,6 +103,14 @@ public class PageController {
         return modelUtils.createModel(request, "/permission/index");
     }
 
+    /**
+     * 权限管理
+     */
+    @RequestMapping("permission/list")
+    public ModelAndView permissionList(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/role/permissionList");
+    }
+
 
     /**
      * 权限添加

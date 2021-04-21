@@ -56,7 +56,7 @@ public class AdminSysRoleController {
 
     @ResponseBody
     @RequestMapping("/delete")
-    public Object delete(Integer id) {
+    public Object delete(@RequestParam Integer id) {
         try {
             logger.info("-------------删除角色信息-------------");
             return WebResult.success(service.deleteById(id));
@@ -66,9 +66,24 @@ public class AdminSysRoleController {
         }
     }
 
+        /**
+             * 详情
+             */
+            @ResponseBody
+            @RequestMapping("detail")
+            public Object detail(@RequestParam Integer id) {
+                try {
+                    logger.info("-------------详情-------------");
+                    return service.detail(id);
+                } catch (Exception e) {
+                    logger.error("详情失败：" + e.getMessage());
+                    return WebResult.error(e.getMessage());
+                }
+            }
+
     @ResponseBody
     @RequestMapping("/insert")
-    public Object insert(SysRole role) {
+    public Object insert(@RequestBody SysRole role) {
         try {
             logger.info("-------------添加角色信息-------------");
             return WebResult.success(service.insert(role));
@@ -81,7 +96,7 @@ public class AdminSysRoleController {
 
     @ResponseBody
     @RequestMapping("/update")
-    public Object update(SysRole role) {
+    public Object update(@RequestBody SysRole role) {
         try {
             logger.info("-------------修改角色信息-------------");
             return WebResult.success(service.update(role));

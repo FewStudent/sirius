@@ -5,6 +5,9 @@
     <title>角色管理 - 天狼小商城管理系统</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css">
     <script src="/static/layui/layui.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
 <blockquote class="layui-elem-quote">角色管理</blockquote>
@@ -81,7 +84,7 @@
                     parent.tab.change(newTab);
                     break;
                 case 'edit':
-                    url = "/admin/page/role/edit?token=" + token;
+                    url = "/admin/page/role/edit?id=" + data.id + "&token=" + token;
                     newTab.id = "role_edit";
                     newTab.title = "角色修改";
                     newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
@@ -89,22 +92,15 @@
                     parent.tab.change(newTab);
                     break;
                 case 'del':
-                    layer.confirm("确认删除该用户?", ['确认', '取消'], function () {
-                        $.ajax({
-                            url: "/admin/role/del",
-                            type: 'post',
-                            data: JSON.stringify({"id": data.id}),
-                            dataType: "json",
-                            contentType: "application/json; charset=utf-8",
-                            success: function (data) {
-                                if (data.succeed) {
-                                    layer.msg("删除成功!");
-                                    $(".layui-laypage-btn").click();
-                                } else {
-                                    layer.alert(data.msg);
-                                }
+                    layer.confirm("确认删除该角色?", ['确认', '取消'], function () {
+                        ajax_common("/admin/role/delete?id=" + data.id, token, function (result) {
+                            if (result.succeed) {
+                                layer.msg("删除成功!");
+                                $(".layui-laypage-btn").click();
+                            } else {
+                                layer.alert(data.msg);
                             }
-                        });
+                        })
                     });
                     break;
                 //自定义头工具栏右侧图标 - 提示

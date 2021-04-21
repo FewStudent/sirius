@@ -3,10 +3,16 @@
 <mapper namespace="club.laky.sirius.admin.dao.SysRoleDao">
     <resultMap id="BaseResultMap" type="club.laky.sirius.admin.entity.SysRole">
         <!--@Table sys_role-->
-        <result property="id" column="id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="role" column="role" jdbcType="VARCHAR"/>
         <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
         <result property="roleDetail" column="role_detail" jdbcType="VARCHAR"/>
+
+        <collection property="permissionList" ofType="club.laky.sirius.admin.entity.SysPermission">
+            <id column="permission_id" property="id"/>
+            <result property="permission" column="permission"/>
+            <result property="description" column="description"/>
+        </collection>
     </resultMap>
 
     <!--查询单个-->
@@ -25,7 +31,8 @@
                role,
                role_name,
                role_detail
-        from shop_mall.sys_role limit #{offset}, #{limit}
+        from shop_mall.sys_role
+        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -47,6 +54,13 @@
                 and role_detail = #{roleDetail}
             </if>
         </where>
+    </select>
+    <select id="queryOne" resultMap="BaseResultMap">
+        select sr.*, sp.id permission_id, sp.permission, sp.description
+        from sys_role sr
+                 left join sys_role_permission_relation srpr on sr.id = srpr.role_id
+                 left join sys_permission sp on srpr.permission_id = sp.id
+        where sr.id = #{id}
     </select>
 
     <!--新增所有列-->
@@ -88,7 +102,7 @@
     </insert>
 
     <insert id="batchInsertPermissionRelation">
-        insert sys_role_permission_relation(role_id,user_id)
+        insert sys_role_permission_relation(permission_id,role_id)
         values
         <foreach collection="idList" index="index" separator="," item="id">
             (#{id},#{role_id,jdbcType=INTEGER})

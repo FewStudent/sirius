@@ -50,7 +50,7 @@ public class AdminSysPermissionController {
 
     @ResponseBody
     @RequestMapping("/delete")
-    public Object delete(Integer id) {
+    public Object delete(@RequestParam Integer id) {
         try {
             logger.info("-------------删除权限信息-------------");
             return WebResult.success(service.deleteById(id));
@@ -62,7 +62,7 @@ public class AdminSysPermissionController {
 
     @ResponseBody
     @RequestMapping("/insert")
-    public Object insert(SysPermission permission) {
+    public Object insert(@RequestBody SysPermission permission) {
         try {
             logger.info("-------------添加权限信息-------------");
             return WebResult.success(service.insert(permission));
@@ -75,7 +75,7 @@ public class AdminSysPermissionController {
 
     @ResponseBody
     @RequestMapping("/update")
-    public Object update(SysPermission permission) {
+    public Object update(@RequestBody SysPermission permission) {
         try {
             logger.info("-------------修改权限信息-------------");
             return WebResult.success(service.update(permission));

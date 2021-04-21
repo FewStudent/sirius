@@ -211,9 +211,9 @@ public class PageController {
      * 用户编辑
      */
     @RequestMapping("client/edit")
-    public ModelAndView clientEdit(HttpServletRequest request, Integer id) {
+    public ModelAndView clientEdit(HttpServletRequest request, String account) {
         ModelAndView result = modelUtils.createModel(request, "client/edit");
-        result.addObject("id", id);
+        result.addObject("account", account);
         return result;
     }
 
@@ -343,6 +343,17 @@ public class PageController {
         return modelUtils.createModel(request, "/product/addType");
     }
 
+
+    /**
+     * 商品类型修改
+     */
+    @RequestMapping("product/type/edit")
+    public ModelAndView typeEdit(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "product/editType");
+        result.addObject("id", id);
+        return result;
+    }
+
     /**
      * 商品品牌
      */
@@ -357,6 +368,16 @@ public class PageController {
     @RequestMapping("product/brand/add")
     public ModelAndView productBrandAdd(HttpServletRequest request) {
         return modelUtils.createModel(request, "/product/addBrand");
+    }
+
+    /**
+     * 商品类型修改
+     */
+    @RequestMapping("product/brand/edit")
+    public ModelAndView brandEdit(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "/product/editBrand");
+        result.addObject("id", id);
+        return result;
     }
 
     /**

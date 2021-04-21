@@ -118,7 +118,7 @@
         where u_id = #{u_id,jdbcType=INTEGER}
     </update>
 
-    <select id="adminAddressCount">
+    <select id="adminAddressCount" resultType="integer">
         select count(*)
         from user_address ua
         left join sys_user su on su.id = ua.u_id

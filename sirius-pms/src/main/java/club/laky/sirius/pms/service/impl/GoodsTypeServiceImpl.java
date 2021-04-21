@@ -91,13 +91,13 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
         goodsType.setTypeDetail(typeDetail);
         //添加
         if (id == null) {
-            goodsType.setId(id);
             int result = this.goodsTypeDao.insert(goodsType);
             if (result == 0) {
                 return WebResult.error("添加失败");
             }
             return WebResult.success("添加成功");
         } else {
+            goodsType.setId(id);
             int result = this.goodsTypeDao.update(goodsType);
             if (result == 0) {
                 return WebResult.error("修改失败");
@@ -119,5 +119,10 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
     @Override
     public WebResult allType() {
         return WebResult.success(this.goodsTypeDao.queryAll(null));
+    }
+
+    @Override
+    public Object detail(Integer id) {
+        return this.goodsTypeDao.queryById(id);
     }
 }

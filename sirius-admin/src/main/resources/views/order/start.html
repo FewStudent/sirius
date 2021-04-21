@@ -2,9 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>订单管理 - 天狼小商城管理系统</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
 </head>
 <body>
-
+<blockquote class="layui-elem-quote  layui-quote-nm layui-form">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" id="nickname" placeholder="请输入下单用户" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" id="orderNum" placeholder="请输入订单编号" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-normal" id="search"><i class="layui-icon">&#xe615;</i>搜索</button>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-primary" id="rest"><i class="layui-icon">&#xe669;</i>重置</button>
+        </div>
+    </div>
+</blockquote>
+<table class="layui-hide" id="table" lay-filter="table"></table>
 </body>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">订单详情</a>
+</script>
+<script>
+    layui.use(['table', 'jquery', 'form'], function () {
+        const token = localStorage.getItem("token");
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        /* 表格数据载入 */
+        table.render({
+            elem: '#table',
+            url: '/admin/order/list?state=0&token=' + token,
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }],
+            skin: "row",
+            width: 1120,
+            height: 450,
+            page: true,
+            cols: [
+                [{type: 'radio', fixed: 'left'}, {
+                    field: 'id',
+                    title: 'ID',
+                    width: 160,
+                    sort: true,
+                    fixed: 'left'
+                }, {
+                    field: 'orderNum',
+                    title: '订单编码',
+                    width: 300
+                }, {
+                    field: 'nickname',
+                    title: '下单用户',
+                    width: 240
+                }, {
+                    field: 'addressName',
+                    title: '收货地址',
+                    width: 160
+                }, {
+                    field: 'createTime',
+                    title: '下单时间',
+                    width: 160
+                }, {
+                    field: 'email',
+                    title: '邮件',
+                    width: 240
+                }
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 100}
+                ]
+            ],
+            id: 'Reload' //表格重载的id
+        });
+
+        table.on('tool(table)', function (obj) {
+            var data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'detail') {
+                let newTab = {};
+                let url = '';
+                url = "/admin/page/order/detail?orderNum=" + data.orderNum + "&token=" + token;
+                newTab.id = "order_detail";
+                newTab.title = "订单详情";
+                newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+                parent.tab.add(newTab);
+                parent.tab.change(newTab);
+            }
+        });
+
+        $("#rest").click(function () {
+            $("#orderNum").val("");
+            $("#nickname").val("");
+            $("#state").val("");
+            form.render();
+        })
+
+        /* 表格重载 */
+        $('#search').on('click', function () {
+            table.reload('Reload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    nickname: $('#nickname').val(),
+                    orderNum: $('#orderNum').val(),
+                    state: $("#state").val()
+                }
+            });
+        });
+
+    });
+</script>
 </html>

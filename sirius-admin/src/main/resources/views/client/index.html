@@ -2,18 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>后台用户管理 - 天狼小商城管理系统</title>
+    <title>后台会员管理 - 天狼小商城管理系统</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css">
     <script src="/static/layui/layui.js"></script>
 </head>
 <body>
-<blockquote class="layui-elem-quote">
-    后台用户管理
+<blockquote class="layui-elem-quote  layui-quote-nm layui-form">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <input type="text" id="nickname" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline">
+            <select id="state">
+                <option value="">状态</option>
+                <option value="1">正常</option>
+                <option value="0">冻结</option>
+            </select>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-normal" id="search"><i class="layui-icon">&#xe615;</i>搜索</button>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-primary" id="rest"><i class="layui-icon">&#xe669;</i>重置</button>
+        </div>
+    </div>
 </blockquote>
 <table class="layui-hide" id="table" lay-filter="table"></table>
 
 <script type="text/html" id="outerBar">
-    <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</a>
     <a class="layui-btn layui-btn-sm layui-btn-warm" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
 </script>
@@ -22,10 +38,11 @@
     layui.use(['table', 'jquery'], function () {
         var table = layui.table;
         var $ = layui.jquery;
+        const token = localStorage.getItem("token");
         /* 表格数据载入 */
         table.render({
             elem: '#table',
-            url: '/admin/client/list',
+            url: '/admin/client/list?token=' + token,
             toolbar: '#outerBar',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示'
@@ -47,14 +64,17 @@
                     title: '登录账号',
                     width: 300
                 }, {
-                    field: 'nickname',
-                    title: '管理员姓名',
+                    field: 'email',
+                    title: '邮箱',
                     width: 240
                 }, {
-                    field: 'roleName',
-                    title: '角色',
-                    width: 240,
-                    fixed: 'right'
+                    field: 'phone',
+                    title: '电话',
+                    width: 240
+                },{
+                    field: 'identify',
+                    title: '身份证',
+                    width: 240
                 }, {
                     field: 'state',
                     title: '状态',
@@ -69,6 +89,25 @@
             ],
             id: 'Reload' //表格重载的id
         });
+        $("#rest").click(function () {
+            $("#nickname").val("");
+            $("#state").val("");
+            form.render();
+        })
+
+        /* 表格重载 */
+        $('#search').on('click', function () {
+            table.reload('Reload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    nickname: $('#nickname').val(),
+                    state: $("#state").val()
+                }
+            });
+        });
+
 
         //头工具栏事件
         table.on('toolbar(table)', function (obj) {
@@ -78,39 +117,30 @@
                 layer.msg("至少选择一条数据进行操作!", {"icon": 3});
                 return;
             }
+            let newTab = {};
+            let url = '';
             switch (obj.event) {
                 case 'add':
-                    layer.open({
-                        type: 2,
-                        title: "添加管理员",
-                        shadeClose: true,
-                        shade: 0.2,
-                        maxmin: true, //开启最大化最小化按钮
-                        area: ['50%', '75%'],
-                        content: "/admin/page/client/add",
-                        end: function () {
-                            $(".layui-laypage-btn").click();
-                        }
-                    });
+                    //let addTab = {};
+                    url = "/admin/page/client/add?token=" + token;
+                    newTab.id = "client_add";
+                    newTab.title = "会员添加";
+                    newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+                    parent.tab.add(newTab);
+                    parent.tab.change(newTab);
                     break;
                 case 'edit':
-                    layer.open({
-                        type: 2,
-                        title: "修改管理员信息",
-                        shadeClose: true,
-                        shade: 0.2,
-                        maxmin: true, //开启最大化最小化按钮
-                        area: ['50%', '75%'],
-                        content: "/admin/page/client/edit?id=" + data.id,
-                        end: function () {
-                            $(".layui-laypage-btn").click();
-                        }
-                    });
+                    url = "/admin/page/client/edit?account=" + data.username + "&token=" + token;
+                    newTab.id = "client_edit";
+                    newTab.title = "会员修改";
+                    newTab.content = "<iframe src='" + url + "' style='width: 100%;height: 100%;'></iframe>";
+                    parent.tab.add(newTab);
+                    parent.tab.change(newTab);
                     break;
                 case 'del':
-                    layer.confirm("确认删除该用户?", ['确认', '取消'], function () {
+                    layer.confirm("确认删除该会员?", ['确认', '取消'], function () {
                         $.ajax({
-                            url: "/admin/client/del",
+                            url: "/admin/client/delete",
                             type: 'post',
                             data: JSON.stringify({"id": data.id}),
                             dataType: "json",

@@ -240,7 +240,7 @@ public class ClientController {
         String birthday = params.getString("birthday");
 
         SysUser sysUser = new SysUser();
-        if (StringUtils.isEmpty(password)) {
+        if (!StringUtils.isEmpty(password)) {
             sysUser.setPassword(JWTUtils.md5(password));
         }
         sysUser.setAvatar(url);

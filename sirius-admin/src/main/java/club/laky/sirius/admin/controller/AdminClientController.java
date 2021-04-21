@@ -2,10 +2,12 @@ package club.laky.sirius.admin.controller;
 
 import club.laky.sirius.admin.feign.FeignClientService;
 import club.laky.sirius.admin.utils.LayuiVO;
+import club.laky.sirius.admin.utils.WebResult;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +51,21 @@ public class AdminClientController {
         } catch (Exception e) {
             logger.info("查询所有用户信息失败:{}", e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * 修改用户信息
+     */
+    @ResponseBody
+    @RequestMapping("update")
+    public Object update(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------修改用户信息-------------");
+            return WebResult.success(clientService.updateUser(jsonBody));
+        } catch (Exception e) {
+            logger.error("修改用户信息失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
         }
     }
 }

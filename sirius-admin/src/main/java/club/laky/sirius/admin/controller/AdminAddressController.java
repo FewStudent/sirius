@@ -38,11 +38,16 @@ public class AdminAddressController {
         try {
             logger.info("-------------查询所有收货地址信息-------------");
 
+            JSONObject object = new JSONObject();
+            object.put("page",page);
+            object.put("limit",limit);
+            object.put("nickname",nickname);
+
             LayuiVO layData = new LayuiVO();
             layData.setCode(0);
             layData.setMsg("");
-            layData.setCount(clientService.adminAddressCount(nickname));
-            layData.setData((List) clientService.adminAddressList(nickname, page, limit).getData());
+            layData.setCount(clientService.adminAddressCount(object.toJSONString()));
+            layData.setData((List) clientService.adminAddressList(object.toJSONString()).getData());
             return layData;
         } catch (Exception e) {
             logger.info("查询所有收货地址信息失败:{}", e.getMessage());
@@ -60,7 +65,7 @@ public class AdminAddressController {
     public Object delete(@RequestParam Integer id) {
         try {
             logger.info("-------------收货地址删除-------------");
-            return clientService.delete(id);
+            return clientService.deleteAddress(id);
         } catch (Exception e) {
             logger.info("收货地址删除失败:{}", e.getMessage());
             return WebResult.error("收货地址删除失败");

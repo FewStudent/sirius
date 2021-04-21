@@ -104,7 +104,6 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
         goodsBrand.setSortOrder(sort);
         //添加
         if (id == null) {
-            goodsBrand.setId(id);
             goodsBrand.setAddTime(DateUtil.now());
             int result = this.goodsBrandDao.insert(goodsBrand);
             if (result == 0) {
@@ -112,6 +111,7 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
             }
             return WebResult.success("添加成功");
         } else {
+            goodsBrand.setId(id);
             goodsBrand.setUpdateTime(DateUtil.now());
             int result = this.goodsBrandDao.update(goodsBrand);
             if (result == 0) {
@@ -124,5 +124,10 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
     @Override
     public WebResult allBrand() {
         return WebResult.success(this.goodsBrandDao.queryAll(null));
+    }
+
+    @Override
+    public Object detail(Integer id) {
+        return this.goodsBrandDao.queryById(id);
     }
 }

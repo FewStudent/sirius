@@ -4,6 +4,7 @@ import club.laky.sirius.ums.entity.UserAddress;
 import club.laky.sirius.ums.service.UserAddressService;
 import club.laky.sirius.ums.service.UserCartService;
 import club.laky.sirius.ums.utils.WebResult;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -59,9 +60,11 @@ public class UserAddressController {
      */
     @ResponseBody
     @RequestMapping("adminAddressCount")
-    public Integer adminAddressCount(@RequestParam String nickname) {
+    public Integer adminAddressCount(@RequestParam String jsonBody) {
         try {
             logger.info("-------------获取用户的收货地址-------------");
+            JSONObject object = JSONObject.parseObject(jsonBody);
+            String nickname = object.getString("nickname");
             return userAddressService.adminAddressCount(nickname);
         } catch (Exception e) {
             logger.error("获取用户的收货地址失败：" + e.getMessage());
@@ -74,10 +77,14 @@ public class UserAddressController {
      */
     @ResponseBody
     @RequestMapping("adminAddressList")
-    public WebResult adminAddressList(@RequestParam String nickname, @RequestParam Integer page, @RequestParam Integer limit) {
+    public WebResult adminAddressList(@RequestParam String jsonBody) {
         try {
             logger.info("-------------管理所有用户地址-------------");
-            return userAddressService.adminAddressList(nickname, page, limit);
+            JSONObject object = JSONObject.parseObject(jsonBody);
+            String nickname = object.getString("nickname");
+            Integer page = object.getInteger("page");
+            Integer limit = object.getInteger("limit");
+            return userAddressService.adminAddressList(nickname, (page - 1) * limit, limit);
         } catch (Exception e) {
             logger.error("管理所有用户地址失败：" + e.getMessage());
             return WebResult.error(e.getMessage());

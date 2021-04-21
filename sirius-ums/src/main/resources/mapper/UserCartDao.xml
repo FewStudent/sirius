@@ -10,7 +10,7 @@
         <result property="uId" column="u_id" jdbcType="INTEGER"/>
 
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
-        <result property="goodsName" column="goodsName" jdbcType="VARCHAR"/>
+        <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
         <result property="url" column="url" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -55,7 +55,7 @@
         </where>
     </select>
     <select id="cartList" resultMap="BaseResultMap">
-        select uc.*, g.goods_name, substring_index(g.imgs, ',', 1)
+        select uc.*, g.goods_name, substring_index(g.imgs, ',', 1) as url,su.nickname
         from user_cart uc
         left join goods g on g.id = uc.goods_id
         left join sys_user su on uc.u_id = su.id

@@ -106,4 +106,18 @@ public class GoodsBrandController {
         }
     }
 
+    /**
+     * 详情
+     */
+    @ResponseBody
+    @RequestMapping("detail")
+    public Object brandDetail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------详情-------------");
+            return service.detail(id);
+        } catch (Exception e) {
+            logger.error("详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
 }

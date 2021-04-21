@@ -17,8 +17,8 @@
         <div class="layui-input-inline">
             <select id="state">
                 <option value="">状态</option>
-                <option value="0">锁定</option>
                 <option value="1">正常</option>
+                <option value="0">冻结</option>
             </select>
         </div>
         <div class="layui-inline">
@@ -112,7 +112,7 @@
                     fixed: 'right',
                     sort: true,
                     templet: function (d) {
-                        return d.state === 1 ? "正常" : "锁定";
+                        return d.state === 1 ? "正常" : "冻结";
                     }
                 }
                 ]
@@ -135,7 +135,6 @@
                 },
                 where: {
                     nickname: $('#nickname').val(),
-                    orderNum: $('#orderNum').val(),
                     state: $("#state").val()
                 }
             });

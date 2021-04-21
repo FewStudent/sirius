@@ -61,4 +61,6 @@ public interface GoodsTypeService {
     int queryTypeListCount(String typeName);
 
     WebResult allType();
+
+    Object detail(Integer id);
 }

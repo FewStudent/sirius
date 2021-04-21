@@ -44,7 +44,7 @@ public class UserCartController {
      */
     @ResponseBody
     @RequestMapping("/cartList")
-    public Object cartList(@RequestBody String jsonBody) {
+    public Object cartList(@RequestParam String jsonBody) {
         try {
             logger.info("-------------后台管理列表-------------");
             return userCartService.cartList(jsonBody);
@@ -61,7 +61,7 @@ public class UserCartController {
      */
     @ResponseBody
     @RequestMapping("/cartCount")
-    public Object cartCount(@RequestBody String jsonBody) {
+    public Object cartCount(@RequestParam String jsonBody) {
         try {
             logger.info("-------------后台管理数量-------------");
             return userCartService.cartCount(jsonBody);

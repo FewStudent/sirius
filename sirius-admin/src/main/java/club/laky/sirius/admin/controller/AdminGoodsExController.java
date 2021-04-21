@@ -61,7 +61,7 @@ public class AdminGoodsExController {
         logger.info("-------------删除品牌信息-------------");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", id);
-        return goodsService.brandDelete(jsonObject.toJSONString());
+        return WebResult.success(goodsService.brandDelete(jsonObject.toJSONString()));
     }
 
     @ResponseBody
@@ -109,7 +109,7 @@ public class AdminGoodsExController {
         logger.info("-------------删除品牌信息-------------");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", id);
-        return goodsService.brandDelete(jsonObject.toJSONString());
+        return WebResult.success(goodsService.typeDelete(jsonObject.toJSONString()));
     }
 
     @ResponseBody
@@ -123,4 +123,35 @@ public class AdminGoodsExController {
             return WebResult.error("保存商品类型信息失败");
         }
     }
+
+    /**
+     * 类型详情
+     */
+    @ResponseBody
+    @RequestMapping("typeDetail")
+    public Object typeDetail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------类型详情-------------");
+            return WebResult.success(goodsService.typeDetail(id));
+        } catch (Exception e) {
+            logger.error("类型详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 品牌详情
+     */
+    @ResponseBody
+    @RequestMapping("brandDetail")
+    public Object brandDetail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------品牌详情-------------");
+            return WebResult.success(goodsService.brandDetail(id));
+        } catch (Exception e) {
+            logger.error("品牌详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
 }

@@ -54,6 +54,9 @@ public interface FeignGoodsService {
     @RequestMapping(value = "/api/goodsBrand/allBrand", method = RequestMethod.GET)
     WebResult allBrand();
 
+    @RequestMapping(value = "/api/goodsBrand/detail", method = RequestMethod.GET)
+    Object brandDetail(@RequestParam Integer id);
+
     //------------ 商品类型信息
     @RequestMapping(value = "/api/goodsType/allType", method = RequestMethod.GET)
     WebResult allType();
@@ -72,6 +75,9 @@ public interface FeignGoodsService {
 
     @RequestMapping(value = "/api/goods/allSelect", method = RequestMethod.GET)
     Object allSelect();
+
+    @RequestMapping(value = "/api/goodsType/detail", method = RequestMethod.GET)
+    Object typeDetail(@RequestParam Integer id);
 
     //------------ 商品评论信息
     @RequestMapping(value = "/api/comment/commentCount", method = RequestMethod.GET)

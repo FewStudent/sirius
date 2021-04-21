@@ -61,4 +61,6 @@ public interface GoodsBrandService {
     WebResult save(String jsonBody);
 
     WebResult allBrand();
+
+    Object detail(Integer id);
 }

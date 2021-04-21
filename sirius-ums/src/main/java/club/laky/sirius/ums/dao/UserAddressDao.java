@@ -67,7 +67,7 @@ public interface UserAddressDao {
 
     Integer updateAddressStateByUserId(@Param("u_id") Integer u_id);
 
-    List<UserAddress> adminAddressList(@Param("nickname") String nickname, @Param("page") Integer page, @Param("limit") Integer limit);
+    List<UserAddress> adminAddressList(@Param("nickname") String nickname, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
     Integer adminAddressCount(@Param("nickname") String nickname);
 }

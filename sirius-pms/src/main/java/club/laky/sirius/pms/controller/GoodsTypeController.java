@@ -92,6 +92,21 @@ public class GoodsTypeController {
     }
 
     /**
+     * 详情
+     */
+    @ResponseBody
+    @RequestMapping("detail")
+    public Object typeDetail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------详情-------------");
+            return service.detail(id);
+        } catch (Exception e) {
+            logger.error("详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
      * 所有类型
      */
     @ResponseBody

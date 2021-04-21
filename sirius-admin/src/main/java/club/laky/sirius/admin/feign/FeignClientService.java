@@ -57,30 +57,49 @@ public interface FeignClientService {
 
 
     //用户收货地址API
-    @RequestMapping(value = "adminAddressCount", method = RequestMethod.GET)
-    Integer adminAddressCount(@RequestParam String nickname);
+    @RequestMapping(value = "/api/address/adminAddressCount", method = RequestMethod.GET)
+    Integer adminAddressCount(@RequestParam String jsonBody);
 
-    @RequestMapping(value = "adminAddressList", method = RequestMethod.GET)
-    WebResult adminAddressList(@RequestParam String nickname, @RequestParam Integer page, @RequestParam Integer limit);
+    @RequestMapping(value = "/api/address/adminAddressList", method = RequestMethod.GET)
+    WebResult adminAddressList(@RequestParam String jsonBody);
 
-    @RequestMapping(value = "deleteAddress", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/address/deleteAddress", method = RequestMethod.GET)
     Object deleteAddress(@RequestBody Integer addressId);
 
-    @RequestMapping(value = "updateAddress", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/address/updateAddress", method = RequestMethod.GET)
     Object updateAddress(@RequestBody String jsonBody);
 
-    @RequestMapping(value = "/addressDetail", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/address/addressDetail", method = RequestMethod.GET)
     Object addressDetail(@RequestParam Integer id);
 
     //用户商品收藏API
-    @RequestMapping(value = "/deleteCollection", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/collection/deleteCollection", method = RequestMethod.GET)
     Object deleteCollection(@RequestParam Integer id);
 
-    @RequestMapping(value = "/adminCollectionList", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/collection/adminCollectionList", method = RequestMethod.GET)
     WebResult adminCollectionList(@RequestBody String jsonBody);
 
-    @RequestMapping(value = "/adminCollectionCount", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/collection/adminCollectionCount", method = RequestMethod.GET)
     Integer adminCollectionCount(@RequestBody String jsonBody);
 
     //用户购物车API
+
+    @RequestMapping(value = "/api/cart/cartList", method = RequestMethod.GET)
+    WebResult cartList(@RequestParam String jsonBody);
+
+    @RequestMapping(value = "/api/cart/cartCount", method = RequestMethod.GET)
+    Integer cartCount(@RequestParam String jsonBody);
+
+    @RequestMapping(value = "/api/cart/userCartList", method = RequestMethod.GET)
+    Object userCartList(@RequestParam Integer userId);
+
+    @RequestMapping(value = "/api/cart/clearCart", method = RequestMethod.GET)
+    Object clearCart(@RequestParam String goodsIdList);
+
+    @RequestMapping(value = "/api/cart/deleteCart", method = RequestMethod.GET)
+    Object deleteCart(@RequestParam Integer id);
+
+    @RequestMapping(value = "/api/cart/insertCart", method = RequestMethod.GET)
+    Object insertCart(@RequestParam String jsonBody);
+
 }

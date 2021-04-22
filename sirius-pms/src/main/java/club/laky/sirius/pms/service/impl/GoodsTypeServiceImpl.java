@@ -1,14 +1,18 @@
 package club.laky.sirius.pms.service.impl;
 
+import club.laky.sirius.pms.constant.CacheKey;
 import club.laky.sirius.pms.entity.GoodsType;
 import club.laky.sirius.pms.dao.GoodsTypeDao;
+import club.laky.sirius.pms.feign.FeignCacheService;
 import club.laky.sirius.pms.service.GoodsTypeService;
 import club.laky.sirius.pms.utils.WebResult;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (GoodsType)表服务实现类
@@ -20,6 +24,8 @@ import java.util.List;
 public class GoodsTypeServiceImpl implements GoodsTypeService {
     @Resource
     private GoodsTypeDao goodsTypeDao;
+    @Resource
+    private FeignCacheService cacheService;
 
     /**
      * 通过ID查询单条数据
@@ -52,6 +58,7 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
      */
     @Override
     public GoodsType insert(GoodsType goodsType) {
+        cacheService.del(CacheKey.GOODS_TYPES);
         this.goodsTypeDao.insert(goodsType);
         return goodsType;
     }
@@ -64,6 +71,7 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
      */
     @Override
     public GoodsType update(GoodsType goodsType) {
+        cacheService.del(CacheKey.GOODS_TYPES);
         this.goodsTypeDao.update(goodsType);
         return this.queryById(goodsType.getId());
     }
@@ -76,11 +84,13 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
      */
     @Override
     public boolean deleteById(Integer id) {
+        cacheService.del(CacheKey.GOODS_TYPES);
         return this.goodsTypeDao.deleteById(id) > 0;
     }
 
     @Override
     public WebResult save(String jsonBody) {
+        cacheService.del(CacheKey.GOODS_TYPES);
         JSONObject params = JSONObject.parseObject(jsonBody);
         Integer id = params.getInteger("id");
         String typeName = params.getString("typeName");
@@ -118,7 +128,19 @@ public class GoodsTypeServiceImpl implements GoodsTypeService {
 
     @Override
     public WebResult allType() {
-        return WebResult.success(this.goodsTypeDao.queryAll(null));
+        Map<String, Object> cache = (Map<String, Object>) cacheService.get(CacheKey.GOODS_TYPES);
+        if ("true".equals(cache.get("status"))) {
+            //获取缓存成功
+            String json = (String) cache.get("data");
+            List<GoodsType> goodsTypes = JSON.parseArray(json, GoodsType.class);
+            return WebResult.success(goodsTypes);
+        } else {
+            //缓存获取失败,从数据库获取并缓存
+            List<GoodsType> goodsList = this.goodsTypeDao.queryAll(null);
+            String json = JSON.toJSONString(goodsList);
+            cacheService.set(CacheKey.GOODS_TYPES, json);
+            return WebResult.success(goodsList);
+        }
     }
 
     @Override

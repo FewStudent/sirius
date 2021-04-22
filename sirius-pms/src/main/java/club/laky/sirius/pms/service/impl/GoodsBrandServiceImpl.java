@@ -1,15 +1,19 @@
 package club.laky.sirius.pms.service.impl;
 
+import club.laky.sirius.pms.constant.CacheKey;
 import club.laky.sirius.pms.entity.GoodsBrand;
 import club.laky.sirius.pms.dao.GoodsBrandDao;
+import club.laky.sirius.pms.feign.FeignCacheService;
 import club.laky.sirius.pms.service.GoodsBrandService;
 import club.laky.sirius.pms.utils.WebResult;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 品牌商表(GoodsBrand)表服务实现类
@@ -21,6 +25,8 @@ import java.util.List;
 public class GoodsBrandServiceImpl implements GoodsBrandService {
     @Resource
     private GoodsBrandDao goodsBrandDao;
+    @Resource
+    private FeignCacheService cacheService;
 
     /**
      * 通过ID查询单条数据
@@ -53,6 +59,7 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
      */
     @Override
     public GoodsBrand insert(GoodsBrand goodsBrand) {
+        cacheService.del(CacheKey.GOODS_BRAND);
         this.goodsBrandDao.insert(goodsBrand);
         return goodsBrand;
     }
@@ -65,6 +72,7 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
      */
     @Override
     public GoodsBrand update(GoodsBrand goodsBrand) {
+        cacheService.del(CacheKey.GOODS_BRAND);
         this.goodsBrandDao.update(goodsBrand);
         return this.queryById(goodsBrand.getId());
     }
@@ -77,6 +85,8 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
      */
     @Override
     public boolean deleteById(Integer id) {
+
+        cacheService.del(CacheKey.GOODS_BRAND);
         return this.goodsBrandDao.deleteById(id) > 0;
     }
 
@@ -92,6 +102,7 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
 
     @Override
     public WebResult save(String jsonBody) {
+        cacheService.del(CacheKey.GOODS_BRAND);
         JSONObject params = JSONObject.parseObject(jsonBody);
         Integer id = params.getInteger("id");
         String name = params.getString("name");
@@ -123,7 +134,19 @@ public class GoodsBrandServiceImpl implements GoodsBrandService {
 
     @Override
     public WebResult allBrand() {
-        return WebResult.success(this.goodsBrandDao.queryAll(null));
+        Map<String, Object> cache = (Map<String, Object>) cacheService.get(CacheKey.GOODS_BRAND);
+        if ("true".equals(cache.get("status"))) {
+            //获取缓存成功
+            String json = (String) cache.get("data");
+            List<GoodsBrand> goodsBrands = JSON.parseArray(json, GoodsBrand.class);
+            return WebResult.success(goodsBrands);
+        } else {
+            //缓存获取失败,从数据库获取并缓存
+            List<GoodsBrand> brandList = this.goodsBrandDao.queryAll(null);
+            String json = JSON.toJSONString(brandList);
+            cacheService.set(CacheKey.GOODS_BRAND, json);
+            return WebResult.success(brandList);
+        }
     }
 
     @Override

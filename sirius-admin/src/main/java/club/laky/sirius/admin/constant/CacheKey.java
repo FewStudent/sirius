@@ -7,8 +7,6 @@ package club.laky.sirius.admin.constant;
  */
 public class CacheKey {
 
-    public final static String GOODS_TYPES = "goods_type";
-
     public final static String DEPARTMENTS = "departments";
 
     public final static String JOBS = "jobs";

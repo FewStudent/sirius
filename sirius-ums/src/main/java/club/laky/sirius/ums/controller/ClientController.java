@@ -231,7 +231,7 @@ public class ClientController {
         Integer id = params.getInteger("id");
         String nickname = params.getString("nickname");
         String password = params.getString("pwd");
-        String url = params.getString("avatar");
+        String avatar = params.getString("avatar");
         Integer state = params.getInteger("state");
 
         String phone = params.getString("phone");
@@ -243,7 +243,9 @@ public class ClientController {
         if (!StringUtils.isEmpty(password)) {
             sysUser.setPassword(JWTUtils.md5(password));
         }
-        sysUser.setAvatar(url);
+        if (!StringUtils.isEmpty(avatar)) {
+            sysUser.setAvatar(avatar);
+        }
         sysUser.setId(id);
         sysUser.setNickname(nickname);
         sysUser.setPhone(phone);

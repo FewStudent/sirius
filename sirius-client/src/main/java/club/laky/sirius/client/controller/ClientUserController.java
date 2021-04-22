@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -38,6 +39,27 @@ public class ClientUserController {
             return clientService.userAddressList(getUserId(request));
         } catch (Exception e) {
             logger.error("获取用户的所有地址失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 更新用户信息
+     */
+    @ResponseBody
+    @RequestMapping("updateInfo")
+    public Object updateInfo(HttpServletRequest request, @RequestBody String jsonBody) {
+        try {
+            logger.info("-------------更新用户信息-------------");
+            String token = request.getHeader("token");
+            Integer result = clientService.updateUser(jsonBody);
+            if (result == 1) {
+                cacheService.del(token);
+                return WebResult.success("修改成功");
+            }
+            return WebResult.error("修改失败");
+        } catch (Exception e) {
+            logger.error("更新用户信息失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
         }
     }

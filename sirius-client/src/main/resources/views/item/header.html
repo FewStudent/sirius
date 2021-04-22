@@ -56,13 +56,21 @@
             window.location.href = "/client/page/common/index?token=" + token;
         })
         $(".suggestion").click(function () {
-            //TODO
+            layer.open({
+                type: 2,
+                title: "建议反馈",
+                shadeClose: true,
+                shade: 0.2,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['50%', '75%'],
+                content: "/client/page/suggestion?token=" + token
+            })
         })
         $(".search-record").click(function () {
             console.log("search-record")
         })
         $(".my-info").click(function () {
-            window.location.href = "/client/page/user/userInfo?token=" + token;
+            window.location.href = "/client/page/user/edit?token=" + token;
         })
         $(".my-collect").click(function () {
             window.location.href = "/client/page/user/myCollect?token=" + token;

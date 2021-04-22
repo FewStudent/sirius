@@ -86,6 +86,14 @@ public class ClientPageController {
         return modelUtils.createModel(request, "/user/addressList");
     }
 
+    /**
+     * 提交建议
+     */
+    @RequestMapping("suggestion")
+    public ModelAndView suggestion(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/suggestion");
+    }
+
 
     /**
      * 用户信息

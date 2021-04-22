@@ -28,6 +28,8 @@ public class ModelUtils {
             //用户存在则添加进Model
             if (user != null) {
                 result.addObject("client", user);
+            } else {
+                result.addObject("client", null);
             }
         } else {
             result.addObject("client", null);

@@ -2,9 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>我的收藏 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
+<!--: include("/item/header.html"){} -->
+<div class="layui-container" style="margin-top: 50px">
+    <div class="collection-content">
+        <div class="collection-list">
 
+        </div>
+    </div>
+
+</div>
 </body>
+<script>
+    layui.use(['element', 'jquery', 'layer', 'form', 'laypage', 'carousel'], function () {
+        let element = layui.element;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let laypage = layui.laypage;
+        let carousel = layui.carousel;
+        let initPage = false;
+
+        const token = localStorage.getItem("token");
+
+
+        $(document).ready(function () {
+            let url = "/client/user/collections";
+            ajax_common(url, token, function (result) {
+                console.log(result)
+                if (result.succeed) {
+                    const data = result.data;
+                    if (data.length === 0) {
+                        layer.msg("暂无收藏!", {"icon": 6})
+                    }
+                    for (let i = 0; i < data.length; i++) {
+                        $(".collection-list").append(collectionItem(data[i]));
+                    }
+
+                    $(".coll-detail").click(function () {
+                        const goodsId = $(this).attr("lay-id");
+                        let url = "/client/page/common/detail?goodsId=" + goodsId + "&token=" + token;
+                        window.open(url);
+                    })
+                    $(".coll-cancel").click(function () {
+                        const collectionId = $(this).attr("lay-id");
+                        ajax_common("/client/user/deleteCollection?id=" + collectionId, token, function (result) {
+                            if (result.succeed) {
+                                layer.alert("取消成功!", {"icon": 1}, function () {
+                                    window.location.reload();
+                                })
+                            }
+                        })
+                    })
+                } else {
+                    layer.msg(result.msg, {"icon": 2});
+                }
+            })
+        })
+
+        function collectionItem(collection) {
+            var strVar = "";
+            strVar += "<div class=\"layui-card collection-item\" style=\"border: solid 1px lightgray\">";
+            strVar += "                <div class=\"layui-card-body\">";
+            strVar += "                    <div class=\"layui-row\">";
+            strVar += "                        <div class=\"layui-card layui-col-md2\">";
+            strVar += "                            <div class=\"layui-card-body\">";
+            strVar += "                                <img src='" + collection.url + "' style=\"width: 105px;height: 105px\" alt=\"收藏图片\"><\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                        <div class=\"layui-card layui-col-md8\">";
+            strVar += "                            <div class=\"layui-card-body\">";
+            strVar += "                                <div class=\"layui-col-md12\" style=\"padding: 2px\"> 商品名" + collection.goodsName + "：<br> 收藏时间：" + collection.collectTime;
+            strVar += "                                <\/div>";
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                        <div class=\"layui-card layui-col-md2\" style=\"padding: 20px\">";
+            strVar += "                            <div class=\"layui-card-body\" style=\"display: flex\">";
+            strVar += "                                <div style=\"margin: 0px\">";
+            strVar += "                                    <button lay-id='" + collection.goodsId + "' class=\"coll-detail layui-btn-fluid layui-btn layui-btn-primary\">查看详情";
+            strVar += "                                    <\/button>";
+            strVar += "                                    <br>";
+            strVar += "                                    <button lay-id='" + collection.id + "' class=\"coll-cancel layui-btn-fluid layui-btn layui-btn-warm\"";
+            strVar += "                                            style=\"margin-top: 10px\">取消收藏";
+            strVar += "                                    <\/button>";
+            strVar += "                                <\/div>";
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                <\/div>";
+            strVar += "            <\/div>";
+
+
+            return $(strVar);
+        }
+
+    })
+</script>
 </html>

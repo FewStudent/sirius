@@ -9,7 +9,7 @@
         <result property="collectTime" column="collect_time" jdbcType="OTHER"/>
 
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
-        <result property="goodsName" column="goodsName" jdbcType="VARCHAR"/>
+        <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
         <result property="url" column="url" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -29,7 +29,8 @@
                goods_id,
                u_id,
                collect_time
-        from shop_mall.goods_collection limit #{offset}, #{limit}
+        from shop_mall.goods_collection
+        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -82,11 +83,17 @@
         from shop_mall.goods_collection
         where id = #{id}
     </delete>
+    <delete id="deleteByTwoId">
+        delete
+        from goods_collection
+        where goods_id = #{goodsId}
+          and u_id = #{userId}
+    </delete>
 
     <select id="collections" resultMap="BaseResultMap">
-        select gc.*, gc.goods_name,SUBSTRING_INDEX(g.imgs,',',1) as url
+        select gc.*, g.goods_name, SUBSTRING_INDEX(g.imgs, ',', 1) as url
         from goods_collection gc
-                     left join goods g on g.id = gc.goods_id
+                 left join goods g on g.id = gc.goods_id
         where gc.u_id = #{userId,jdbcType=INTEGER}
         order by gc.collect_time desc
     </select>
@@ -115,5 +122,12 @@
                 and su.nickname like CONCAT(#{nickname,jdbcType=VARCHAR},'%')
             </if>
         </where>
+    </select>
+    <select id="hasCollect" resultType="java.lang.Integer">
+        select id
+        from goods_collection
+        where goods_id = #{goodsId}
+          and u_id = #{userId}
+        limit 1
     </select>
 </mapper>

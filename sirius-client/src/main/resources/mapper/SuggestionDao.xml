@@ -14,16 +14,24 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
-        select
-          id, user_id, title, content, create_time, state
+        select id,
+               user_id,
+               title,
+               content,
+               create_time,
+               state
         from shop_mall.suggestion
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select
-          id, user_id, title, content, create_time, state
+        select id,
+               user_id,
+               title,
+               content,
+               create_time,
+               state
         from shop_mall.suggestion
         limit #{offset}, #{limit}
     </select>
@@ -31,7 +39,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, user_id, title, content, create_time, state
+        id, user_id, title, content, create_time, state
         from shop_mall.suggestion
         <where>
             <if test="id != null">
@@ -54,6 +62,7 @@
             </if>
         </where>
     </select>
+
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
@@ -86,7 +95,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from shop_mall.suggestion where id = #{id}
+        delete
+        from shop_mall.suggestion
+        where id = #{id}
     </delete>
 
 </mapper>

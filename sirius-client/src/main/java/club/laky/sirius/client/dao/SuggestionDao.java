@@ -2,6 +2,7 @@ package club.laky.sirius.client.dao;
 
 import club.laky.sirius.client.entity.Suggestion;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public interface SuggestionDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<Suggestion> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);

@@ -3,11 +3,13 @@ package club.laky.sirius.ums.controller;
 import club.laky.sirius.ums.entity.GoodsCollection;
 import club.laky.sirius.ums.service.GoodsCollectionService;
 import club.laky.sirius.ums.utils.WebResult;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * (GoodsCollection)表控制层
@@ -79,6 +81,25 @@ public class GoodsCollectionController {
     }
 
     /**
+     * 是否收藏商品
+     */
+    @ResponseBody
+    @RequestMapping("hasCollect")
+    public Object hasCollect(@RequestParam Integer userId, @RequestParam Integer goodsId) {
+        try {
+            logger.info("-------------是否收藏商品-------------");
+            Integer result = goodsCollectionService.hasCollect(goodsId, userId);
+            if (result != null) {
+                return WebResult.success(result);
+            }
+            return WebResult.error("未收藏");
+        } catch (Exception e) {
+            logger.error("是否收藏商品失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
      * 搜索所有收藏
      *
      * @author panrulang
@@ -95,6 +116,7 @@ public class GoodsCollectionController {
         }
     }
 
+
     /**
      * 收藏数量
      *
@@ -109,6 +131,21 @@ public class GoodsCollectionController {
         } catch (Exception e) {
             logger.info("收藏数量失败:{}", e.getMessage());
             return WebResult.error("收藏数量失败");
+        }
+    }
+
+    /**
+     * 取消收藏
+     */
+    @ResponseBody
+    @RequestMapping("cancelCollection")
+    public Object cancelCollection(@RequestParam Integer goodsId, @RequestParam Integer userId) {
+        try {
+            logger.info("-------------取消收藏-------------");
+            return WebResult.success(goodsCollectionService.deleteByTwoId(userId, goodsId));
+        } catch (Exception e) {
+            logger.error("取消收藏失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
         }
     }
 }

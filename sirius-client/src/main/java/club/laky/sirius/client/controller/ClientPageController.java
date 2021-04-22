@@ -102,4 +102,12 @@ public class ClientPageController {
     public ModelAndView userEdit(HttpServletRequest request) {
         return modelUtils.createModel(request, "/user/userInfo");
     }
+
+    /**
+     * 跳转到我的收藏页面
+     */
+    @RequestMapping("user/myCollect")
+    public ModelAndView myCollect(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/collect/list");
+    }
 }

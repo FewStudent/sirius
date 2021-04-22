@@ -33,6 +33,7 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/client/updateUser", method = RequestMethod.GET)
     Integer updateUser(@RequestParam String jsonBody);
+
     /**
      * 地址
      */
@@ -47,4 +48,20 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/address/insert", method = RequestMethod.GET)
     Object insert(@RequestBody String jsonBody);
+
+
+    @RequestMapping(value = "/api/collection/hasCollect", method = RequestMethod.GET)
+    Object hasCollect(@RequestParam Integer userId, @RequestParam Integer goodsId);
+
+    @RequestMapping(value = "/api/collection/insertCollection", method = RequestMethod.GET)
+    Object insertCollection(@RequestBody String jsonBody);
+
+    @RequestMapping(value = "/api/collection/deleteCollection", method = RequestMethod.GET)
+    Object deleteCollection(@RequestParam Integer id);
+
+    @RequestMapping(value = "/api/collection/collections", method = RequestMethod.GET)
+    Object collections(@RequestParam Integer userId);
+
+    @RequestMapping(value = "/api/collection/cancelCollection", method = RequestMethod.GET)
+    Object cancelCollection(@RequestParam Integer goodsId, @RequestParam Integer userId);
 }

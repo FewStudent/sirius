@@ -76,4 +76,5 @@ public class SuggestionServiceImpl implements SuggestionService {
     public boolean deleteById(Integer id) {
         return this.suggestionDao.deleteById(id) > 0;
     }
+
 }

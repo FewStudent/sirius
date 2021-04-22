@@ -103,7 +103,7 @@ public class GoodsCollectionServiceImpl implements GoodsCollectionService {
         if (goodsCollectionDao.insert(goodsCollection) == 0) {
             return WebResult.error("收藏失败");
         }
-        return WebResult.error("收藏成功!");
+        return WebResult.success("收藏成功!");
     }
 
     @Override
@@ -121,5 +121,15 @@ public class GoodsCollectionServiceImpl implements GoodsCollectionService {
         JSONObject params = JSONObject.parseObject(jsonBody);
         String nickname = params.getString("nickname");
         return goodsCollectionDao.adminCollectionCount(nickname);
+    }
+
+    @Override
+    public Integer hasCollect(Integer goodsId, Integer userId) {
+        return this.goodsCollectionDao.hasCollect(userId, goodsId);
+    }
+
+    @Override
+    public Integer deleteByTwoId(Integer userId, Integer goodsId) {
+        return this.goodsCollectionDao.deleteByTwoId(userId, goodsId);
     }
 }

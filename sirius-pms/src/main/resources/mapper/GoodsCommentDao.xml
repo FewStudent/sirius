@@ -82,7 +82,7 @@
                      left join sys_user su1 on gc.u_id = su1.id
                      left join sys_user su2 on gc.reply_by = su2.id
         where gc.goods_id = #{goodsId}
-        order gc.create_time
+        order by gc.create_time
     </select>
 
     <!--新增所有列-->
@@ -141,7 +141,7 @@
             </if>
         </where>
         limit #{offset}, #{limit}
-        order gc.create_time
+        order by gc.create_time
     </select>
 
     <select id="commentCount" resultType="java.lang.Integer">

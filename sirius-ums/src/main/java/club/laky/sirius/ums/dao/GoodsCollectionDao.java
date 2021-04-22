@@ -68,4 +68,8 @@ public interface GoodsCollectionDao {
     List<GoodsCollection> adminCollectionList(@Param("nickname") String nickname, @Param("offset") Integer offset, @Param("limit") Integer limit);
 
     Integer adminCollectionCount(@Param("nickname") String nickname);
+
+    Integer hasCollect(@Param("userId") Integer userId,@Param("goodsId") Integer goodsId);
+
+    Integer deleteByTwoId(@Param("userId") Integer userId,@Param("goodsId") Integer goodsId);
 }

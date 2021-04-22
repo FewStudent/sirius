@@ -11,8 +11,19 @@
 <body>
 <!--: include("/item/header.html"){} -->
 <div class="layui-container" style="margin-top: 50px">
+
     <fieldset class="layui-elem-field">
-        <legend>商品信息</legend>
+        <legend>
+            商品信息
+            <!--: if(client!=null){-->
+            <a href="javaScript:;" class="collect" style="display: none">
+                <i class="layui-icon layui-icon-rate collect"></i>
+            </a>
+            <a href="javaScript:;" class="uncollect" style="display: none">
+                <i class="layui-icon layui-icon-rate-solid"></i>
+            </a>
+            <!--: } -->
+        </legend>
         <div class="layui-field-box">
             <div class="layui-col-md6" style="display: flex">
                 <div class="layui-carousel" style="width: 250px;height: 250px" id="goods-img-carousel">
@@ -95,6 +106,7 @@
             let layer = layui.layer;
             let carousel = layui.carousel;
             let price = 0;
+            let flag = true;
 
             const token = localStorage.getItem("token");
 
@@ -161,6 +173,44 @@
             })
 
             $(document).ready(function () {
+                <!--: if(client != null){ -->
+                ajax_common("/client/user/hasCollect?goodsId=${goodsId}", token, function (result) {
+                    console.log(result)
+                    if (result.succeed) {
+                        $(".uncollect").css("display", "inline")
+                            .click(function () {
+                                ajax_common("/client/user/cancelCollection?goodsId=${goodsId}", token, function (result) {
+                                    if (result.succeed) {
+                                        layer.alert("已取消收藏!", {"icon": 1}, function () {
+                                            window.location.reload();
+                                        })
+                                    } else {
+                                        layer.alert("取消失败!", {"icon": 2})
+                                    }
+                                })
+                            })
+                    } else {
+                        $(".collect").css("display", "inline")
+                            .click(function () {
+                                if (flag) {
+                                    flag = false;
+                                    ajax_common("/client/user/insertCollection?goodsId=${goodsId}", token, function (result) {
+                                        console.log("??")
+                                        if (result.succeed) {
+                                            layer.alert("已收藏!", {"icon": 1}, function () {
+                                                window.location.reload();
+                                            })
+                                        } else {
+                                            layer.alert("收藏失败!", {"icon": 2})
+                                        }
+                                    })
+                                }
+
+                            })
+
+                    }
+                });
+                <!--: } -->
                 let data = {};
                 data.goodsId = '${goodsId}';
                 ajax_data("/client/common/goods/detail", token, JSON.stringify(data), function (result) {

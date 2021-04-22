@@ -2,6 +2,7 @@ package club.laky.sirius.ums.service;
 
 import club.laky.sirius.ums.entity.GoodsCollection;
 import club.laky.sirius.ums.utils.WebResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -63,4 +64,8 @@ public interface GoodsCollectionService {
     WebResult adminCollectionList(String jsonBody);
 
     Integer adminCollectionCount(String jsonBody);
+
+    Integer hasCollect(Integer goodsId, Integer userId);
+
+    Integer deleteByTwoId(Integer userId, Integer goodsId);
 }

@@ -98,10 +98,6 @@ public class UserAddressServiceImpl implements UserAddressService {
         userAddress.setUDetail(detail);
         userAddress.setUName(name);
         userAddress.setUPhone(phone);
-        if (state == 1) {
-            //清除所有默认地址
-            userAddressDao.updateAddressStateByUserId(u_id);
-        }
         if (userAddressDao.update(userAddress) == 1) {
             return WebResult.success("修改成功!");
         }

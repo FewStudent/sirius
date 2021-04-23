@@ -47,10 +47,16 @@
         const element = layui.element;
 
         $(".to-login").click(function () {
-            window.location.href = "/admin/admin/logout?token=" + token;
+            window.location.href = "/client/page/common/login";
         })
         $(".logout").click(function () {
-            console.log("logout")
+            ajax_common("/client/common/logout?token=" + token, token, function (result) {
+                if (result.succeed) {
+                    layer.alert("注销成功!", function () {
+                        window.location.href = "/client/page/common/index";
+                    })
+                }
+            })
         })
         $(".index").click(function () {
             window.location.href = "/client/page/common/index?token=" + token;
@@ -66,8 +72,11 @@
                 content: "/client/page/suggestion?token=" + token
             })
         })
+        $(".my-address").click(function () {
+            window.location.href = "/client/page/user/userAddress?token=" + token;
+        })
         $(".search-record").click(function () {
-            console.log("search-record")
+            layer.msg("暂无此功能！", {"icon": 7})
         })
         $(".my-info").click(function () {
             window.location.href = "/client/page/user/edit?token=" + token;

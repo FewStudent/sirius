@@ -191,6 +191,70 @@ public class ClientUserController {
         }
     }
 
+    /**
+     * 地址详情
+     */
+    @ResponseBody
+    @RequestMapping("addressDetail")
+    public Object addressDetail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------地址详情-------------");
+            return clientService.addressDetail(id);
+        } catch (Exception e) {
+            logger.error("地址详情失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 删除地址
+     */
+    @ResponseBody
+    @RequestMapping("deleteAddress")
+    public Object deleteAddress(@RequestParam Integer id) {
+        try {
+            logger.info("-------------删除地址-------------");
+            return clientService.deleteAddress(id);
+        } catch (Exception e) {
+            logger.error("删除地址失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 地址修改
+     */
+    @ResponseBody
+    @RequestMapping("updateAddress")
+    public Object updateAddress(HttpServletRequest request, @RequestBody String jsonBody) {
+        try {
+            logger.info("-------------地址修改-------------");
+            JSONObject object = JSONObject.parseObject(jsonBody);
+            object.put("user_id", getUserId(request));
+            return clientService.updateAddress(object.toJSONString());
+        } catch (Exception e) {
+            logger.error("地址修改失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 添加地址
+     */
+    @ResponseBody
+    @RequestMapping("insertAddress")
+    public Object insertAddress(HttpServletRequest request, @RequestBody String jsonBody) {
+        try {
+            logger.info("-------------添加地址-------------");
+            JSONObject object = JSONObject.parseObject(jsonBody);
+            object.put("user_id", getUserId(request));
+            return clientService.insertAddress(object.toJSONString());
+        } catch (Exception e) {
+            logger.error("添加地址失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
     private Integer getUserId(HttpServletRequest request) {
         String token = request.getHeader("token");
         if (!StringUtils.isEmpty(token)) {

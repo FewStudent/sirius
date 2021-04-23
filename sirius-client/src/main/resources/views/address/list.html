@@ -2,9 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>我的收货地址 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
+<!--: include("/item/header.html"){} -->
+<div class="layui-container" style="margin-top: 50px">
+    <div class="address-content">
+        <div class="address-list">
 
+        </div>
+        <div style="margin:10px 0px">
+            <button class="layui-btn layui-btn-fluid layui-btn-normal address-add">添加地址</button>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    layui.use(['element', 'jquery', 'layer', 'form', 'laypage', 'carousel'], function () {
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        const token = localStorage.getItem("token");
+
+        $(".address-add").click(function () {
+            layer.open({
+                type: 2,
+                title: "地址添加",
+                shadeClose: true,
+                shade: 0.2,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['50%', '75%'],
+                content: "/client/page/user/addAddress?token=" + token,
+                end: function () {
+                    window.location.reload();
+                }
+            })
+        })
+
+        $(document).ready(function () {
+            let url = "/client/user/addressList";
+            ajax_common(url, token, function (result) {
+                console.log(result)
+                if (result.succeed) {
+                    const data = result.data;
+                    if (data.length === 0) {
+                        layer.msg("暂无收货地址!", {"icon": 6})
+                    }
+                    for (let i = 0; i < data.length; i++) {
+                        $(".address-list").append(addressItem(data[i]));
+                    }
+
+                    $(".address-detail").click(function () {
+                        const addressId = $(this).attr("lay-id");
+                        layer.open({
+                            type: 2,
+                            title: "地址编辑",
+                            shadeClose: true,
+                            shade: 0.2,
+                            maxmin: true, //开启最大化最小化按钮
+                            area: ['50%', '75%'],
+                            content: "/client/page/user/editAddress?id=" + addressId + "&token=" + token,
+                            end: function () {
+                                window.location.reload();
+                            }
+                        })
+                        //window.open(url);
+                    })
+                    $(".address-del").click(function () {
+                        const addressId = $(this).attr("lay-id");
+                        layer.confirm("是否删除?", {"icon": 3}, function () {
+                            console.log(addressId)
+                            ajax_common("/client/user/deleteAddress?id=" + addressId, token, function (result) {
+                                if (result.succeed) {
+                                    layer.alert("删除成功!", {"icon": 1}, function () {
+                                        window.location.reload();
+                                    })
+                                }
+                            })
+                        })
+                    })
+                } else {
+                    layer.msg(result.msg, {"icon": 2});
+                }
+            })
+        })
+
+        function addressItem(address) {
+            var strVar = "";
+            strVar += "<div class=\"layui-card address-item\" style=\"border: solid 1px lightgray\">";
+            strVar += "                <div class=\"layui-card-body\">";
+            strVar += "                    <div class=\"layui-row\">";
+            strVar += "                        <div class=\"layui-card layui-col-md8\">";
+            strVar += "                            <div class=\"layui-card-body\" style=\"padding: 30px\">";
+            strVar += "                                <div class=\"layui-col-md12\" style=\"padding: 2px\"> 地址：" + address.uaddress + ", " + address.udetail + "<\/div>";
+            strVar += "                                <br>";
+            strVar += "                                <div class=\"layui-col-md12\" style=\"padding: 2px\"> 联系方式：" + address.uname + "," + address.uphone + " <\/div>";
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                        <div class=\"layui-card layui-col-md4\" style=\"padding: 20px\">";
+            strVar += "                            <div class=\"layui-card-body\" style=\"display: flex\">";
+            strVar += "                                <div style=\"margin: 0px\">";
+            strVar += "                                    <button lay-id='" + address.id + "' class=\"address-detail layui-btn-fluid layui-btn layui-btn-primary\">编辑<\/button>";
+            strVar += "                                    <br>";
+            strVar += "                                    <button lay-id='" + address.id + "' class=\"address-del layui-btn-fluid layui-btn layui-btn-warm\"";
+            strVar += "                                            style=\"margin-top: 10px\">删除";
+            strVar += "                                    <\/button>";
+            strVar += "                                <\/div>";
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                <\/div>";
+            strVar += "            <\/div>";
+            return $(strVar);
+        }
+
+    })
+</script>
 </html>

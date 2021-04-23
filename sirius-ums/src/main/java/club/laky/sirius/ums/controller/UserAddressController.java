@@ -125,8 +125,8 @@ public class UserAddressController {
      * 添加用户地址
      */
     @ResponseBody
-    @RequestMapping("insert")
-    public Object insert(@RequestBody String jsonBody) {
+    @RequestMapping("insertAddress")
+    public Object insertAddress(@RequestBody String jsonBody) {
         try {
             logger.info("-------------添加用户地址-------------");
             return userAddressService.insertAddress(jsonBody);

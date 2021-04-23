@@ -40,15 +40,17 @@ public interface FeignClientService {
     @RequestMapping(value = "/api/address/userAddressList", method = RequestMethod.GET)
     Object userAddressList(@RequestParam Integer userId);
 
-    @RequestMapping(value = "/api/address/update", method = RequestMethod.GET)
-    Object update(@RequestBody String jsonBody);
+    @RequestMapping(value = "/api/address/updateAddress", method = RequestMethod.GET)
+    Object updateAddress(@RequestBody String jsonBody);
 
-    @RequestMapping(value = "/api/address/delete", method = RequestMethod.GET)
-    Object delete(@RequestBody Integer addressId);
+    @RequestMapping(value = "/api/address/deleteAddress", method = RequestMethod.GET)
+    Object deleteAddress(@RequestBody Integer addressId);
 
-    @RequestMapping(value = "/api/address/insert", method = RequestMethod.GET)
-    Object insert(@RequestBody String jsonBody);
+    @RequestMapping(value = "/api/address/insertAddress", method = RequestMethod.GET)
+    Object insertAddress(@RequestBody String jsonBody);
 
+    @RequestMapping(value = "/api/address/addressDetail", method = RequestMethod.GET)
+    Object addressDetail(@RequestParam Integer id);
 
     @RequestMapping(value = "/api/collection/hasCollect", method = RequestMethod.GET)
     Object hasCollect(@RequestParam Integer userId, @RequestParam Integer goodsId);

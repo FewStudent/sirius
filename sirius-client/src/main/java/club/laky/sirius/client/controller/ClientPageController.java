@@ -87,6 +87,33 @@ public class ClientPageController {
     }
 
     /**
+     * 用户地址
+     */
+    @RequestMapping("user/userAddress")
+    public ModelAndView userAddress(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/address/list");
+    }
+
+    /**
+     * 修改地址
+     */
+    @RequestMapping("user/editAddress")
+    public ModelAndView editAddress(HttpServletRequest request, Integer id) {
+        ModelAndView result = modelUtils.createModel(request, "/address/edit");
+        result.addObject("id", id);
+        return result;
+    }
+
+    /**
+     * 修改地址
+     */
+    @RequestMapping("user/addAddress")
+    public ModelAndView addAddress(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/address/add");
+    }
+
+
+    /**
      * 提交建议
      */
     @RequestMapping("suggestion")

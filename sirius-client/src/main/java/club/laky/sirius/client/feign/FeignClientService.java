@@ -70,4 +70,13 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/cart/clearCart", method = RequestMethod.GET)
     WebResult clearCart(@RequestParam String cartIds);
+
+    @RequestMapping("/api/cart/insertCart")
+    Object insertCart(@RequestParam String jsonBody);
+
+    @RequestMapping("/api/cart/deleteCart")
+    Object deleteCart(@RequestParam Integer id);
+
+    @RequestMapping("/api/cart/userCartList")
+    Object userCartList(@RequestParam Integer userId);
 }

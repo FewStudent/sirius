@@ -129,7 +129,7 @@ public class UserCartController {
      */
     @ResponseBody
     @RequestMapping("/insertCart")
-    public Object insertCart(@RequestBody String jsonBody) {
+    public Object insertCart(@RequestParam String jsonBody) {
         try {
             logger.info("-------------添加-------------");
             return userCartService.insertCart(jsonBody);

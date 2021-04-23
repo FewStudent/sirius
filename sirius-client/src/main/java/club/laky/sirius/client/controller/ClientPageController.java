@@ -68,8 +68,9 @@ public class ClientPageController {
         return modelUtils.createModel(request, "/order/myOrder");
     }
 
+
     /**
-     * 我的订单
+     * 新的订单
      */
     @RequestMapping("order/newOrder")
     public ModelAndView newOrder(HttpServletRequest request, String jsonBody) {
@@ -137,4 +138,6 @@ public class ClientPageController {
     public ModelAndView myCollect(HttpServletRequest request) {
         return modelUtils.createModel(request, "/collect/list");
     }
+
+
 }

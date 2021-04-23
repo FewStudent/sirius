@@ -98,7 +98,11 @@
                     </div>
                 </fieldset>
             </div>
-
+            <div class="layui-row">
+                <div class="totalPrice" style="color: orange">
+                    总花费： ￥209.0
+                </div>
+            </div>
             <div class="layui-row">
                 <div class="operation-list">
                     <button type="button" style="display: none"
@@ -136,9 +140,13 @@
                         $('.operation-list #checkOrder').css("display", "inline")
                     }
                     const goodsList = order.goodsList;
+                    let totalPrice = 0;
                     for (let i = 0; i < goodsList.length; i++) {
+                        let goods = goodsList[i];
+                        totalPrice += goods.price * goods.count;
                         $(".goods-list").append(goods_item(goodsList[i]));
                     }
+                    $(".totalPrice").html("总金额：" + totalPrice)
                 } else {
                     layer.alert("获取详情失败！")
                 }

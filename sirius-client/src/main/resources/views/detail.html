@@ -125,26 +125,28 @@
                             content: "/client/page/user/addressList?token=" + token,
                             end: function () {
                                 console.log("addressId:" + addressId)
-                                layer.confirm("结算金额为：￥" + totalPrice + ",点击确认进行支付?", function () {
-                                    layer.msg("模拟支付ing......", {"icon": 6, time: 2000}, function () {
-                                        let data = {};
-                                        let list = [];
-                                        let item = {};
-                                        item.goodsId = "${goodsId}";
-                                        item.count = text;
-                                        list.push(item);
-                                        data.list = list;
-                                        data.addressId = addressId;
-                                        console.log(data)
-                                        ajax_data("/client/order/saveOrder", token, JSON.stringify(data), function (result) {
-                                            if (result.succeed) {
-                                                window.location.href = "/client/page/order/detail?orderNum=" + result.data + "&token=" + token;
-                                            } else {
-                                                layer.msg(result.msg);
-                                            }
+                                if (addressId != null && addressId !== "" && addressId !== undefined) {
+                                    layer.confirm("结算金额为：￥" + totalPrice + ",点击确认进行支付?", function () {
+                                        layer.msg("模拟支付ing......", {"icon": 6, time: 2000}, function () {
+                                            let data = {};
+                                            let list = [];
+                                            let item = {};
+                                            item.goodsId = "${goodsId}";
+                                            item.count = text;
+                                            list.push(item);
+                                            data.list = list;
+                                            data.addressId = addressId;
+                                            console.log(data)
+                                            ajax_data("/client/order/saveOrder", token, JSON.stringify(data), function (result) {
+                                                if (result.succeed) {
+                                                    window.location.href = "/client/page/order/detail?orderNum=" + result.data + "&token=" + token;
+                                                } else {
+                                                    layer.msg(result.msg);
+                                                }
+                                            })
                                         })
                                     })
-                                })
+                                }
                             }
                         });
 

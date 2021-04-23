@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的我的购物车 - 天狼小商城平台</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
+</head>
+<body>
+<!--: include("/item/header.html"){} -->
+<div class="layui-container" style="margin-top: 50px">
+    <div class="cart-content">
+
+        <div class="cart-list">
+
+        </div>
+        <div class="">
+            <button class="layui-btn layui-btn-fluid layui-btn-warm buy">全部购买</button>
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+
+    let addressId;
+
+    function setAddress(id) {
+        addressId = id;
+    }
+
+    layui.use(['element', 'jquery', 'layer', 'form', 'laypage', 'carousel'], function () {
+        let $ = layui.jquery;
+        let layer = layui.layer;
+
+        const token = localStorage.getItem("token");
+
+        $(".buy").click(function () {
+            layer.open({
+                type: 2,
+                title: "收货地址列表",
+                shadeClose: true,
+                shade: 0.2,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['50%', '100%'],
+                content: "/client/page/user/addressList?token=" + token,
+                end: function () {
+                    console.log("addressId:" + addressId)
+                    if (addressId != null && addressId !== "" && addressId !== undefined) {
+                        layer.confirm("结算金额为：￥" + totalPrice + ",点击确认进行支付?", function () {
+                            layer.msg("模拟支付ing......", {"icon": 6, time: 2000}, function () {
+                                let data = {};
+                                let list = [];
+                                let item = {};
+                                item.goodsId = "${goodsId}";
+                                item.count = text;
+                                list.push(item);
+                                data.list = list;
+                                data.addressId = addressId;
+                                console.log(data)
+                                //TODO
+                                ajax_data("/client/order/buy", token, JSON.stringify(data), function (result) {
+                                    if (result.succeed) {
+                                        window.location.href = "/client/page/order/detail?orderNum=" + result.data + "&token=" + token;
+                                    } else {
+                                        layer.msg(result.msg);
+                                    }
+                                })
+                            })
+                        })
+                    }
+                }
+            });
+        })
+
+        $(document).ready(function () {
+            let url = "/client/user/cartList";
+            ajax_common(url, token, function (result) {
+                if (result.succeed) {
+                    const data = result.data.list;
+                    for (let i = 0; i < data.length; i++) {
+                        $(".cart-list").append(cartItem(data[i]));
+                    }
+                    $(".cart-detail").click(function () {
+                        const goodsId = $(this).attr("lay-id");
+                        let url = "/client/page/detail?goodsId=" + goodsId + "&token=" + token;
+                        window.open(url)
+                    })
+                    $(".cart-del").click(function () {
+                        const cartId = $(this).attr("lay-id");
+                        ajax_common("/client/user/deleteCart?id=" + cartId, token, function (result) {
+                            if (result.succeed) {
+                                layer.alert("删除成功!", {"icon": 1}, function () {
+                                    window.location.reload();
+                                })
+                            } else {
+                                layer.msg("删除失败", {"icon": 2})
+                            }
+                        })
+                    })
+                } else {
+                    layer.msg(result.msg, {"icon": 2});
+                }
+            })
+        })
+
+        function cartItem(cart) {
+            let strVar = "";
+            strVar += "<div class=\"layui-card cart-item\" style=\"bcart: solid 1px lightgray\">";
+            strVar += "            <div class=\"layui-card-body\">";
+            strVar += "                <div class=\"layui-row\">";
+            strVar += "                    <div class=\"layui-card layui-col-md2\">";
+            strVar += "                        <div class=\"layui-card-body\">";
+            strVar += "                            <img src='" + cart.url + "' style=\"width: 105px;height: 105px\" alt=\"我的购物车图片\">";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                    <div class=\"layui-card layui-col-md8\">";
+            strVar += "                        <div class=\"layui-card-header\">单号：" + cart.cartNum;
+            strVar += "                            <span class=\"layui-badge " + stateColor(cart.state) + "\">" + stateName(cart.state) + "<\/span>";
+            strVar += "                        <\/div>";
+            strVar += "                        <div class=\"layui-card-body\">";
+            strVar += "                            <div class=\"layui-col-md12\" style=\"padding: 2px\">";
+            strVar += "                                收货地址：" + cart.addressName + "<br>";
+            strVar += "                                下单时间：" + cart.createTime;
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                    <div class=\"layui-card layui-col-md2\" style=\"padding: 20px\">";
+            strVar += "                        <div class=\"layui-card-body\" style=\"display: flex\">";
+            strVar += "                            <div style=\"margin: 0px\">";
+            strVar += "                                <button lay-id='" + cart.cartNum + "' class=\"cart-detail layui-btn-fluid layui-btn layui-btn-primary\">查看详情<\/button><br>";
+            if (cart.state === 1) {
+                strVar += "                                <button lay-id='" + cart.cartNum + "' class=\"cart-detail layui-btn-fluid layui-btn layui-btn-normal\">确认收货<\/button>";
+            }
+            strVar += "                            <\/div>";
+            strVar += "                        <\/div>";
+            strVar += "                    <\/div>";
+            strVar += "                <\/div>";
+            strVar += "            <\/div>";
+            strVar += "        <\/div>";
+            return $(strVar);
+        }
+
+    })
+</script>
+</html>

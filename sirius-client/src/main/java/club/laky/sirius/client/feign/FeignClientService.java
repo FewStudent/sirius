@@ -1,5 +1,6 @@
 package club.laky.sirius.client.feign;
 
+import club.laky.sirius.client.utils.WebResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,4 +67,7 @@ public interface FeignClientService {
 
     @RequestMapping(value = "/api/collection/cancelCollection", method = RequestMethod.GET)
     Object cancelCollection(@RequestParam Integer goodsId, @RequestParam Integer userId);
+
+    @RequestMapping(value = "/api/cart/clearCart", method = RequestMethod.GET)
+    WebResult clearCart(@RequestParam String cartIds);
 }

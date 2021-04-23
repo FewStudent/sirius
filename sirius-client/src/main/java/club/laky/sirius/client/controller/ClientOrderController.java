@@ -2,9 +2,11 @@ package club.laky.sirius.client.controller;
 
 import club.laky.sirius.client.entity.SysUser;
 import club.laky.sirius.client.feign.FeignCacheService;
+import club.laky.sirius.client.feign.FeignClientService;
 import club.laky.sirius.client.feign.FeignOrderService;
 import club.laky.sirius.client.utils.WebResult;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -24,6 +26,8 @@ public class ClientOrderController {
     private FeignOrderService orderService;
     @Autowired
     private FeignCacheService cacheService;
+    @Autowired
+    private FeignClientService clientService;
 
     /**
      * 保存订单
@@ -102,6 +106,36 @@ public class ClientOrderController {
         } catch (Exception e) {
             logger.error("确认收货失败：" + e.getMessage());
             return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 从购物车购物
+     *
+     * @author panrulang
+     */
+    @ResponseBody
+    @RequestMapping("/buy")
+    public Object buy(@RequestBody String jsonBody) {
+        try {
+            logger.info("-------------从购物车购物-------------");
+            JSONObject params = JSON.parseObject(jsonBody);
+            JSONArray orderList = params.getJSONArray("list");
+            String ids = "";
+            for (Object o : orderList) {
+                JSONObject jsonObject = (JSONObject) o;
+                ids += jsonObject.getInteger("id") + ",";
+            }
+            //清理购物车
+            WebResult webResult = clientService.clearCart(ids);
+            if (!webResult.isSucceed()) {
+                return webResult;
+            }
+            //保存订单
+            return orderService.saveOrder(jsonBody);
+        } catch (Exception e) {
+            logger.info("从购物车购物失败:{}", e.getMessage());
+            return WebResult.error("从购物车购物失败");
         }
     }
 

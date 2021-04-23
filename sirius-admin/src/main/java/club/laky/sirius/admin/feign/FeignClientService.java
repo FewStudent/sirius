@@ -97,7 +97,7 @@ public interface FeignClientService {
     Object userCartList(@RequestParam Integer userId);
 
     @RequestMapping(value = "/api/cart/clearCart", method = RequestMethod.GET)
-    Object clearCart(@RequestParam String goodsIdList);
+    Object clearCart(@RequestParam String cartIds);
 
     @RequestMapping(value = "/api/cart/deleteCart", method = RequestMethod.GET)
     Object deleteCart(@RequestParam Integer id);

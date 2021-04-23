@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="club.laky.sirius.ums.dao.UserCartDao">
-
     <resultMap id="BaseResultMap" type="club.laky.sirius.ums.entity.UserCart">
         <!--@Table user_cart-->
         <result property="id" column="id" jdbcType="INTEGER"/>
@@ -30,8 +29,7 @@
                goods_id,
                count,
                u_id
-        from shop_mall.user_cart
-        limit #{offset}, #{limit}
+        from shop_mall.user_cart limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -80,8 +78,8 @@
     <select id="userCartList" resultMap="BaseResultMap">
         select uc.*, g.goods_name, su.nickname
         from user_cart uc
-                 left join goods g on g.id = uc.goods_id
-                 left outer join sys_user su on su.id = uc.u_id
+                     left join goods g on g.id = uc.goods_id
+                     left outer join sys_user su on su.id = uc.u_id
         where uc.u_id = #{userId}
     </select>
 
@@ -122,4 +120,17 @@
         </foreach>
     </delete>
 
+    <update id="updateByUserId">
+        update shop_mall.user_cart
+        set count = #{count,jdbcType=INTEGER}
+        where goods_id = #{goodsId,jdbcType=INTEGER}
+          and u_id = #{uId,jdbcType=INTEGER}
+    </update>
+
+    <select id="queryByUserId" resultMap="BaseResultMap">
+        select *
+        from user_cart
+        where goods_id = #{goodsId,jdbcType=INTEGER}
+          and u_id = #{uId,jdbcType=INTEGER}
+    </select>
 </mapper>

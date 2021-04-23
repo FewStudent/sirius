@@ -113,7 +113,10 @@ public class UserCartServiceImpl implements UserCartService {
     @Override
     public WebResult clearCart(String goodsIdList) {
         List<String> ids = Arrays.asList(goodsIdList.split(","));
-        this.userCartDao.clearCart(ids);
+        int result = this.userCartDao.clearCart(ids);
+        if (result == 0) {
+            return WebResult.error("没有需要清算的商品");
+        }
         return WebResult.success("清算结束");
     }
 
@@ -131,7 +134,16 @@ public class UserCartServiceImpl implements UserCartService {
         JSONObject object = JSONObject.parseObject(jsonBody);
         Integer goodsId = object.getInteger("goodsId");
         Integer count = object.getInteger("count");
-        Integer uId = object.getInteger("uId");
+        Integer uId = object.getInteger("userId");
+
+        UserCart oldUserCart = userCartDao.queryByUserId(uId, goodsId);
+        if (oldUserCart != null) {
+            oldUserCart.setCount(oldUserCart.getCount() + count);
+            if (userCartDao.updateByUserId(oldUserCart) != 0) {
+                return WebResult.success("添加成功");
+            }
+            return WebResult.error("添加失败");
+        }
 
         UserCart userCart = new UserCart();
         userCart.setCount(count);

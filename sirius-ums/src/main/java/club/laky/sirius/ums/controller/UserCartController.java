@@ -95,10 +95,10 @@ public class UserCartController {
      */
     @ResponseBody
     @RequestMapping("/clearCart")
-    public Object clearCart(@RequestParam String goodsIdList) {
+    public Object clearCart(@RequestParam String cartIds) {
         try {
             logger.info("-------------删减购物车商品-------------");
-            return userCartService.clearCart(goodsIdList);
+            return userCartService.clearCart(cartIds);
         } catch (Exception e) {
             logger.info("删减购物车商品失败:{}", e.getMessage());
             return WebResult.error("删减购物车商品失败");

@@ -70,4 +70,8 @@ public interface UserCartDao {
     List<UserCart> userCartList(@Param("userId") Integer userId);
 
     int clearCart(@Param("ids") List<String> ids);
+
+    int updateByUserId(UserCart oldUserCart);
+
+    UserCart queryByUserId(Integer uId, Integer goodsId);
 }

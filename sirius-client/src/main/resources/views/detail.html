@@ -171,7 +171,17 @@
             }
 
             $(".cart").click(function () {
-                layer.msg("假装添加购物车");
+                let data = {};
+                data.goodsId = "${goodsId}";
+                data.count = 1;
+                ajax_data("/client/user/insertCart", token, JSON.stringify(data), function (result) {
+                    if (result.succeed) {
+                        layer.msg("添加成功!", {"icon": 1})
+                    } else {
+                        layer.msg("添加失败", {"icon": 2})
+                    }
+                    console.log(result)
+                })
             })
 
             $(document).ready(function () {

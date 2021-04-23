@@ -13,10 +13,10 @@
 <div class="layui-container" style="margin-top: 50px">
     <div class="cart-content">
 
-        <div class="cart-list">
+        <div class="user-cart-list">
 
         </div>
-        <div class="">
+        <div style="margin:10px 0px">
             <button class="layui-btn layui-btn-fluid layui-btn-warm buy">全部购买</button>
         </div>
     </div>
@@ -40,7 +40,7 @@
         $(".buy").click(function () {
             layer.open({
                 type: 2,
-                title: "收货地址列表",
+                title: "地址列表",
                 shadeClose: true,
                 shade: 0.2,
                 maxmin: true, //开启最大化最小化按钮
@@ -48,19 +48,26 @@
                 content: "/client/page/user/addressList?token=" + token,
                 end: function () {
                     console.log("addressId:" + addressId)
+                    let totalPrice = 0;
+                    let data = {};
+                    let list = [];
+                    $(".cart-item").each(function () {
+                        let item = {};
+                        let price = $(this).attr("lay-price");
+                        let count = $(this).attr("lay-count");
+                        let goodsId = $(this).attr("lay-id");
+                        let id = $(this).attr("lay-cid");
+                        item.goodsId = goodsId;
+                        item.count = count;
+                        item.id = id;
+                        totalPrice += price * count;
+                        list.push(item);
+                    })
+                    data.list = list;
+                    data.addressId = addressId;
                     if (addressId != null && addressId !== "" && addressId !== undefined) {
                         layer.confirm("结算金额为：￥" + totalPrice + ",点击确认进行支付?", function () {
                             layer.msg("模拟支付ing......", {"icon": 6, time: 2000}, function () {
-                                let data = {};
-                                let list = [];
-                                let item = {};
-                                item.goodsId = "${goodsId}";
-                                item.count = text;
-                                list.push(item);
-                                data.list = list;
-                                data.addressId = addressId;
-                                console.log(data)
-                                //TODO
                                 ajax_data("/client/order/buy", token, JSON.stringify(data), function (result) {
                                     if (result.succeed) {
                                         window.location.href = "/client/page/order/detail?orderNum=" + result.data + "&token=" + token;
@@ -79,13 +86,17 @@
             let url = "/client/user/cartList";
             ajax_common(url, token, function (result) {
                 if (result.succeed) {
-                    const data = result.data.list;
-                    for (let i = 0; i < data.length; i++) {
-                        $(".cart-list").append(cartItem(data[i]));
+                    const list = result.data;
+                    if (list.length === 0) {
+                        $(".buy").css("display", "none")
+                        layer.alert("购物车没有商品!", {"icon": 3})
+                    }
+                    for (let i = 0; i < list.length; i++) {
+                        $(".user-cart-list").append(cartItem(list[i]));
                     }
                     $(".cart-detail").click(function () {
                         const goodsId = $(this).attr("lay-id");
-                        let url = "/client/page/detail?goodsId=" + goodsId + "&token=" + token;
+                        let url = "/client/page/common/detail?goodsId=" + goodsId + "&token=" + token;
                         window.open(url)
                     })
                     $(".cart-del").click(function () {
@@ -107,39 +118,38 @@
         })
 
         function cartItem(cart) {
-            let strVar = "";
-            strVar += "<div class=\"layui-card cart-item\" style=\"bcart: solid 1px lightgray\">";
-            strVar += "            <div class=\"layui-card-body\">";
-            strVar += "                <div class=\"layui-row\">";
-            strVar += "                    <div class=\"layui-card layui-col-md2\">";
-            strVar += "                        <div class=\"layui-card-body\">";
-            strVar += "                            <img src='" + cart.url + "' style=\"width: 105px;height: 105px\" alt=\"我的购物车图片\">";
+            var strVar = "";
+            strVar += "<div lay-cid='" + cart.id + "' class=\"layui-card cart-item\" lay-id='" + cart.goodsId + "' style=\"border: solid 1px lightgray\" lay-price='" + cart.price + "'  lay-count='" + cart.count + "'>";
+            strVar += "                <div class=\"layui-card-body\">";
+            strVar += "                    <div class=\"layui-row\">";
+            strVar += "                        <div class=\"layui-card layui-col-md2\">";
+            strVar += "                            <div class=\"layui-card-body\"><img";
+            strVar += "                                    src='" + cart.url + "' ";
+            strVar += "                                    style=\"width: 105px;height: 105px\" alt=\"订单图片\"><\/div>";
             strVar += "                        <\/div>";
-            strVar += "                    <\/div>";
-            strVar += "                    <div class=\"layui-card layui-col-md8\">";
-            strVar += "                        <div class=\"layui-card-header\">单号：" + cart.cartNum;
-            strVar += "                            <span class=\"layui-badge " + stateColor(cart.state) + "\">" + stateName(cart.state) + "<\/span>";
-            strVar += "                        <\/div>";
-            strVar += "                        <div class=\"layui-card-body\">";
-            strVar += "                            <div class=\"layui-col-md12\" style=\"padding: 2px\">";
-            strVar += "                                收货地址：" + cart.addressName + "<br>";
-            strVar += "                                下单时间：" + cart.createTime;
+            strVar += "                        <div class=\"layui-card layui-col-md8\">";
+            strVar += "                            <div class=\"layui-card-header\">商品名:" + cart.goodsName + "<\/div>";
+            strVar += "                            <div class=\"layui-card-body\">";
+            strVar += "                                <div class=\"layui-col-md12\" style=\"padding: 2px\"> 数量：" + cart.count;
+            strVar += "                                <\/div>";
             strVar += "                            <\/div>";
             strVar += "                        <\/div>";
-            strVar += "                    <\/div>";
-            strVar += "                    <div class=\"layui-card layui-col-md2\" style=\"padding: 20px\">";
-            strVar += "                        <div class=\"layui-card-body\" style=\"display: flex\">";
-            strVar += "                            <div style=\"margin: 0px\">";
-            strVar += "                                <button lay-id='" + cart.cartNum + "' class=\"cart-detail layui-btn-fluid layui-btn layui-btn-primary\">查看详情<\/button><br>";
-            if (cart.state === 1) {
-                strVar += "                                <button lay-id='" + cart.cartNum + "' class=\"cart-detail layui-btn-fluid layui-btn layui-btn-normal\">确认收货<\/button>";
-            }
+            strVar += "                        <div class=\"layui-card layui-col-md2\" style=\"padding: 20px\">";
+            strVar += "                            <div class=\"layui-card-body\" style=\"display: flex\">";
+            strVar += "                                <div style=\"margin: 0px\">";
+            strVar += "                                    <button lay-id='" + cart.goodsId + "'";
+            strVar += "                                            class=\"cart-detail layui-btn-fluid layui-btn layui-btn-primary\">查看详情";
+            strVar += "                                    <\/button>";
+            strVar += "                                    <br>";
+            strVar += "                                    <button lay-id='" + cart.id + "' style=\"margin: 10px 0px\"";
+            strVar += "                                            class=\"cart-del layui-btn-fluid layui-btn layui-btn-danger\">删除";
+            strVar += "                                    <\/button>";
+            strVar += "                                <\/div>";
             strVar += "                            <\/div>";
             strVar += "                        <\/div>";
             strVar += "                    <\/div>";
             strVar += "                <\/div>";
             strVar += "            <\/div>";
-            strVar += "        <\/div>";
             return $(strVar);
         }
 

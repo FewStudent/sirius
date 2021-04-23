@@ -5,7 +5,7 @@
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item"><a href="javaScript:;" class="index">首页</a></li>
             <li class="layui-nav-item"><a href="javaScript:;" class="suggestion">意见反馈</a></li>
-            <li class="layui-nav-item"><a href="javaScript:;" class="search-record">搜索记录</a></li>
+            <li class="layui-nav-item"><a href="javaScript:;" class="cart-list">购物车</a></li>
             <li class="layui-nav-item">
                 <a href="javascript:;">个人信息</a>
                 <dl class="layui-nav-child"> <!-- 二级菜单 -->
@@ -75,8 +75,8 @@
         $(".my-address").click(function () {
             window.location.href = "/client/page/user/userAddress?token=" + token;
         })
-        $(".search-record").click(function () {
-            layer.msg("暂无此功能！", {"icon": 7})
+        $(".cart-list").click(function () {
+            window.location.href = "/client/page/user/cart?token=" + token;
         })
         $(".my-info").click(function () {
             window.location.href = "/client/page/user/edit?token=" + token;

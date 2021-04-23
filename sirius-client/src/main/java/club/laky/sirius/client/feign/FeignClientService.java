@@ -30,7 +30,7 @@ public interface FeignClientService {
     Object queryClientList(@RequestBody String toJSONString);
 
     @RequestMapping(value = "/api/client/regist", method = RequestMethod.GET)
-    Object regist(@RequestBody String jsonBody);
+    Object regist(@RequestParam String jsonBody);
 
     @RequestMapping(value = "/api/client/updateUser", method = RequestMethod.GET)
     Integer updateUser(@RequestParam String jsonBody);

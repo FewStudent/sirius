@@ -5,8 +5,8 @@ eureka:
 spring:
   mail:
     host: smtp.qq.com
-    username: 1047904478@qq.com
-    password: uowzqlmwchadbega
+    username: 1456088081@qq.com
+    password: spgcdvxealnugdda
   application:
     name: mq-service
   rabbitmq:

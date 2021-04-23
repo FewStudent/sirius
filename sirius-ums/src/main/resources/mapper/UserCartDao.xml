@@ -11,6 +11,7 @@
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
         <result property="goodsName" column="goods_name" jdbcType="VARCHAR"/>
         <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -29,7 +30,8 @@
                goods_id,
                count,
                u_id
-        from shop_mall.user_cart limit #{offset}, #{limit}
+        from shop_mall.user_cart
+        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -76,10 +78,10 @@
         </where>
     </select>
     <select id="userCartList" resultMap="BaseResultMap">
-        select uc.*, g.goods_name, su.nickname
+        select uc.*, g.goods_name, su.nickname, SUBSTRING_INDEX(imgs, ',', 1) as url, g.price
         from user_cart uc
-                     left join goods g on g.id = uc.goods_id
-                     left outer join sys_user su on su.id = uc.u_id
+                 left join goods g on g.id = uc.goods_id
+                 left outer join sys_user su on su.id = uc.u_id
         where uc.u_id = #{userId}
     </select>
 

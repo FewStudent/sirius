@@ -139,5 +139,11 @@ public class ClientPageController {
         return modelUtils.createModel(request, "/collect/list");
     }
 
-
+    /**
+     * 跳转到我的购物车
+     */
+    @RequestMapping("user/cart")
+    public ModelAndView cart(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/user/cartList");
+    }
 }

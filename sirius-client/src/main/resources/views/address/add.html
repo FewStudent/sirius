@@ -66,6 +66,7 @@
             layer.confirm("确认添加?", ['确认', '取消'], function () {
                 console.log(data.field)
                 ajax_data("/client/user/insertAddress", token, JSON.stringify(data.field), function (result) {
+                    console.log(result)
                     if (!result.succeed) {
                         layer.msg("添加失败")
                     } else {

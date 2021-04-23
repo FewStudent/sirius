@@ -42,6 +42,7 @@ public class ClientOrderController {
             logger.info("-------------保存订单-------------");
 
             JSONObject object = JSONObject.parseObject(jsonBody);
+            logger.info("用户ID：{}", getUserId(request));
             object.put("userId", getUserId(request));
             return orderService.saveOrder(object.toJSONString());
         } catch (Exception e) {
@@ -123,7 +124,7 @@ public class ClientOrderController {
         try {
             logger.info("-------------从购物车购物-------------");
             JSONObject params = JSON.parseObject(jsonBody);
-            params.put("user_id", getUserId(request));
+            params.put("userId", getUserId(request));
             JSONArray orderList = params.getJSONArray("list");
             String ids = "";
             for (Object o : orderList) {

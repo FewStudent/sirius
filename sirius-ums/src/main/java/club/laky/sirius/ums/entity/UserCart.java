@@ -3,6 +3,7 @@ package club.laky.sirius.ums.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 用户购物车表(UserCart)实体类
@@ -32,7 +33,16 @@ public class UserCart implements Serializable {
     private String nickname;
     @TableField(exist = false)
     private String url;
+    @TableField(exist = false)
+    private BigDecimal price;
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
     public Integer getId() {
         return id;

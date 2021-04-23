@@ -70,7 +70,8 @@ public class ClientLoginController {
     public Object regist(@RequestBody String jsonBody) {
         try {
             logger.info("-------------注册-------------");
-            return clientService.regist(jsonBody);
+            Object o = clientService.regist(jsonBody);
+            return o;
         } catch (Exception e) {
             logger.error("注册失败：" + e.getMessage());
             return WebResult.error(e.getMessage());

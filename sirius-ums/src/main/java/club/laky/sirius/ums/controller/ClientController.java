@@ -110,6 +110,7 @@ public class ClientController {
     }
 
     /**
+     *
      * 添加用户
      *
      * @author panrulang
@@ -119,7 +120,6 @@ public class ClientController {
     public Object regist(@RequestParam String jsonBody) {
         logger.info("-------------添加用户-------------");
         JSONObject params = JSONObject.parseObject(jsonBody);
-
         String account = params.getString("account");
         String nickname = params.getString("nickname");
         String password = params.getString("pwd");
@@ -138,9 +138,9 @@ public class ClientController {
             roleRelation.setRoleId(0);
             roleRelation.setUserId(sysUser.getId());
             roleRelationDao.insert(roleRelation);
-            return 1;
+            return WebResult.success("注册成功！");
         }
-        return 0;
+        return WebResult.error("注册失败");
     }
 
     /**
@@ -205,7 +205,7 @@ public class ClientController {
         if (!StringUtils.isEmpty(password)) {
             sysUser.setPassword(JWTUtils.md5(password));
         }
-        if(!StringUtils.isEmpty(url)){
+        if (!StringUtils.isEmpty(url)) {
             sysUser.setAvatar(url);
         }
         sysUser.setState(state);

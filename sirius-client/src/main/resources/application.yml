@@ -3,6 +3,15 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 spring:
+  mail:
+    host: smtp.qq.com
+    username: 1047904478@qq.com
+    password: uowzqlmwchadbega
+  rabbitmq:
+    host: 106.52.52.92
+    port: 5672
+    username: qsyy2077
+    password: qsyy7614
   application:
     name: client-service
   datasource:

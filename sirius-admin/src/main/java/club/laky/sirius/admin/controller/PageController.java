@@ -317,6 +317,14 @@ public class PageController {
     }
 
     /**
+     * 商品评论
+     */
+    @RequestMapping("product/comment")
+    public ModelAndView productComment(HttpServletRequest request) {
+        return modelUtils.createModel(request, "/product/comment");
+    }
+
+    /**
      * 商品上架
      */
     @RequestMapping("product/detail")

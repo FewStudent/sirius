@@ -86,6 +86,7 @@
                gol.goods_count,
                g.goods_name,
                g.price,
+               g.id                                   as goods_id,
                SUBSTRING_INDEX(g.imgs, ',', 1)        as url,
                CONCAT(ua.u_address, ',', ua.u_detail) as address,
                su.nickname,

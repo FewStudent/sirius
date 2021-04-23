@@ -14,12 +14,12 @@ public class WebConfig implements WebMvcConfigurer {
         return new PermissionInterceptor();
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(permissionInterceptor())
-//                //.excludePathPatterns("")
-//                .addPathPatterns("/**");
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(permissionInterceptor())
+                //.excludePathPatterns("")
+                .addPathPatterns("/**");
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

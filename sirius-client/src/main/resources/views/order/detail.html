@@ -85,6 +85,13 @@
                                            class="layui-input">
                                 </div>
                             </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" for="totalPrice">总花费</label>
+                                <div class="layui-input-block">
+                                    <input id="totalPrice" placeholder="订单进度" autocomplete="off" disabled
+                                           class="layui-input" style="color: orange">
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </fieldset>
@@ -97,11 +104,6 @@
                         </div>
                     </div>
                 </fieldset>
-            </div>
-            <div class="layui-row">
-                <div class="totalPrice" style="color: orange">
-                    总花费： ￥209.0
-                </div>
             </div>
             <div class="layui-row">
                 <div class="operation-list">
@@ -143,10 +145,30 @@
                     let totalPrice = 0;
                     for (let i = 0; i < goodsList.length; i++) {
                         let goods = goodsList[i];
-                        totalPrice += goods.price * goods.count;
+                        console.log(goods.price)
+                        console.log(goods.goodsCount)
+                        totalPrice += goods.price * goods.goodsCount;
                         $(".goods-list").append(goods_item(goodsList[i]));
                     }
-                    $(".totalPrice").html("总金额：" + totalPrice)
+                    $("#totalPrice").val("￥" + totalPrice)
+                    $('.comment').click(function () {
+                        let id = $(this).attr("lay-id")
+                        console.log(id)
+                        layer.prompt({title: '请输入评论', formType: 2}, function (text, index) {
+                            let data = {};
+                            data.goodsId = id;
+                            data.content = text;
+                            ajax_data("/client/order/insertComment", token, JSON.stringify(data), function (result) {
+                                if (result.succeed) {
+                                    layer.msg("评论成功！", {"icon": 1})
+                                    layer.close(index);
+                                } else {
+                                    layer.msg("评论失败！", {"icon": 2})
+                                    layer.close(index);
+                                }
+                            })
+                        })
+                    })
                 } else {
                     layer.alert("获取详情失败！")
                 }
@@ -185,10 +207,13 @@
             strVar += "                                        <\/div>";
             strVar += "                                        <div class=\"layui-col-md4\">";
             strVar += "                                            " + goods.goodsName;
-            strVar += "                                        <\/div>";
-            strVar += "                                        <div class=\"layui-col-md4\">";
-            strVar += "                                            <div style='color: orange'>单价:" + goods.price + "<\/div>";
             strVar += "                                            <div>数量:" + goods.goodsCount + "<\/div>";
+            strVar += "                                            <div style='color: orange'>单价:" + goods.price + "<\/div>";
+            strVar += "                                        <\/div>";
+            strVar += "                                        <div class=\"layui-col-md4\" style='display: flex'>";
+            strVar += "<div style='margin: auto'>";
+            strVar += "<button class='layui-btn layui-btn-normal layui-btn-fluid comment' lay-id='" + goods.goodsId + "'>评论</button>";
+            strVar += "</div>"
             strVar += "                                        <\/div>";
             strVar += "                                    <\/div>";
             strVar += "                                <\/div>";

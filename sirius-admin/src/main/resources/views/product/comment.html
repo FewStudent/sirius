@@ -57,7 +57,7 @@
                 title: 'ID',
                 width: 120
             }, {
-                field: 'nickname',
+                field: 'nickName',
                 title: '评论用户',
                 width: 240
             }, {
@@ -133,10 +133,10 @@
                 let params = {};
                 params.id = data.id;
                 layer.prompt({title: '请输入回复内容', formType: 2}, function (text, index) {
-                    params.conetn = text;
-                    ajax_data("/admin/comment/reply", token, params, function (result) {
+                    params.content = text;
+                    ajax_data("/admin/comment/reply", token, JSON.stringify(params), function (result) {
                         if (result.succeed) {
-                            layer.alert("删除成功!", {"icon": 1}, function () {
+                            layer.alert("回复成功!", {"icon": 1}, function () {
                                 location.reload();
                             });
                         } else {

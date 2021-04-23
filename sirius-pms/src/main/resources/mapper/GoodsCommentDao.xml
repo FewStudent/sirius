@@ -41,7 +41,8 @@
                reply,
                reply_time,
                reply_by
-        from shop_mall.goods_comment limit #{offset}, #{limit}
+        from shop_mall.goods_comment
+        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -79,8 +80,8 @@
     <select id="queryByGoodsId" resultMap="BaseResultMap">
         select gc.*, su1.nickname nickname, su2.nickname replier
         from goods_comment gc
-                     left join sys_user su1 on gc.u_id = su1.id
-                     left join sys_user su2 on gc.reply_by = su2.id
+                 left join sys_user su1 on gc.u_id = su1.id
+                 left join sys_user su2 on gc.reply_by = su2.id
         where gc.goods_id = #{goodsId}
         order by gc.create_time
     </select>
@@ -129,32 +130,34 @@
 
     <select id="commentList" resultMap="BaseResultMap">
         select gc.*,su1.nickname nickname, su2.nickname replier,g.goods_name
+        from goods_comment gc
         left join sys_user su1 on su1.id = gc.u_id
         left join sys_user su2 on su2.id = gc.reply_by
         left join goods g on g.id = gc.goods_id
         <where>
             <if test="goodsName != null">
-                g.goods_name like CONCAT(goodsName,'%')
+                and g.goods_name like CONCAT(#{goodsName},'%')
             </if>
             <if test="nickname != null">
-                su1.nickname like CONCAT(nickname,'%')
+                and su1.nickname like CONCAT(#{nickname},'%')
             </if>
         </where>
+        order by gc.create_time desc
         limit #{offset}, #{limit}
-        order by gc.create_time
     </select>
 
     <select id="commentCount" resultType="java.lang.Integer">
         select count(*)
+        from goods_comment gc
         left join sys_user su1 on su1.id = gc.u_id
         left join sys_user su2 on su2.id = gc.reply_by
         left join goods g on g.id = gc.goods_id
         <where>
             <if test="goodsName != null">
-                g.goods_name like CONCAT(goodsName,'%')
+                g.goods_name like CONCAT(#{goodsName},'%')
             </if>
             <if test="nickname != null">
-                su1.nickname like CONCAT(nickname,'%')
+                su1.nickname like CONCAT(#{nickname},'%')
             </if>
         </where>
     </select>

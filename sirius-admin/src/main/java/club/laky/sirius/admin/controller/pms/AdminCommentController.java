@@ -68,7 +68,7 @@ public class AdminCommentController {
      */
     @ResponseBody
     @RequestMapping("/reply")
-    public Object reply(@RequestParam HttpServletRequest request, @RequestBody String jsonBody) {
+    public Object reply(HttpServletRequest request, @RequestBody String jsonBody) {
         try {
             logger.info("-------------评论回复-------------");
             JSONObject params = JSONObject.parseObject(jsonBody);

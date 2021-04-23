@@ -3,6 +3,7 @@ package club.laky.sirius.client.controller;
 import club.laky.sirius.client.entity.SysUser;
 import club.laky.sirius.client.feign.FeignCacheService;
 import club.laky.sirius.client.feign.FeignClientService;
+import club.laky.sirius.client.feign.FeignGoodsService;
 import club.laky.sirius.client.feign.FeignOrderService;
 import club.laky.sirius.client.utils.WebResult;
 import com.alibaba.fastjson.JSON;
@@ -28,6 +29,8 @@ public class ClientOrderController {
     private FeignCacheService cacheService;
     @Autowired
     private FeignClientService clientService;
+    @Autowired
+    private FeignGoodsService goodsService;
 
     /**
      * 保存订单
@@ -116,10 +119,11 @@ public class ClientOrderController {
      */
     @ResponseBody
     @RequestMapping("/buy")
-    public Object buy(@RequestBody String jsonBody) {
+    public Object buy(HttpServletRequest request, @RequestBody String jsonBody) {
         try {
             logger.info("-------------从购物车购物-------------");
             JSONObject params = JSON.parseObject(jsonBody);
+            params.put("user_id", getUserId(request));
             JSONArray orderList = params.getJSONArray("list");
             String ids = "";
             for (Object o : orderList) {
@@ -132,10 +136,29 @@ public class ClientOrderController {
                 return webResult;
             }
             //保存订单
-            return orderService.saveOrder(jsonBody);
+            return orderService.saveOrder(params.toJSONString());
         } catch (Exception e) {
             logger.info("从购物车购物失败:{}", e.getMessage());
             return WebResult.error("从购物车购物失败");
+        }
+    }
+
+    /**
+     * 添加商品评论
+     *
+     * @author panrulang
+     */
+    @ResponseBody
+    @RequestMapping("/insertComment")
+    public Object insertComment(HttpServletRequest request, @RequestBody String jsonBody) {
+        try {
+            logger.info("-------------添加商品评论-------------");
+            JSONObject params = JSON.parseObject(jsonBody);
+            params.put("user_id", getUserId(request));
+            return goodsService.insertComment(params.toJSONString());
+        } catch (Exception e) {
+            logger.info("添加商品评论失败:{}", e.getMessage());
+            return WebResult.error("添加商品评论失败");
         }
     }
 

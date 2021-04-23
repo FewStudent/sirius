@@ -76,4 +76,7 @@ public interface FeignGoodsService {
     @RequestMapping(value = "/api/comment/getCommentByGoodsId", method = RequestMethod.GET)
     Object getCommentByGoodsId(@RequestParam Integer goodsId);
 
+    @RequestMapping(value = "/api/comment/insertComment", method = RequestMethod.GET)
+    Object insertComment(@RequestBody String jsonBody);
+
 }

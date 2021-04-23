@@ -99,7 +99,7 @@ public class GoodsCommentServiceImpl implements GoodsCommentService {
     public WebResult insertComment(String jsonBody) {
         JSONObject params = JSONObject.parseObject(jsonBody);
         Integer goodsId = params.getInteger("goodsId");
-        Integer u_id = params.getInteger("u_id");
+        Integer u_id = params.getInteger("user_id");
         String content = params.getString("content");
         GoodsComment goodsComment = new GoodsComment();
         goodsComment.setUId(u_id);

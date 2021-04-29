@@ -4,7 +4,7 @@
 
     <resultMap id="BaseResultMap" type="club.laky.sirius.oms.entity.GoodsOrder">
         <!--@Table goods_order-->
-        <result property="id" column="id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="orderNum" column="order_num" jdbcType="VARCHAR"/>
         <result property="uId" column="u_id" jdbcType="INTEGER"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>

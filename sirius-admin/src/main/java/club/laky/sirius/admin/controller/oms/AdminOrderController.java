@@ -68,6 +68,21 @@ public class AdminOrderController {
     }
 
     /**
+     * 取消订单
+     */
+    @ResponseBody
+    @RequestMapping("cancelOrder")
+    public Object cancelDetail(@RequestParam Integer id) {
+        try {
+            logger.info("-------------取消订单-------------");
+            return orderService.cancelOrder(id);
+        } catch (Exception e) {
+            logger.error("取消订单失败：" + e.getMessage());
+            return WebResult.error(e.getMessage());
+        }
+    }
+
+    /**
      * 订单发货
      */
     @ResponseBody

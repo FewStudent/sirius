@@ -39,6 +39,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 服务间调用feign -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
 
     </dependencies>
     <dependencyManagement>

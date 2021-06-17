@@ -24,6 +24,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
     private FeignCacheService cacheService;
 
 
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String uri = request.getRequestURI();
@@ -38,7 +39,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
             return true;
         }
         String isApi = request.getHeader("isApi");
-        if (!StringUtils.isEmpty(isApi) && isApi.equals("Y")) {
+        if (!StringUtils.isEmpty(isApi) && "Y".equals(isApi)) {
             logger.info("获得网关许可直接放行：{}", uri);
             return true;
         }
@@ -73,9 +74,6 @@ public class PermissionInterceptor implements HandlerInterceptor {
             } else {
                 logger.error("没有该访问权限：{},重定向到首页", uri);
                 response.sendRedirect(request.getContextPath() + "/admin/page/index");
-                /*response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.setHeader("Content-type", "text/html;charset=UTF-8");
-                response.getWriter().write("没有该权限");*/
                 return false;
             }
         } else {

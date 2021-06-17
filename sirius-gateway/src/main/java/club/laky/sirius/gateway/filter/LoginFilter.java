@@ -1,14 +1,17 @@
 package club.laky.sirius.gateway.filter;
 
+import club.laky.sirius.gateway.feign.FeignCacheService;
 import club.laky.sirius.gateway.utils.WebResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -35,6 +38,9 @@ public class LoginFilter implements GlobalFilter, Ordered {
     private static final List<String> UN_AUTH_URI = new ArrayList<>();
 
     private static final List<String> ALLOW_URI = new ArrayList<>();
+
+    @Autowired
+    private FeignCacheService feignCacheService;
 
 
     static {
@@ -69,7 +75,11 @@ public class LoginFilter implements GlobalFilter, Ordered {
         logger.info("请求的URI:{}", path);
         logger.info("请求的地址IP:{}", ip);
         logger.info("------------------------------------------------------");
-
+        /**
+         * 由于这个请求是阻塞的,而当前过滤器不是阻塞的,导致调用失败
+         *         Object testToken = feignCacheService.get("token");
+         *                 logger.info("好：{}", testToken);
+         */
         //清除i请求头中的isApi
 
         PathMatcher matcher = new AntPathMatcher();
@@ -77,11 +87,11 @@ public class LoginFilter implements GlobalFilter, Ordered {
         for (String auth_uri : UN_AUTH_URI) {
             if (matcher.matchStart(auth_uri, path)) {
                 //允许通行
-/*
-                exchange.getRequest().getHeaders().add("isApi", "Y");
-*/
+                ServerHttpRequest request = exchange.getRequest().mutate().header("isApi", "Y").build();
+                HttpHeaders headers = request.getHeaders();
+                logger.info(headers.toString());
                 logger.info("检测无需鉴权的：URL-{} 匹配成功", path);
-                return chain.filter(exchange); //继续向下执行
+                return chain.filter(exchange);
             }
         }
 

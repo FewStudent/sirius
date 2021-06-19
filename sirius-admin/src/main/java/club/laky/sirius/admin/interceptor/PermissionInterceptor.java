@@ -14,11 +14,25 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PermissionInterceptor implements HandlerInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(PermissionInterceptor.class);
+
+    private static List<String> allow_path = new ArrayList<>();
+
+    private static final String PAGE_PATH = "/admin/page/**";
+    static{
+        allow_path.add("/admin/page/login");
+        allow_path.add("/error");
+        allow_path.add("/admin/admin/login");
+        allow_path.add("/static/**");
+
+
+    }
 
     @Autowired
     private FeignCacheService cacheService;
@@ -28,15 +42,12 @@ public class PermissionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String uri = request.getRequestURI();
-        logger.info("请求的URI：{}", uri);
-        if ("/admin/page/login".equals(uri) || "/error".equals(uri) || "/admin/admin/login".equals(uri)) {
-            logger.info("无需鉴权的放行请求：{}", uri);
-            return true;
-        }
         PathMatcher matcher = new AntPathMatcher();
-        if (matcher.matchStart("/static/**", uri)) {
-            logger.info("静态资源放行：{}", uri);
-            return true;
+        for (String s : allow_path) {
+            if (matcher.matchStart(s, uri)) {
+                logger.info("无需鉴权的放行请求：{}", uri);
+                return true;
+            }
         }
         String isApi = request.getHeader("isApi");
         if (!StringUtils.isEmpty(isApi) && "Y".equals(isApi)) {
@@ -45,7 +56,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
         }
         //页面跳转 从参数中获取token
         String token;
-        if (matcher.matchStart("/admin/page/**", uri)) {
+        if (matcher.matchStart(PAGE_PATH, uri)) {
             token = request.getParameter("token");
         } else {
             token = request.getHeader("token");
@@ -60,7 +71,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
         }
         Map<String, Object> result = (Map<String, Object>) cacheService.get(token);
         logger.info("获取到token：{}的数据：{}", token, result.toString());
-        if (result.get("status").equals("true")) {
+        if ("true".equals(result.get("status"))) {
             SysUser user = JSON.parseObject((String) result.get("data"), SysUser.class);
             if(user == null){
                 logger.error("用户token已过期");
